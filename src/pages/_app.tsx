@@ -1,3 +1,4 @@
+// src/pages/_app.tsx
 import { type AppType } from "next/app";
 
 import { api } from "~/utils/api";
