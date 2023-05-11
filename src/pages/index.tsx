@@ -39,10 +39,11 @@ const Home: NextPage = () => {
 const SignOutButton = () => {
   const { signOut } = useClerk();
   return (
-    <button onClick={() => signOut()} >
+    <button onClick={async () => await signOut()} >
       Sign out
     </button>
   );
 };
+
 
 export default Home;
