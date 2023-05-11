@@ -10,7 +10,8 @@ const Home: NextPage = () => {
   const user = useUser();
   const { data, isLoading, refetch } = user.isSignedIn
     ? api.food.getAll.useQuery()
-    : { data: null, isLoading: false, refetch: () => {} };
+    : { data: null, isLoading: false, refetch: () => console.log("User not signed in") };
+
 
   return (
     <>
@@ -24,7 +25,7 @@ const Home: NextPage = () => {
           {!user.isSignedIn && <SignInButton />}
           {!!user.isSignedIn && <SignOutButton />}
         </div>
-        {!!user.isSignedIn && <MealForm onMealAdded={refetch} />}
+        {!!user.isSignedIn && <MealForm onMealAdded={() => refetch()} />}
         <div className="flex flex-col items-center">
           {isLoading ? (
             <div>Loading...</div>
