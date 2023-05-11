@@ -2,13 +2,15 @@
 import { SignInButton, useUser, useClerk } from "@clerk/nextjs";
 import { type NextPage } from "next";
 import Head from "next/head";
+import { useState } from "react";
 
 import { api } from "~/utils/api";
 
 const Home: NextPage = () => {
   const user = useUser();
-  console.log(user);
-  const { data, isLoading } = user.isSignedIn ? api.food.getAll.useQuery() : { data: null, isLoading: false };
+  const { data, isLoading, refetch } = user.isSignedIn
+    ? api.food.getAll.useQuery()
+    : { data: null, isLoading: false, refetch: () => {} };
 
   return (
     <>
@@ -22,13 +24,15 @@ const Home: NextPage = () => {
           {!user.isSignedIn && <SignInButton />}
           {!!user.isSignedIn && <SignOutButton />}
         </div>
+        {!!user.isSignedIn && <MealForm onMealAdded={refetch} />}
         <div className="flex flex-col items-center">
           {isLoading ? (
             <div>Loading...</div>
           ) : (
             data?.map((food) => (
               <div key={food.id} className="mb-2">
-                user: {food.userId} {food.name} fats: {food.fat} carbs: {food.carbs} protein: {food.protein}
+                user: {food.userId} {food.name} fats: {food.fat} carbs:{" "}
+                {food.carbs} protein: {food.protein}
               </div>
             ))
           )}
@@ -50,4 +54,48 @@ const SignOutButton = () => {
   return <button onClick={handleSignOut}>Sign out</button>;
 };
 
+const MealForm = ({ onMealAdded }: { onMealAdded: () => void }) => {
+  const user = useUser();
+  const [name, setName] = useState("");
+  const [protein, setProtein] = useState("");
+  const [carbs, setCarbs] = useState("");
+  const [fat, setFat] = useState("");
+
+  const mutation = api.food.create.useMutation({
+    onSuccess: () => {
+      setName("");
+      setProtein("");
+      setCarbs("");
+      setFat("");
+      onMealAdded(); 
+    },
+    onError: (e) => {
+      console.error("Failed to create food entry", e);
+    },
+  });
+
+  if (!user) return null;
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    mutation.mutate({
+      name,
+      protein: Number(protein),
+      carbs: Number(carbs),
+      fat: Number(fat),
+    });
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <input placeholder="name" value={name} onChange={(e) => setName(e.target.value)} />
+      <input placeholder="protein" value={protein} onChange={(e) => setProtein(e.target.value)} />
+      <input placeholder="carbs" value={carbs} onChange={(e) => setCarbs(e.target.value)} />
+      <input placeholder="fat" value={fat} onChange={(e) => setFat(e.target.value)} />
+      <button type="submit">Submit</button>
+    </form>
+  );
+};
+
 export default Home;
+
