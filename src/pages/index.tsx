@@ -55,7 +55,7 @@ const SignOutButton = () => {
   return <button onClick={handleSignOut}>Sign out</button>;
 };
 
-const MealForm = ({ onMealAdded }: { onMealAdded: () => void }) => {
+const MealForm = ({ onMealAdded }: { onMealAdded: () => Promise<void> }) => {
   const user = useUser();
   const [name, setName] = useState("");
   const [protein, setProtein] = useState("");
