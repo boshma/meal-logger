@@ -25,7 +25,8 @@ const Home: NextPage = () => {
           {!user.isSignedIn && <SignInButton />}
           {!!user.isSignedIn && <SignOutButton />}
         </div>
-        {!!user.isSignedIn && <MealForm onMealAdded={async () => { await refetch(); }} />}
+        {!!user.isSignedIn && <MealForm onMealAdded={() => { refetch(); }} />}
+
         <div className="flex flex-col items-center">
           {isLoading ? (
             <div>Loading...</div>
@@ -55,7 +56,7 @@ const SignOutButton = () => {
   return <button onClick={handleSignOut}>Sign out</button>;
 };
 
-const MealForm = ({ onMealAdded }: { onMealAdded: () => Promise<void> }) => {
+const MealForm = ({ onMealAdded }: { onMealAdded: () => void }) => {
   const user = useUser();
   const [name, setName] = useState("");
   const [protein, setProtein] = useState("");
