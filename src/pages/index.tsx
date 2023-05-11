@@ -37,12 +37,10 @@ const Home: NextPage = () => {
 const SignOutButton = () => {
   const { signOut } = useClerk();
   
-  const handleSignOut = async () => {
-    try {
-      await signOut();
-    } catch (error) {
+  const handleSignOut = () => {
+    signOut().catch((error) => {
       console.error('Failed to sign out', error);
-    }
+    });
   };
 
   return (
@@ -53,3 +51,4 @@ const SignOutButton = () => {
 };
 
 export default Home;
+
