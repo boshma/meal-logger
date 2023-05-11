@@ -3,11 +3,14 @@ import { SignInButton, useUser, useClerk } from "@clerk/nextjs";
 import { type NextPage } from "next";
 import Head from "next/head";
 import { useState } from "react";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 import { api } from "~/utils/api";
 
 const Home: NextPage = () => {
   const user = useUser();
+  const [selectedDate, setSelectedDate] = useState(new Date());
 
   return (
     <>
@@ -20,9 +23,13 @@ const Home: NextPage = () => {
         <div className="mb-4 flex items-center justify-center">
           {!user.isSignedIn && <SignInButton />}
           {!!user.isSignedIn && <SignOutButton />}
+          {!!user.isSignedIn && (
+            <DatePicker selected={selectedDate} onChange={(date: Date | null) => date && setSelectedDate(date)} />
+
+          )}
+          {!!user.isSignedIn && <MealForm selectedDate={selectedDate} />}
+          {!!user.isSignedIn && <MealLog selectedDate={selectedDate} />}
         </div>
-        {!!user.isSignedIn && <MealForm />}
-        {!!user.isSignedIn && <MealLog />} 
       </main>
     </>
   );
@@ -40,7 +47,7 @@ const SignOutButton = () => {
   return <button onClick={handleSignOut}>Sign out</button>;
 };
 
-const MealForm = () => {
+const MealForm = ({ selectedDate }: { selectedDate: Date }) => {
   const user = useUser();
   const [name, setName] = useState("");
   const [protein, setProtein] = useState("");
@@ -66,27 +73,55 @@ const MealForm = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    mutation.mutate({
-      name,
-      protein: Number(protein),
-      carbs: Number(carbs),
-      fat: Number(fat),
-    });
+    
+    const dateString = selectedDate?.toISOString().split('T')[0];
+    
+    if (dateString) {
+      mutation.mutate({
+        name,
+        protein: Number(protein),
+        carbs: Number(carbs),
+        fat: Number(fat),
+        date: dateString,  
+      });
+    } else {
+      console.error("Failed to create food entry: Date is undefined");
+    }
   };
+  
+  
 
   return (
     <form onSubmit={handleSubmit}>
-      <input placeholder="name" value={name} onChange={(e) => setName(e.target.value)} />
-      <input placeholder="protein" value={protein} onChange={(e) => setProtein(e.target.value)} />
-      <input placeholder="carbs" value={carbs} onChange={(e) => setCarbs(e.target.value)} />
-      <input placeholder="fat" value={fat} onChange={(e) => setFat(e.target.value)} />
+      <input
+        placeholder="name"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+      />
+      <input
+        placeholder="protein"
+        value={protein}
+        onChange={(e) => setProtein(e.target.value)}
+      />
+      <input
+        placeholder="carbs"
+        value={carbs}
+        onChange={(e) => setCarbs(e.target.value)}
+      />
+      <input
+        placeholder="fat"
+        value={fat}
+        onChange={(e) => setFat(e.target.value)}
+      />
       <button type="submit">Submit</button>
     </form>
   );
 };
 
-const MealLog = () => {
-  const { data, isLoading } = api.food.getAll.useQuery();
+const MealLog = ({ selectedDate }: { selectedDate: Date }) => {
+  const { data, isLoading } = api.food.getByDate.useQuery({
+    date: selectedDate.toISOString(),
+  });
 
   return (
     <div className="flex flex-col items-center">
@@ -95,13 +130,13 @@ const MealLog = () => {
       ) : (
         data?.map((food) => (
           <div key={food.id} className="mb-2">
-            user: {food.userId} {food.name} fats: {food.fat} carbs:{" "}
-            {food.carbs} protein: {food.protein}
+            user: {food.userId} {food.name} fats: {food.fat} carbs: {food.carbs}{" "}
+            protein: {food.protein}
           </div>
         ))
       )}
     </div>
   );
-}
+};
 
-export default Home
+export default Home;

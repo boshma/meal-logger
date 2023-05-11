@@ -8,6 +8,23 @@ export const foodRouter = createTRPCRouter({
   getAll: privateProcedure.query(({ ctx }) => {
     return ctx.prisma.foodEntry.findMany({ where: { userId: ctx.userId } });
   }),
+  getByDate: privateProcedure
+  .input(z.object({ date: z.string() }))
+  .query(async ({ ctx, input }) => {
+    const date = new Date(input.date);
+    const nextDate = new Date(date);
+    nextDate.setDate(nextDate.getDate() + 1);
+
+    return ctx.prisma.foodEntry.findMany({
+      where: {
+        userId: ctx.userId,
+        date: {
+          gte: date,
+          lt: nextDate,
+        },
+      },
+    });
+  }),
   create: privateProcedure
   .input(
     z.object({
@@ -15,6 +32,7 @@ export const foodRouter = createTRPCRouter({
       protein: z.number(),
       carbs: z.number(),
       fat: z.number(),
+      date: z.string(),
     })
   )
   .mutation(async ({ ctx, input }) => {
@@ -27,7 +45,7 @@ export const foodRouter = createTRPCRouter({
     const food = await ctx.prisma.foodEntry.create({
       data: {
         ...input,
-        date: new Date(), 
+        date: new Date(input.date), 
         userId,
       },
     });
