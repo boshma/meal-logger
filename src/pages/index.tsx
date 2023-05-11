@@ -34,16 +34,22 @@ const Home: NextPage = () => {
   );
 };
 
-
-
 const SignOutButton = () => {
   const { signOut } = useClerk();
+  
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+    } catch (error) {
+      console.error('Failed to sign out', error);
+    }
+  };
+
   return (
-    <button onClick={async () => await signOut()} >
+    <button onClick={handleSignOut}>
       Sign out
     </button>
   );
 };
-
 
 export default Home;
