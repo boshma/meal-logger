@@ -8,10 +8,6 @@ import { api } from "~/utils/api";
 
 const Home: NextPage = () => {
   const user = useUser();
-  const { data, isLoading, refetch } = user.isSignedIn
-    ? api.food.getAll.useQuery()
-    : { data: null, isLoading: false, refetch: () => console.log("User not signed in") };
-
 
   return (
     <>
@@ -25,21 +21,8 @@ const Home: NextPage = () => {
           {!user.isSignedIn && <SignInButton />}
           {!!user.isSignedIn && <SignOutButton />}
         </div>
-        {!!user.isSignedIn && <MealForm onMealAdded={() => { void refetch(); }} />}
-
-
-        <div className="flex flex-col items-center">
-          {isLoading ? (
-            <div>Loading...</div>
-          ) : (
-            data?.map((food) => (
-              <div key={food.id} className="mb-2">
-                user: {food.userId} {food.name} fats: {food.fat} carbs:{" "}
-                {food.carbs} protein: {food.protein}
-              </div>
-            ))
-          )}
-        </div>
+        {!!user.isSignedIn && <MealForm />}
+        {!!user.isSignedIn && <MealLog />} 
       </main>
     </>
   );
@@ -57,12 +40,14 @@ const SignOutButton = () => {
   return <button onClick={handleSignOut}>Sign out</button>;
 };
 
-const MealForm = ({ onMealAdded }: { onMealAdded: () => void }) => {
+const MealForm = () => {
   const user = useUser();
   const [name, setName] = useState("");
   const [protein, setProtein] = useState("");
   const [carbs, setCarbs] = useState("");
   const [fat, setFat] = useState("");
+
+  const { refetch } = api.food.getAll.useQuery();
 
   const mutation = api.food.create.useMutation({
     onSuccess: () => {
@@ -70,7 +55,7 @@ const MealForm = ({ onMealAdded }: { onMealAdded: () => void }) => {
       setProtein("");
       setCarbs("");
       setFat("");
-      onMealAdded(); 
+      void refetch();
     },
     onError: (e) => {
       console.error("Failed to create food entry", e);
@@ -100,5 +85,23 @@ const MealForm = ({ onMealAdded }: { onMealAdded: () => void }) => {
   );
 };
 
-export default Home;
+const MealLog = () => {
+  const { data, isLoading } = api.food.getAll.useQuery();
 
+  return (
+    <div className="flex flex-col items-center">
+      {isLoading ? (
+        <div>Loading...</div>
+      ) : (
+        data?.map((food) => (
+          <div key={food.id} className="mb-2">
+            user: {food.userId} {food.name} fats: {food.fat} carbs:{" "}
+            {food.carbs} protein: {food.protein}
+          </div>
+        ))
+      )}
+    </div>
+  );
+}
+
+export default Home
