@@ -25,7 +25,7 @@ const Home: NextPage = () => {
           {!user.isSignedIn && <SignInButton />}
           {!!user.isSignedIn && <SignOutButton />}
         </div>
-        {!!user.isSignedIn && <MealForm onMealAdded={() => refetch()} />}
+        {!!user.isSignedIn && <MealForm onMealAdded={async () => { await refetch(); }} />}
         <div className="flex flex-col items-center">
           {isLoading ? (
             <div>Loading...</div>
