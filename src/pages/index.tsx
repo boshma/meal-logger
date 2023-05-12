@@ -5,6 +5,7 @@ import Head from "next/head";
 import { useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { LoadingPage, LoadingSpinner } from "~/components/loading";
 
 import { api } from "~/utils/api";
 
@@ -136,18 +137,18 @@ const MealLog = ({ selectedDate }: { selectedDate: Date }) => {
     date: `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, '0')}-${String(selectedDate.getDate()).padStart(2, '0')}`,
   });
 
+  if (isLoading) {
+    return <LoadingPage />; 
+  }
+
   return (
     <div className="flex flex-col items-center">
-      {isLoading ? (
-        <div>Loading...</div>
-      ) : (
-        data?.map((food) => (
-          <div key={food.id} className="mb-2">
-            user: {food.userId} {food.name} fats: {food.fat} carbs: {food.carbs}{" "}
-            protein: {food.protein}
-          </div>
-        ))
-      )}
+      {data?.map((food) => (
+        <div key={food.id} className="mb-2">
+          user: {food.userId} {food.name} fats: {food.fat} carbs: {food.carbs}{" "}
+          protein: {food.protein}
+        </div>
+      ))}
     </div>
   );
 };
@@ -163,8 +164,13 @@ const MacroSummary = ({ selectedDate }: { selectedDate: Date }) => {
     date: `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, '0')}-${String(selectedDate.getDate()).padStart(2, '0')}`,
   });
 
-  if (isLoading) return <div>Loading...</div>;
-  if (isError || !data) return <div>Error loading macro summary</div>;
+  if (isLoading) {
+    return <LoadingPage />; 
+  }
+  
+  if (isError || !data) {
+    return <div>Error loading macro summary</div>;
+  }
 
   const totalProtein = data.reduce((total: number, food: FoodData) => total + food.protein, 0);
   const totalCarbs = data.reduce((total: number, food: FoodData) => total + food.carbs, 0);
