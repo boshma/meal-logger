@@ -85,6 +85,7 @@ export const MealForm = ({ selectedDate, refetchMealLog }: { selectedDate: Date,
         <button type="submit">Submit</button>
       </form>
     </div>
+    
   );
 };
 
