@@ -1,16 +1,18 @@
-// src/pages/index.tsx
+//src/pages/index.tsx
 import { SignInButton, useUser, useClerk } from "@clerk/nextjs";
 import { type NextPage } from "next";
 import Head from "next/head";
 import { useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+;
 
 import { api } from "~/utils/api";
 
 const Home: NextPage = () => {
   const user = useUser();
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const [key, setKey] = useState(Date.now());
 
   return (
     <>
@@ -27,8 +29,13 @@ const Home: NextPage = () => {
             <DatePicker selected={selectedDate} onChange={(date: Date | null) => date && setSelectedDate(date)} />
 
           )}
-          {!!user.isSignedIn && <MealForm selectedDate={selectedDate} />}
-          {!!user.isSignedIn && <MealLog selectedDate={selectedDate} />}
+         {!!user.isSignedIn && (
+            <MealForm 
+              selectedDate={selectedDate} 
+              refetchMealLog={() => setKey(Date.now())} 
+            />
+          )}
+          {!!user.isSignedIn && <MealLog selectedDate={selectedDate} key={key} />} 
         </div>
       </main>
     </>
@@ -47,7 +54,7 @@ const SignOutButton = () => {
   return <button onClick={handleSignOut}>Sign out</button>;
 };
 
-const MealForm = ({ selectedDate }: { selectedDate: Date }) => {
+const MealForm = ({ selectedDate, refetchMealLog }: { selectedDate: Date, refetchMealLog: () => void }) => {
   const user = useUser();
   const [name, setName] = useState("");
   const [protein, setProtein] = useState("");
@@ -62,7 +69,7 @@ const MealForm = ({ selectedDate }: { selectedDate: Date }) => {
       setProtein("");
       setCarbs("");
       setFat("");
-      void refetch();
+      void refetchMealLog(); // refetch the meal log after successful mutation
     },
     onError: (e) => {
       console.error("Failed to create food entry", e);
@@ -73,16 +80,23 @@ const MealForm = ({ selectedDate }: { selectedDate: Date }) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
-    const dateString = selectedDate?.toISOString().split('T')[0];
-    
+  
+    // Get the timezone offset in minutes
+    const timezoneOffset = selectedDate.getTimezoneOffset() * 60000;
+  
+    // Create a new date object that includes the timezone offset
+    const localISOTime = new Date(selectedDate.getTime() - timezoneOffset);
+  
+    // Generate dateString using localISOTime
+    const dateString = `${localISOTime.getUTCFullYear()}-${String(localISOTime.getUTCMonth() + 1).padStart(2, '0')}-${String(localISOTime.getUTCDate()).padStart(2, '0')}T00:00:00Z`;
+  
     if (dateString) {
       mutation.mutate({
         name,
         protein: Number(protein),
         carbs: Number(carbs),
         fat: Number(fat),
-        date: dateString,  
+        date: dateString,
       });
     } else {
       console.error("Failed to create food entry: Date is undefined");
@@ -120,7 +134,7 @@ const MealForm = ({ selectedDate }: { selectedDate: Date }) => {
 
 const MealLog = ({ selectedDate }: { selectedDate: Date }) => {
   const { data, isLoading } = api.food.getByDate.useQuery({
-    date: selectedDate.toISOString(),
+    date: `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, '0')}-${String(selectedDate.getDate()).padStart(2, '0')}`,
   });
 
   return (

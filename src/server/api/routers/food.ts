@@ -1,5 +1,4 @@
 //src/server/api/routers/food.ts
-//src/server/api/routers/food.ts
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure, privateProcedure } from "~/server/api/trpc";
@@ -14,6 +13,7 @@ export const foodRouter = createTRPCRouter({
     const date = new Date(input.date);
     const nextDate = new Date(date);
     nextDate.setDate(nextDate.getDate() + 1);
+    nextDate.setHours(0, 0, 0, 0);  // Set the time to the start of the day
 
     return ctx.prisma.foodEntry.findMany({
       where: {
@@ -53,4 +53,3 @@ export const foodRouter = createTRPCRouter({
     return food;
   }),
 });
-
