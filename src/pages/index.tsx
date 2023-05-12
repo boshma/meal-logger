@@ -5,7 +5,6 @@ import Head from "next/head";
 import { useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-;
 
 import { api } from "~/utils/api";
 
@@ -61,7 +60,6 @@ const MealForm = ({ selectedDate, refetchMealLog }: { selectedDate: Date, refetc
   const [carbs, setCarbs] = useState("");
   const [fat, setFat] = useState("");
 
-  const { refetch } = api.food.getAll.useQuery();
 
   const mutation = api.food.create.useMutation({
     onSuccess: () => {
