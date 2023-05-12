@@ -152,6 +152,12 @@ const MealLog = ({ selectedDate }: { selectedDate: Date }) => {
   );
 };
 
+type FoodData = {
+  protein: number;
+  carbs: number;
+  fat: number;
+};
+
 const MacroSummary = ({ selectedDate }: { selectedDate: Date }) => {
   const { data, isLoading, isError } = api.food.getByDate.useQuery({
     date: `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, '0')}-${String(selectedDate.getDate()).padStart(2, '0')}`,
@@ -160,9 +166,9 @@ const MacroSummary = ({ selectedDate }: { selectedDate: Date }) => {
   if (isLoading) return <div>Loading...</div>;
   if (isError || !data) return <div>Error loading macro summary</div>;
 
-  const totalProtein = data.reduce((total: any, food: { protein: any; }) => total + food.protein, 0);
-  const totalCarbs = data.reduce((total: any, food: { carbs: any; }) => total + food.carbs, 0);
-  const totalFat = data.reduce((total: any, food: { fat: any; }) => total + food.fat, 0);
+  const totalProtein = data.reduce((total: number, food: FoodData) => total + food.protein, 0);
+  const totalCarbs = data.reduce((total: number, food: FoodData) => total + food.carbs, 0);
+  const totalFat = data.reduce((total: number, food: FoodData) => total + food.fat, 0);
   const totalCalories = totalProtein * 4 + totalCarbs * 4 + totalFat * 9;
 
   return (
@@ -174,6 +180,7 @@ const MacroSummary = ({ selectedDate }: { selectedDate: Date }) => {
     </div>
   );
 };
+
 
 
 
