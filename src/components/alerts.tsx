@@ -1,6 +1,7 @@
 //src/components/alerts.tsx
 import { useEffect } from 'react';
 
+
 type AlertProps = {
   message: string;
   type: 'success' | 'error' | 'warning' | 'info';
@@ -24,7 +25,7 @@ export const Alert: React.FC<AlertProps> = ({ message, type, onClose }) => {
   return (
     <div
       role="alert"
-      className={`fixed top-0 left-0 right-0 p-4 mb-4 text-sm rounded-lg transition-all duration-300 ${styles[type]}`}
+      className={`fixed top-0 left-0 right-0 p-4 mb-4 text-sm rounded-lg animate-slideDown ${styles[type]}`}
     >
       <span className="font-medium">Success alert!</span> {message}
     </div>
