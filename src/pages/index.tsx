@@ -22,6 +22,7 @@ const Home: NextPage = () => {
       </Head>
       <main className="flex h-screen flex-col items-center justify-center">
         <div className="mb-4 flex items-center justify-center">
+          {!!user.isSignedIn && <MacroSummary selectedDate={selectedDate} />}
           {!user.isSignedIn && <SignInButton />}
           {!!user.isSignedIn && <SignOutButton />}
           {!!user.isSignedIn && (
@@ -150,5 +151,31 @@ const MealLog = ({ selectedDate }: { selectedDate: Date }) => {
     </div>
   );
 };
+
+const MacroSummary = ({ selectedDate }: { selectedDate: Date }) => {
+  const { data, isLoading, isError } = api.food.getByDate.useQuery({
+    date: `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, '0')}-${String(selectedDate.getDate()).padStart(2, '0')}`,
+  });
+
+  if (isLoading) return <div>Loading...</div>;
+  if (isError || !data) return <div>Error loading macro summary</div>;
+
+  const totalProtein = data.reduce((total: any, food: { protein: any; }) => total + food.protein, 0);
+  const totalCarbs = data.reduce((total: any, food: { carbs: any; }) => total + food.carbs, 0);
+  const totalFat = data.reduce((total: any, food: { fat: any; }) => total + food.fat, 0);
+  const totalCalories = totalProtein * 4 + totalCarbs * 4 + totalFat * 9;
+
+  return (
+    <div className="macro-summary">
+      <div>Total Protein: {totalProtein}</div>
+      <div>Total Carbs: {totalCarbs}</div>
+      <div>Total Fat: {totalFat}</div>
+      <div>Total Calories: {totalCalories}</div>
+    </div>
+  );
+};
+
+
+
 
 export default Home;
