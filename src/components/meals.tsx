@@ -1,7 +1,9 @@
+//src/components/meals.tsx
 import { api } from "~/utils/api";
 import { LoadingPage } from "./loading";
 import { useUser } from "@clerk/nextjs";
 import { useState } from "react";
+import { Alert } from "./alerts";
 
 export const MealForm = ({ selectedDate, refetchMealLog }: { selectedDate: Date, refetchMealLog: () => void }) => {
   const user = useUser();
@@ -9,7 +11,7 @@ export const MealForm = ({ selectedDate, refetchMealLog }: { selectedDate: Date,
   const [protein, setProtein] = useState("");
   const [carbs, setCarbs] = useState("");
   const [fat, setFat] = useState("");
-
+  const [isSuccess, setIsSuccess] = useState(false); // new state variable for tracking success
 
   const mutation = api.food.create.useMutation({
     onSuccess: () => {
@@ -17,17 +19,20 @@ export const MealForm = ({ selectedDate, refetchMealLog }: { selectedDate: Date,
       setProtein("");
       setCarbs("");
       setFat("");
+      setIsSuccess(true); // set success state to true on successful mutation
       void refetchMealLog(); // refetch the meal log after successful mutation
     },
     onError: (e) => {
       console.error("Failed to create food entry", e);
+      setIsSuccess(false); // set success state to false on error
     },
   });
 
   if (!user) return null;
-
+  
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSuccess(false); // reset success state before mutation
   
     // Get the timezone offset in minutes
     const timezoneOffset = selectedDate.getTimezoneOffset() * 60000;
@@ -54,29 +59,32 @@ export const MealForm = ({ selectedDate, refetchMealLog }: { selectedDate: Date,
   
 
   return (
-    <form onSubmit={handleSubmit}>
-      <input
-        placeholder="name"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-      />
-      <input
-        placeholder="protein"
-        value={protein}
-        onChange={(e) => setProtein(e.target.value)}
-      />
-      <input
-        placeholder="carbs"
-        value={carbs}
-        onChange={(e) => setCarbs(e.target.value)}
-      />
-      <input
-        placeholder="fat"
-        value={fat}
-        onChange={(e) => setFat(e.target.value)}
-      />
-      <button type="submit">Submit</button>
-    </form>
+    <div>
+      {isSuccess && <Alert message="Your meal has been saved." type="success" onClose={() => setIsSuccess(false)} />}
+      <form onSubmit={handleSubmit}>
+        <input
+          placeholder="name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
+        <input
+          placeholder="protein"
+          value={protein}
+          onChange={(e) => setProtein(e.target.value)}
+        />
+        <input
+          placeholder="carbs"
+          value={carbs}
+          onChange={(e) => setCarbs(e.target.value)}
+        />
+        <input
+          placeholder="fat"
+          value={fat}
+          onChange={(e) => setFat(e.target.value)}
+        />
+        <button type="submit">Submit</button>
+      </form>
+    </div>
   );
 };
 

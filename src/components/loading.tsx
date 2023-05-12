@@ -1,3 +1,4 @@
+//src/components/loading.tsx
 export const LoadingSpinner = (props: { size?: number }) => {
   return (
     <div role="status">
