@@ -20,7 +20,7 @@ const FloatingOutlinedInput: React.FC<FloatingOutlinedInputProps> = ({ id, value
     />
     <label
       htmlFor={id}
-      className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-0 left-4 z-10 origin-[0] font-normal peer-focus:font-bold peer-focus:text-lime-600 peer-focus:dark:text-lime-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-2.5 peer-empty:text-gray-500 peer-empty:font-normal peer:not-empty:text-lime-600 peer:not-empty:font-bold peer:not-empty:dark:text-lime-500"
+      className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-0 left-4 z-10 origin-[0] font-normal peer-focus:font-bold peer-focus:text-lime-600 peer-focus:dark:text-lime-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-2.5 peer-empty:text-lime-400 peer-empty:font-normal peer:not-empty:text-lime-600 peer:not-empty:font-bold peer:not-empty:dark:text-lime-500"
     >
       {label}
     </label>
