@@ -5,8 +5,9 @@ import Head from "next/head";
 import { useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import LoginPage from "~/components/loginpage";
 import { MacroSummary, MealForm, MealLog } from "~/components/meals";
-import { GoogleLoginButton } from "~/components/util/SvgButton";
+
 
 
 
@@ -25,17 +26,12 @@ const Home: NextPage = () => {
       <main className="flex h-screen flex-col items-center justify-center">
         <div className="mb-4 flex items-center justify-center">
           {!!user.isSignedIn && <MacroSummary selectedDate={selectedDate} />}
-          {!user.isSignedIn && (
-            <SignInButton>
-              <GoogleLoginButton />
-            </SignInButton>
-          )}
+          {!user.isSignedIn && <LoginPage />}
           {!!user.isSignedIn && <SignOutButton />}
           {!!user.isSignedIn && (
             <DatePicker selected={selectedDate} onChange={(date: Date | null) => date && setSelectedDate(date)} />
-
           )}
-         {!!user.isSignedIn && (
+          {!!user.isSignedIn && (
             <MealForm 
               selectedDate={selectedDate} 
               refetchMealLog={() => setKey(Date.now())} 
