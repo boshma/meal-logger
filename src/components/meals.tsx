@@ -5,7 +5,7 @@ import { useUser } from "@clerk/nextjs";
 import { useState } from "react";
 import { Alert } from "./alerts";
 import FloatingOutlinedInput from "./util/FloatingOutlinedInput";
-import SvgButton from "./util/SvgButton";
+import {SvgButton} from "./util/SvgButton";
 
 export const MealForm = ({ selectedDate, refetchMealLog }: { selectedDate: Date, refetchMealLog: () => void }) => {
   const user = useUser();
