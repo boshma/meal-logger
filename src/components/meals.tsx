@@ -5,6 +5,7 @@ import { useUser } from "@clerk/nextjs";
 import { useState } from "react";
 import { Alert } from "./alerts";
 import FloatingOutlinedInput from "./util/FloatingOutlinedInput";
+import SvgButton from "./util/SvgButton";
 
 export const MealForm = ({ selectedDate, refetchMealLog }: { selectedDate: Date, refetchMealLog: () => void }) => {
   const user = useUser();
@@ -63,16 +64,15 @@ export const MealForm = ({ selectedDate, refetchMealLog }: { selectedDate: Date,
 
   return (
     <div>
-    {isSuccess && <Alert message="Your meal has been saved." type="success" onClose={() => setIsSuccess(false)} />}
-    <form onSubmit={handleSubmit}>
-      <FloatingOutlinedInput id="name" value={name} onChange={setName} label="Name" />
-      <FloatingOutlinedInput id="protein" value={protein} onChange={setProtein} label="Protein" />
-      <FloatingOutlinedInput id="carbs" value={carbs} onChange={setCarbs} label="Carbs" />
-      <FloatingOutlinedInput id="fat" value={fat} onChange={setFat} label="Fat" />
-      <button type="submit">Submit</button>
-    </form>
-  </div>
-    
+      {isSuccess && <Alert message="Your meal has been saved." type="success" onClose={() => setIsSuccess(false)} />}
+      <form onSubmit={handleSubmit}>
+        <FloatingOutlinedInput id="name" value={name} onChange={setName} label="Name" />
+        <FloatingOutlinedInput id="protein" value={protein} onChange={setProtein} label="Protein" />
+        <FloatingOutlinedInput id="carbs" value={carbs} onChange={setCarbs} label="Carbs" />
+        <FloatingOutlinedInput id="fat" value={fat} onChange={setFat} label="Fat" />
+        <SvgButton />
+      </form>
+    </div>
   );
 };
 
