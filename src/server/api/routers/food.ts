@@ -1,12 +1,17 @@
 //src/server/api/routers/food.ts
+// Import necessary dependencies
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure, privateProcedure } from "~/server/api/trpc";
 
+// Create and export a router for food-related routes
 export const foodRouter = createTRPCRouter({
+  // Define a private route that retrieves all food entries for a user
   getAll: privateProcedure.query(({ ctx }) => {
     return ctx.prisma.foodEntry.findMany({ where: { userId: ctx.userId } });
   }),
+
+  // Define a private route that retrieves all food entries for a user on a given date
   getByDate: privateProcedure
   .input(z.object({ date: z.string() }))
   .query(async ({ ctx, input }) => {
@@ -25,6 +30,8 @@ export const foodRouter = createTRPCRouter({
       },
     });
   }),
+
+  // Define a private route that creates a new food entry for a user
   create: privateProcedure
   .input(
     z.object({
@@ -38,10 +45,12 @@ export const foodRouter = createTRPCRouter({
   .mutation(async ({ ctx, input }) => {
     const userId = ctx.userId;
 
+    // Check if the user ID exists. If not, throw an error.
     if (!userId) {
       throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "User ID not found" });
     }
 
+    // Create a new food entry and return it
     const food = await ctx.prisma.foodEntry.create({
       data: {
         ...input,
@@ -53,3 +62,6 @@ export const foodRouter = createTRPCRouter({
     return food;
   }),
 });
+
+// End of src/server/api/routers/food.ts
+

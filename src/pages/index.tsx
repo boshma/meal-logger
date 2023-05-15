@@ -8,14 +8,13 @@ import "react-datepicker/dist/react-datepicker.css";
 import LoginPage from "~/components/loginpage";
 import { MacroSummary, MealForm, MealLog } from "~/components/meals";
 
-
-
-
+// Define the home page
 const Home: NextPage = () => {
   const user = useUser();
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [key, setKey] = useState(Date.now());
 
+  // Return the home page content
   return (
     <>
       <Head>
@@ -44,15 +43,18 @@ const Home: NextPage = () => {
   );
 };
 
+// Component for the sign out button
 const SignOutButton = () => {
   const { signOut } = useClerk();
 
+  // Define the sign out handler
   const handleSignOut = () => {
     signOut().catch((error) => {
       console.error("Failed to sign out", error);
     });
   };
 
+  // Return the sign out button
   return <button onClick={handleSignOut}>Sign out</button>;
 };
 
