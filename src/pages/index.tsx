@@ -1,5 +1,5 @@
 //src/pages/index.tsx
-import { SignInButton, useUser, useClerk } from "@clerk/nextjs";
+import { useUser, useClerk } from "@clerk/nextjs";
 import { type NextPage } from "next";
 import Head from "next/head";
 import { useState } from "react";
