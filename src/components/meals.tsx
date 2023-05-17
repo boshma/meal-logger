@@ -154,7 +154,7 @@ export const MacroSummary = ({ selectedDate }: { selectedDate: Date }) => {
 
   // Return the macro summary
   return (
-    <div className="macro-summary">
+    <div className="macro-summary flex justify-between space-x-4">
       <div>Total Protein: {totalProtein}</div>
       <div>Total Carbs: {totalCarbs}</div>
       <div>Total Fat: {totalFat}</div>

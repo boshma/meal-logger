@@ -23,20 +23,27 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="flex h-screen flex-col items-center justify-center">
-        <div className="mb-4 flex items-center justify-center">
-          {!!user.isSignedIn && <MacroSummary selectedDate={selectedDate} />}
+        <div className="mb-4 flex flex-col items-center justify-center">
+          {!!user.isSignedIn && (
+            <div className="flex flex-col items-center">
+              <DatePicker
+                selected={selectedDate}
+                onChange={(date: Date | null) => date && setSelectedDate(date)}
+              />
+              <MacroSummary selectedDate={selectedDate} />
+            </div>
+          )}
           {!user.isSignedIn && <LoginPage />}
           {!!user.isSignedIn && <SignOutButton />}
           {!!user.isSignedIn && (
-            <DatePicker selected={selectedDate} onChange={(date: Date | null) => date && setSelectedDate(date)} />
-          )}
-          {!!user.isSignedIn && (
-            <MealForm 
-              selectedDate={selectedDate} 
-              refetchMealLog={() => setKey(Date.now())} 
+            <MealForm
+              selectedDate={selectedDate}
+              refetchMealLog={() => setKey(Date.now())}
             />
           )}
-          {!!user.isSignedIn && <MealLog selectedDate={selectedDate} key={key} />} 
+          {!!user.isSignedIn && (
+            <MealLog selectedDate={selectedDate} key={key} />
+          )}
         </div>
       </main>
     </>
