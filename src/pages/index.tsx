@@ -42,7 +42,11 @@ const Home: NextPage = () => {
             />
           )}
           {!!user.isSignedIn && (
-            <MealLog selectedDate={selectedDate} key={key} />
+            <MealLog
+              selectedDate={selectedDate}
+              refetchMealLog={() => setKey(Date.now())}
+              key={key}
+            />
           )}
         </div>
       </main>

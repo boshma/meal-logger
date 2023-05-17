@@ -82,44 +82,65 @@ export const MealForm = ({ selectedDate, refetchMealLog }: { selectedDate: Date,
 };
 
 // Component for displaying a meal log
-export const MealLog = ({ selectedDate }: { selectedDate: Date }) => {
+export const MealLog = ({ selectedDate, refetchMealLog }: { selectedDate: Date, refetchMealLog: () => void }) => {
   // Fetch meal data for the selected date
   const { data, isLoading } = api.food.getByDate.useQuery({
     date: `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, '0')}-${String(selectedDate.getDate()).padStart(2, '0')}`,
   });
 
+  // Define mutation for deleting a food entry
+  const deleteMutation = api.food.delete.useMutation({
+    onSuccess: () => {
+      // Refetch the meal log after successful deletion
+      void refetchMealLog();
+    },
+    onError: (e) => {
+      console.error("Failed to delete food entry", e);
+    },
+  });
+
   // Show loading state while data is fetching
   if (isLoading) {
-    return <LoadingPage />; 
+    return <LoadingPage />;
   }
 
-// Return the table
-return (
-  <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-    <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-      <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-        <tr>
-          <th scope="col" className="px-6 py-3">Food Name</th>
-          <th scope="col" className="px-6 py-3">Protein</th>
-          <th scope="col" className="px-6 py-3">Carbs</th>
-          <th scope="col" className="px-6 py-3">Fat</th>
-        </tr>
-      </thead>
-      <tbody>
-        {data?.map((food) => (
-          <tr key={food.id} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-            <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{food.name}</th>
-            <td className="px-6 py-4">{food.protein}</td>
-            <td className="px-6 py-4">{food.carbs}</td>
-            <td className="px-6 py-4">{food.fat}</td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  </div>
-);
-};
+  // Define the delete button click handler
+  const handleDelete = (id: string) => {
+    deleteMutation.mutate({ id });
+  };
 
+  // Return the table
+  return (
+    <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+      <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+        <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+          <tr>
+            <th scope="col" className="px-6 py-3">Food Name</th>
+            <th scope="col" className="px-6 py-3">Protein</th>
+            <th scope="col" className="px-6 py-3">Carbs</th>
+            <th scope="col" className="px-6 py-3">Fat</th>
+            <th scope="col" className="px-6 py-3">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {data?.map((food) => (
+            <tr key={food.id} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+              <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{food.name}</th>
+              <td className="px-6 py-4">{food.protein}</td>
+              <td className="px-6 py-4">{food.carbs}</td>
+              <td className="px-6 py-4">{food.fat}</td>
+              <td className="px-6 py-4">
+                <button onClick={() => handleDelete(food.id)}>
+                  Delete
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+};
 
 
 // Define the type of food data
