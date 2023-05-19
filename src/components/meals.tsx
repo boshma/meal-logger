@@ -7,6 +7,8 @@ import { useState } from "react";
 import { Alert } from "./alerts";
 import FloatingOutlinedInput from "./util/FloatingOutlinedInput";
 import { SvgButton } from "./util/SvgButton";
+import { LoadingSpinner } from "./loading";
+
 
 // Component for creating a meal form
 export const MealForm = ({ selectedDate, refetchMealLog }: { selectedDate: Date, refetchMealLog: () => void }) => {
@@ -90,6 +92,10 @@ export const MealLog = ({ selectedDate, refetchMealLog }: { selectedDate: Date, 
     date: `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, '0')}-${String(selectedDate.getDate()).padStart(2, '0')}`,
   });
 
+  // Used for deleting food entries with loading spinner (shows a loading spinner in place of delete link after pressed).
+  const [deletingIds, setDeletingIds] = useState<string[]>([]);
+
+
   // Define mutation for deleting a food entry
   const deleteMutation = api.food.delete.useMutation({
     onSuccess: () => {
@@ -99,7 +105,12 @@ export const MealLog = ({ selectedDate, refetchMealLog }: { selectedDate: Date, 
     onError: (e) => {
       console.error("Failed to delete food entry", e);
     },
+    onSettled: (data, error, variables) => {
+      const { id } = variables;
+      setDeletingIds((currentIds) => currentIds.filter((i) => i !== id)); // Remove the id from deletingIds array after mutation is settled (whether successful or not)
+    },
   });
+  
 
   // Show loading state while data is fetching
   if (isLoading) {
@@ -108,8 +119,11 @@ export const MealLog = ({ selectedDate, refetchMealLog }: { selectedDate: Date, 
 
   // Define the delete button click handler
   const handleDelete = (id: string) => {
+    setDeletingIds((currentIds) => [...currentIds, id]); // Add the id to deletingIds array when the delete button is clicked
     deleteMutation.mutate({ id });
   };
+  
+
 
   // Return the table
   return (
@@ -132,9 +146,13 @@ export const MealLog = ({ selectedDate, refetchMealLog }: { selectedDate: Date, 
               <td className="px-6 py-4">{food.carbs}</td>
               <td className="px-6 py-4">{food.fat}</td>
               <td className="px-6 py-4">
-                <button onClick={() => handleDelete(food.id)}>
-                  Delete
-                </button>
+                {deletingIds.includes(food.id) ? (
+                  <LoadingSpinner size={20} />
+                ) : (
+                  <button onClick={() => handleDelete(food.id)}>
+                    Delete
+                  </button>
+                )}
               </td>
             </tr>
           ))}
