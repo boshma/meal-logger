@@ -6,7 +6,7 @@ import { useUser } from "@clerk/nextjs";
 import { useState } from "react";
 import { Alert } from "./alerts";
 import FloatingOutlinedInput from "./util/FloatingOutlinedInput";
-import {SvgButton} from "./util/SvgButton";
+import { SvgButton } from "./util/SvgButton";
 
 // Component for creating a meal form
 export const MealForm = ({ selectedDate, refetchMealLog }: { selectedDate: Date, refetchMealLog: () => void }) => {
@@ -17,7 +17,7 @@ export const MealForm = ({ selectedDate, refetchMealLog }: { selectedDate: Date,
   const [protein, setProtein] = useState("");
   const [carbs, setCarbs] = useState("");
   const [fat, setFat] = useState("");
-  const [isSuccess, setIsSuccess] = useState(false); 
+  const [isSuccess, setIsSuccess] = useState(false);
 
   // Define mutation for creating a food entry
   const mutation = api.food.create.useMutation({
@@ -37,21 +37,21 @@ export const MealForm = ({ selectedDate, refetchMealLog }: { selectedDate: Date,
   });
 
   if (!user) return null;
-  
+
   // Define the form submit handler
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setIsSuccess(false); // reset success state before mutation
-  
+
     // Get the timezone offset in minutes
     const timezoneOffset = selectedDate.getTimezoneOffset() * 60000;
-  
+
     // Create a new date object that includes the timezone offset
     const localISOTime = new Date(selectedDate.getTime() - timezoneOffset);
-  
+
     // Generate dateString using localISOTime
     const dateString = `${localISOTime.getUTCFullYear()}-${String(localISOTime.getUTCMonth() + 1).padStart(2, '0')}-${String(localISOTime.getUTCDate()).padStart(2, '0')}T00:00:00Z`;
-  
+
     // Attempt to create a food entry with the form values
     if (dateString) {
       mutation.mutate({
@@ -65,17 +65,19 @@ export const MealForm = ({ selectedDate, refetchMealLog }: { selectedDate: Date,
       console.error("Failed to create food entry: Date is undefined");
     }
   };
-  
+
   // Return the form
   return (
     <div>
       {isSuccess && <Alert message="Your meal has been saved." type="success" onClose={() => setIsSuccess(false)} />}
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="space-y-2">
         <FloatingOutlinedInput id="name" value={name} onChange={setName} label="Name" />
         <FloatingOutlinedInput id="protein" value={protein} onChange={setProtein} label="Protein" />
         <FloatingOutlinedInput id="carbs" value={carbs} onChange={setCarbs} label="Carbs" />
         <FloatingOutlinedInput id="fat" value={fat} onChange={setFat} label="Fat" />
-        <SvgButton />
+        <div className="flex justify-center">
+          <SvgButton />
+        </div>
       </form>
     </div>
   );
@@ -159,9 +161,9 @@ export const MacroSummary = ({ selectedDate }: { selectedDate: Date }) => {
 
   // Show loading state while data is fetching
   if (isLoading) {
-    return <LoadingPage />; 
+    return <LoadingPage />;
   }
-  
+
   // Handle error state
   if (isError || !data) {
     return <div>Error loading macro summary</div>;
