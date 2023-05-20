@@ -5,7 +5,7 @@ import { LoadingPage } from "./loading";
 import { useUser } from "@clerk/nextjs";
 import { useState } from "react";
 import { Alert } from "./alerts";
-import FloatingOutlinedInput from "./util/FloatingOutlinedInput";
+import FloatingOutlinedInput, { FloatingOutlinedInputNumber } from "./util/FloatingOutlinedInput";
 import { SvgButton } from "./util/SvgButton";
 import { LoadingSpinner } from "./loading";
 
@@ -16,9 +16,9 @@ export const MealForm = ({ selectedDate, refetchMealLog }: { selectedDate: Date,
   const user = useUser();
   // Initialize state for form fields and success state
   const [name, setName] = useState("");
-  const [protein, setProtein] = useState("");
-  const [carbs, setCarbs] = useState("");
-  const [fat, setFat] = useState("");
+  const [protein, setProtein] = useState(0);
+  const [carbs, setCarbs] = useState(0);
+  const [fat, setFat] = useState(0);
   const [isSuccess, setIsSuccess] = useState(false);
 
   // Define mutation for creating a food entry
@@ -26,9 +26,9 @@ export const MealForm = ({ selectedDate, refetchMealLog }: { selectedDate: Date,
     onSuccess: () => {
       // Clear form fields and set success state to true on successful mutation
       setName("");
-      setProtein("");
-      setCarbs("");
-      setFat("");
+      setProtein(0);
+      setCarbs(0);
+      setFat(0);
       setIsSuccess(true); // set success state to true on successful mutation
       void refetchMealLog(); // refetch the meal log after successful mutation
     },
@@ -58,9 +58,9 @@ export const MealForm = ({ selectedDate, refetchMealLog }: { selectedDate: Date,
     if (dateString) {
       mutation.mutate({
         name,
-        protein: Number(protein),
-        carbs: Number(carbs),
-        fat: Number(fat),
+        protein,
+        carbs,
+        fat,
         date: dateString,
       });
     } else {
@@ -74,9 +74,9 @@ export const MealForm = ({ selectedDate, refetchMealLog }: { selectedDate: Date,
       {isSuccess && <Alert message="Your meal has been saved." type="success" onClose={() => setIsSuccess(false)} />}
       <form onSubmit={handleSubmit} className="space-y-2">
         <FloatingOutlinedInput id="name" value={name} onChange={setName} label="Name" />
-        <FloatingOutlinedInput id="protein" value={protein} onChange={setProtein} label="Protein" />
-        <FloatingOutlinedInput id="carbs" value={carbs} onChange={setCarbs} label="Carbs" />
-        <FloatingOutlinedInput id="fat" value={fat} onChange={setFat} label="Fat" />
+        <FloatingOutlinedInputNumber id="protein" value={protein} onChange={setProtein} label="Protein" />
+        <FloatingOutlinedInputNumber id="carbs" value={carbs} onChange={setCarbs} label="Carbs" />
+        <FloatingOutlinedInputNumber id="fat" value={fat} onChange={setFat} label="Fat" />
         <div className="flex justify-center">
           <SvgButton />
         </div>
