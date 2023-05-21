@@ -16,10 +16,11 @@ export const MealForm = ({ selectedDate, refetchMealLog }: { selectedDate: Date,
   const user = useUser();
   // Initialize state for form fields and success state
   const [name, setName] = useState("");
-  const [protein, setProtein] = useState(0);
-  const [carbs, setCarbs] = useState(0);
-  const [fat, setFat] = useState(0);
+  const [protein, setProtein] = useState<number | null>(null);
+  const [carbs, setCarbs] = useState<number | null>(null);
+  const [fat, setFat] = useState<number | null>(null);
   const [isSuccess, setIsSuccess] = useState(false);
+
 
   // Define mutation for creating a food entry
   const mutation = api.food.create.useMutation({
@@ -58,11 +59,12 @@ export const MealForm = ({ selectedDate, refetchMealLog }: { selectedDate: Date,
     if (dateString) {
       mutation.mutate({
         name,
-        protein,
-        carbs,
-        fat,
+        protein: protein || 0,
+        carbs: carbs || 0,
+        fat: fat || 0,
         date: dateString,
       });
+      
     } else {
       console.error("Failed to create food entry: Date is undefined");
     }
@@ -110,7 +112,7 @@ export const MealLog = ({ selectedDate, refetchMealLog }: { selectedDate: Date, 
       setDeletingIds((currentIds) => currentIds.filter((i) => i !== id)); // Remove the id from deletingIds array after mutation is settled (whether successful or not)
     },
   });
-  
+
 
   // Show loading state while data is fetching
   if (isLoading) {
@@ -122,7 +124,7 @@ export const MealLog = ({ selectedDate, refetchMealLog }: { selectedDate: Date, 
     setDeletingIds((currentIds) => [...currentIds, id]); // Add the id to deletingIds array when the delete button is clicked
     deleteMutation.mutate({ id });
   };
-  
+
 
 
   // Return the table
