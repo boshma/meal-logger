@@ -27,9 +27,9 @@ export const MealForm = ({ selectedDate, refetchMealLog }: { selectedDate: Date,
     onSuccess: () => {
       // Clear form fields and set success state to true on successful mutation
       setName("");
-      setProtein(0);
-      setCarbs(0);
-      setFat(0);
+      setProtein(null);
+      setCarbs(null);
+      setFat(null);
       setIsSuccess(true); // set success state to true on successful mutation
       void refetchMealLog(); // refetch the meal log after successful mutation
     },
