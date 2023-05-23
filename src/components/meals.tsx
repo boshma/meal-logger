@@ -32,6 +32,8 @@ export const MealForm = ({
   const [fat, setFat] = useState<number | null>(null);
   const [isSuccess, setIsSuccess] = useState(false);
 
+  const ctx = api.useContext();
+
 
   // Define mutation for creating a food entry
   const mutation = api.food.create.useMutation({
@@ -42,7 +44,8 @@ export const MealForm = ({
       setCarbs(null);
       setFat(null);
       setIsSuccess(true); // set success state to true on successful mutation
-      void refetchMealLog(); // refetch the meal log after successful mutation
+      //void refetchMealLog(); // refetch the meal log after successful mutation
+      void ctx.food.getByDate.invalidate()
     },
     onError: (e) => {
       console.error("Failed to create food entry", e);
