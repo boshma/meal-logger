@@ -6,12 +6,23 @@ import { useUser } from "@clerk/nextjs";
 import { useState } from "react";
 import { Alert } from "./alerts";
 import FloatingOutlinedInput, { FloatingOutlinedInputNumber } from "./util/FloatingOutlinedInput";
-import { SvgButton } from "./util/SvgButton";
+import { CalendarButton, AddFoodButton } from "./util/SvgButton";
 import { LoadingSpinner } from "./loading";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { Dispatch, SetStateAction } from 'react';
 
 
 // Component for creating a meal form
-export const MealForm = ({ selectedDate, refetchMealLog }: { selectedDate: Date, refetchMealLog: () => void }) => {
+export const MealForm = ({
+  selectedDate,
+  setSelectedDate,
+  refetchMealLog
+}: {
+  selectedDate: Date,
+  setSelectedDate: Dispatch<SetStateAction<Date>>,
+  refetchMealLog: () => void
+}) => {
   // Get the current user
   const user = useUser();
   // Initialize state for form fields and success state
@@ -64,27 +75,37 @@ export const MealForm = ({ selectedDate, refetchMealLog }: { selectedDate: Date,
         fat: fat || 0,
         date: dateString,
       });
-      
+
     } else {
       console.error("Failed to create food entry: Date is undefined");
     }
   };
 
   // Return the form
+
   return (
     <div>
+      <DatePicker
+        selected={selectedDate}
+        onChange={(date: Date | null) => {
+          setSelectedDate(date || new Date());
+        }}
+        customInput={<CalendarButton />}
+      />
+      <div className="flex justify-between items-center">
+        <form onSubmit={handleSubmit} className="space-y-2">
+          <FloatingOutlinedInput id="name" value={name} onChange={setName} label="Name" />
+          <FloatingOutlinedInputNumber id="protein" value={protein} onChange={setProtein} label="Protein" />
+          <FloatingOutlinedInputNumber id="carbs" value={carbs} onChange={setCarbs} label="Carbs" />
+          <FloatingOutlinedInputNumber id="fat" value={fat} onChange={setFat} label="Fat" />
+          <AddFoodButton type="submit" />
+
+        </form>
+      </div>
       {isSuccess && <Alert message="Your meal has been saved." type="success" onClose={() => setIsSuccess(false)} />}
-      <form onSubmit={handleSubmit} className="space-y-2">
-        <FloatingOutlinedInput id="name" value={name} onChange={setName} label="Name" />
-        <FloatingOutlinedInputNumber id="protein" value={protein} onChange={setProtein} label="Protein" />
-        <FloatingOutlinedInputNumber id="carbs" value={carbs} onChange={setCarbs} label="Carbs" />
-        <FloatingOutlinedInputNumber id="fat" value={fat} onChange={setFat} label="Fat" />
-        <div className="flex justify-center">
-          <SvgButton />
-        </div>
-      </form>
     </div>
   );
+
 };
 
 // Component for displaying a meal log
@@ -124,8 +145,6 @@ export const MealLog = ({ selectedDate, refetchMealLog }: { selectedDate: Date, 
     setDeletingIds((currentIds) => [...currentIds, id]); // Add the id to deletingIds array when the delete button is clicked
     deleteMutation.mutate({ id });
   };
-
-
 
   // Return the table
   return (

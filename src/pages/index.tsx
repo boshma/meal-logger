@@ -1,9 +1,8 @@
+//src/pages/index.tsx
 import { useUser } from "@clerk/nextjs";
 import { type NextPage } from "next";
 import Head from "next/head";
 import { useState } from "react";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
 import LoginPage from "~/components/loginpage";
 import { MacroSummary, MealForm, MealLog } from "~/components/meals";
 import Navbar from "~/components/navbar";
@@ -23,24 +22,32 @@ const Home: NextPage = () => {
       <main className="flex flex-col h-screen items-center justify-start">
         {/* Show Navbar if user is signed in */}
         {!!user.isSignedIn && <Navbar />}
+        {!!user.isSignedIn && (
+         <div className="mb-2 text-xl font-bold">
+         Selected Date: {new Date(selectedDate.getTime() - selectedDate.getTimezoneOffset() * 60000).toISOString().slice(0,10)}
+       </div>
+       
+        )}
+        
         <div className="mb-4 flex flex-col items-center justify-center">
           {!!user.isSignedIn && (
             <div className="flex flex-col items-center">
-              <DatePicker
-                selected={selectedDate}
-                onChange={(date: Date | null) => date && setSelectedDate(date)}
-              />
+              {/* Display the MacroSummary component, passing the selected date */}
               <MacroSummary selectedDate={selectedDate} />
             </div>
           )}
+          {/* If the user is not signed in, display the LoginPage component */}
           {!user.isSignedIn && <LoginPage />}
           {!!user.isSignedIn && (
+            /* Display the MealForm component, passing the selected date, setSelectedDate function, and refetchMealLog function */
             <MealForm
               selectedDate={selectedDate}
+              setSelectedDate={setSelectedDate}
               refetchMealLog={() => setKey(Date.now())}
             />
           )}
           {!!user.isSignedIn && (
+            /* Display the MealLog component, passing the selected date and refetchMealLog function */
             <div className="max-h-[50vh] overflow-auto">
               <MealLog
                 selectedDate={selectedDate}
