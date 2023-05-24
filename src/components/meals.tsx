@@ -17,11 +17,11 @@ import { Dispatch, SetStateAction } from 'react';
 export const MealForm = ({
   selectedDate,
   setSelectedDate,
-  refetchMealLog
+  //refetchMealLog
 }: {
   selectedDate: Date,
   setSelectedDate: Dispatch<SetStateAction<Date>>,
-  refetchMealLog: () => void
+  //</SetStateAction>refetchMealLog: () => void
 }) => {
   // Get the current user
   const user = useUser();
@@ -120,13 +120,15 @@ export const MealLog = ({ selectedDate, refetchMealLog }: { selectedDate: Date, 
 
   // Used for deleting food entries with loading spinner (shows a loading spinner in place of delete link after pressed).
   const [deletingIds, setDeletingIds] = useState<string[]>([]);
+  const ctx = api.useContext();
 
 
   // Define mutation for deleting a food entry
   const deleteMutation = api.food.delete.useMutation({
     onSuccess: () => {
       // Refetch the meal log after successful deletion
-      void refetchMealLog();
+      //void refetchMealLog();
+      void ctx.food.getByDate.invalidate()
     },
     onError: (e) => {
       console.error("Failed to delete food entry", e);
