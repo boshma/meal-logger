@@ -11,6 +11,7 @@ import { LoadingSpinner } from "./loading";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { Dispatch, SetStateAction } from 'react';
+import React from "react";
 
 
 // Component for creating a meal form
@@ -34,6 +35,9 @@ export const MealForm = ({
 
   const ctx = api.useContext();
 
+  const nameInputRef = React.useRef<HTMLInputElement>(null);
+
+
 
   // Define mutation for creating a food entry
   const mutation = api.food.create.useMutation({
@@ -44,8 +48,9 @@ export const MealForm = ({
       setCarbs(null);
       setFat(null);
       setIsSuccess(true); // set success state to true on successful mutation
-      //void refetchMealLog(); // refetch the meal log after successful mutation
       void ctx.food.getByDate.invalidate()
+      // Focus the name input field
+      nameInputRef.current?.focus();
     },
     onError: (e) => {
       console.error("Failed to create food entry", e);
@@ -88,16 +93,12 @@ export const MealForm = ({
 
   return (
     <div>
-      <DatePicker
-        selected={selectedDate}
-        onChange={(date: Date | null) => {
-          setSelectedDate(date || new Date());
-        }}
-        customInput={<CalendarButton />}
-      />
+   
+    
       <div className="flex justify-between items-center">
         <form onSubmit={handleSubmit} className="space-y-2">
-          <FloatingOutlinedInput id="name" value={name} onChange={setName} label="Name" />
+          <FloatingOutlinedInput id="name" value={name} onChange={setName} label="Name" inputRef={nameInputRef} />
+
           <FloatingOutlinedInputNumber id="protein" value={protein} onChange={setProtein} label="Protein" />
           <FloatingOutlinedInputNumber id="carbs" value={carbs} onChange={setCarbs} label="Carbs" />
           <FloatingOutlinedInputNumber id="fat" value={fat} onChange={setFat} label="Fat" />
@@ -106,6 +107,15 @@ export const MealForm = ({
         </form>
       </div>
       {isSuccess && <Alert message="Your meal has been saved." type="success" onClose={() => setIsSuccess(false)} />}
+
+      <div>  
+        <DatePicker
+        selected={selectedDate}
+        onChange={(date: Date | null) => {
+          setSelectedDate(date || new Date());
+        }}
+        customInput={<CalendarButton />}
+      /></div>
     </div>
   );
 
