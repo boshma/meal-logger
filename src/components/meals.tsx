@@ -112,7 +112,7 @@ export const MealForm = ({
 };
 
 // Component for displaying a meal log
-export const MealLog = ({ selectedDate, refetchMealLog }: { selectedDate: Date, refetchMealLog: () => void }) => {
+export const MealLog = ({ selectedDate }: { selectedDate: Date }) => {
   // Fetch meal data for the selected date
   const { data, isLoading } = api.food.getByDate.useQuery({
     date: `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, '0')}-${String(selectedDate.getDate()).padStart(2, '0')}`,
@@ -127,7 +127,6 @@ export const MealLog = ({ selectedDate, refetchMealLog }: { selectedDate: Date, 
   const deleteMutation = api.food.delete.useMutation({
     onSuccess: () => {
       // Refetch the meal log after successful deletion
-      //void refetchMealLog();
       void ctx.food.getByDate.invalidate()
     },
     onError: (e) => {

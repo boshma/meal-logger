@@ -10,7 +10,6 @@ import Navbar from "~/components/navbar";
 const Home: NextPage = () => {
   const user = useUser();
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [key, setKey] = useState(Date.now());
 
   return (
     <>
@@ -26,7 +25,6 @@ const Home: NextPage = () => {
          <div className="mb-2 text-xl font-bold">
          Selected Date: {new Date(selectedDate.getTime() - selectedDate.getTimezoneOffset() * 60000).toISOString().slice(0,10)}
        </div>
-       
         )}
         
         <div className="mb-4 flex flex-col items-center justify-center">
@@ -39,20 +37,17 @@ const Home: NextPage = () => {
           {/* If the user is not signed in, display the LoginPage component */}
           {!user.isSignedIn && <LoginPage />}
           {!!user.isSignedIn && (
-            /* Display the MealForm component, passing the selected date, setSelectedDate function, and refetchMealLog function */
+            /* Display the MealForm component, passing the selected date and setSelectedDate function */
             <MealForm
               selectedDate={selectedDate}
               setSelectedDate={setSelectedDate}
-              refetchMealLog={() => setKey(Date.now())}
             />
           )}
           {!!user.isSignedIn && (
-            /* Display the MealLog component, passing the selected date and refetchMealLog function */
+            /* Display the MealLog component, passing the selected date */
             <div className="max-h-[50vh] overflow-auto">
               <MealLog
                 selectedDate={selectedDate}
-                refetchMealLog={() => setKey(Date.now())}
-                key={key}
               />
             </div>
           )}
