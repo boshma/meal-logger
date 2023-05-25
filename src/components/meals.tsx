@@ -4,7 +4,6 @@ import { api } from "~/utils/api";
 import { LoadingPage } from "./loading";
 import { useUser } from "@clerk/nextjs";
 import { useState } from "react";
-import { Alert } from "./alerts";
 import FloatingOutlinedInput, { FloatingOutlinedInputNumber } from "./util/FloatingOutlinedInput";
 import { CalendarButton, AddFoodButton } from "./util/SvgButton";
 import { LoadingSpinner } from "./loading";
@@ -12,6 +11,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { Dispatch, SetStateAction } from 'react';
 import React from "react";
+import toast from "react-hot-toast";
 
 
 // Component for creating a meal form
@@ -26,12 +26,12 @@ export const MealForm = ({
 }) => {
   // Get the current user
   const user = useUser();
-  // Initialize state for form fields and success state
+  // Initialize state for form fields 
   const [name, setName] = useState("");
   const [protein, setProtein] = useState<number | null>(null);
   const [carbs, setCarbs] = useState<number | null>(null);
   const [fat, setFat] = useState<number | null>(null);
-  const [isSuccess, setIsSuccess] = useState(false);
+
 
   const ctx = api.useContext();
 
@@ -47,14 +47,14 @@ export const MealForm = ({
       setProtein(null);
       setCarbs(null);
       setFat(null);
-      setIsSuccess(true); // set success state to true on successful mutation
+      toast.success("Your meal has been saved.");
       void ctx.food.getByDate.invalidate()
       // Focus the name input field
       nameInputRef.current?.focus();
     },
     onError: (e) => {
       console.error("Failed to create food entry", e);
-      setIsSuccess(false); // set success state to false on error
+      toast.error("Failed to create food entry, please try again later!");
     },
   });
 
@@ -63,7 +63,6 @@ export const MealForm = ({
   // Define the form submit handler
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSuccess(false); // reset success state before mutation
 
     // Get the timezone offset in minutes
     const timezoneOffset = selectedDate.getTimezoneOffset() * 60000;
@@ -106,7 +105,6 @@ export const MealForm = ({
 
         </form>
       </div>
-      {isSuccess && <Alert message="Your meal has been saved." type="success" onClose={() => setIsSuccess(false)} />}
 
       <div>  
         <DatePicker
@@ -136,6 +134,7 @@ export const MealLog = ({ selectedDate }: { selectedDate: Date }) => {
   // Define mutation for deleting a food entry
   const deleteMutation = api.food.delete.useMutation({
     onSuccess: () => {
+      toast.success("Your meal has been deleted.");
       // Refetch the meal log after successful deletion
       void ctx.food.getByDate.invalidate()
     },
