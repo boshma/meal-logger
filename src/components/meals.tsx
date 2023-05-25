@@ -5,7 +5,7 @@ import { LoadingPage } from "./loading";
 import { useUser } from "@clerk/nextjs";
 import { useState } from "react";
 import FloatingOutlinedInput, { FloatingOutlinedInputNumber } from "./util/FloatingOutlinedInput";
-import { CalendarButton, AddFoodButton } from "./util/SvgButton";
+import { CalendarButton, AddFoodButton, DeleteButton } from "./util/Buttons";
 import { LoadingSpinner } from "./loading";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -183,9 +183,7 @@ export const MealLog = ({ selectedDate }: { selectedDate: Date }) => {
                 {deletingIds.includes(food.id) ? (
                   <LoadingSpinner size={20} />
                 ) : (
-                  <button onClick={() => handleDelete(food.id)}>
-                    Delete
-                  </button>
+                  <DeleteButton onClick={() => handleDelete(food.id)} />
                 )}
               </td>
             </tr>

@@ -1,7 +1,7 @@
 // src/components/LoginPage.tsx
 
 import React from 'react';
-import { GoogleLoginButton } from './util/SvgButton';
+import { GoogleLoginButton } from './util/Buttons';
 import { SignInButton } from "@clerk/nextjs";
 
 const LoginPage: React.FC = () => (
