@@ -5,13 +5,15 @@ import { LoadingPage } from "./loading";
 import { useUser } from "@clerk/nextjs";
 import { useState } from "react";
 import FloatingOutlinedInput, { FloatingOutlinedInputNumber } from "./util/FloatingOutlinedInput";
-import { CalendarButton, AddFoodButton, DeleteButton } from "./util/Buttons";
+import { CalendarButton, AddFoodButton, DeleteButton, EditButton } from "./util/Buttons";
 import { LoadingSpinner } from "./loading";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { Dispatch, SetStateAction } from 'react';
 import React from "react";
 import toast from "react-hot-toast";
+import { useEditModal } from "./util/UseEditModal";
+import { EditModal } from "./EditModal";
 
 
 // Component for creating a meal form
@@ -92,8 +94,8 @@ export const MealForm = ({
 
   return (
     <div>
-   
-    
+
+
       <div className="flex justify-between items-center">
         <form onSubmit={handleSubmit} className="space-y-2">
           <FloatingOutlinedInput id="name" value={name} onChange={setName} label="Name" inputRef={nameInputRef} />
@@ -106,36 +108,31 @@ export const MealForm = ({
         </form>
       </div>
 
-      <div>  
+      <div>
         <DatePicker
-        selected={selectedDate}
-        onChange={(date: Date | null) => {
-          setSelectedDate(date || new Date());
-        }}
-        customInput={<CalendarButton />}
-      /></div>
+          selected={selectedDate}
+          onChange={(date: Date | null) => {
+            setSelectedDate(date || new Date());
+          }}
+          customInput={<CalendarButton />}
+        /></div>
     </div>
   );
 
 };
 
-// Component for displaying a meal log
 export const MealLog = ({ selectedDate }: { selectedDate: Date }) => {
-  // Fetch meal data for the selected date
   const { data, isLoading } = api.food.getByDate.useQuery({
     date: `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, '0')}-${String(selectedDate.getDate()).padStart(2, '0')}`,
   });
-
-  // Used for deleting food entries with loading spinner (shows a loading spinner in place of delete link after pressed).
+  const [editingFoodId, setEditingFoodId] = useState<string | null>(null);
   const [deletingIds, setDeletingIds] = useState<string[]>([]);
   const ctx = api.useContext();
+  const editModal = useEditModal();
 
-
-  // Define mutation for deleting a food entry
   const deleteMutation = api.food.delete.useMutation({
     onSuccess: () => {
       toast.success("Your meal has been deleted.");
-      // Refetch the meal log after successful deletion
       void ctx.food.getByDate.invalidate()
     },
     onError: (e) => {
@@ -143,24 +140,30 @@ export const MealLog = ({ selectedDate }: { selectedDate: Date }) => {
     },
     onSettled: (data, error, variables) => {
       const { id } = variables;
-      setDeletingIds((currentIds) => currentIds.filter((i) => i !== id)); // Remove the id from deletingIds array after mutation is settled (whether successful or not)
+      setDeletingIds((currentIds) => currentIds.filter((i) => i !== id));
     },
   });
 
+  const updateMutation = api.food.update.useMutation({
+    onSuccess: () => {
+      toast.success("Your meal has been updated.");
+      void ctx.food.getByDate.invalidate()
+    },
+    onError: (e) => {
+      console.error("Failed to update food entry", e);
+    },
+  });
 
-  // Show loading state while data is fetching
   if (isLoading) {
     return <LoadingPage />;
   }
 
-  // Define the delete button click handler
   const handleDelete = (id: string) => {
-    setDeletingIds((currentIds) => [...currentIds, id]); // Add the id to deletingIds array when the delete button is clicked
+    setDeletingIds((currentIds) => [...currentIds, id]);
     deleteMutation.mutate({ id });
   };
 
-  // Return the table
-  return (
+  return (    
     <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
       <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
         <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -183,13 +186,19 @@ export const MealLog = ({ selectedDate }: { selectedDate: Date }) => {
                 {deletingIds.includes(food.id) ? (
                   <LoadingSpinner size={20} />
                 ) : (
-                  <DeleteButton onClick={() => handleDelete(food.id)} />
+                  <><DeleteButton onClick={() => handleDelete(food.id)} /><EditButton onClick={() => editModal.openModal(food)} /></>
                 )}
               </td>
             </tr>
           ))}
         </tbody>
       </table>
+      {editModal.isOpen && (
+      <EditModal 
+        foodEntry={editModal.currentFoodEntry} 
+        handleClose={editModal.closeModal}
+      />
+    )}
     </div>
   );
 };

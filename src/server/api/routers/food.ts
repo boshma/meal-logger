@@ -16,7 +16,7 @@ const ratelimit = new Ratelimit({
    * Optional prefix for the keys used in redis. This is useful if you want to share a redis
    * instance with other applications and want to avoid key collisions. The default prefix is
    * "@upstash/ratelimit"
-   */ 
+   */
   //prefix: "@upstash/ratelimit",
 });
 
@@ -107,6 +107,46 @@ export const foodRouter = createTRPCRouter({
       });
 
       return { id };
+    }),
+  update: privateProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        name: z.string(),
+        protein: z.number(),
+        carbs: z.number(),
+        fat: z.number(),
+        date: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { id, ...rest } = input;
+
+      // Verify that the food entry exists and belongs to the user
+      const foodEntry = await ctx.prisma.foodEntry.findFirst({
+        where: {
+          id,
+          userId: ctx.userId,
+        },
+      });
+
+      if (!foodEntry) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "No food entry found for the given ID and user",
+        });
+      }
+
+      // Update the food entry
+      const updatedFood = await ctx.prisma.foodEntry.update({
+        where: { id },
+        data: {
+          ...rest,
+          date: new Date(input.date),
+        },
+      });
+
+      return updatedFood;
     }),
 
 });
