@@ -196,7 +196,7 @@ export const MealLog = ({ selectedDate }: { selectedDate: Date }) => {
           foodEntry={editModal.currentFoodEntry}
           handleClose={() => {
             editModal.closeModal();
-            ctx.food.getByDate.invalidate();
+            void ctx.food.getByDate.invalidate();
           }}
         />
       )}
