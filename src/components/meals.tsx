@@ -108,7 +108,6 @@ export const MealForm = ({
       <div className="flex justify-between items-center">
         <form onSubmit={handleSubmit} className="space-y-2">
           <FloatingOutlinedInput id="name" value={name} onChange={setName} label="Name" inputRef={nameInputRef} />
-
           <FloatingOutlinedInputNumber id="protein" value={protein} onChange={setProtein} label="Protein" />
           <FloatingOutlinedInputNumber id="carbs" value={carbs} onChange={setCarbs} label="Carbs" />
           <FloatingOutlinedInputNumber id="fat" value={fat} onChange={setFat} label="Fat" />
@@ -163,24 +162,24 @@ export const MealLog = ({ selectedDate }: { selectedDate: Date }) => {
 
   return (
     <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-      <Table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-        <TableHeader className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+      <Table >
+        <TableHeader >
           <TableRow>
-            <TableHead className="px-6 py-3">Food Name</TableHead>
-            <TableHead className="px-6 py-3">Protein</TableHead>
-            <TableHead className="px-6 py-3">Carbs</TableHead>
-            <TableHead className="px-6 py-3">Fat</TableHead>
-            <TableHead className="px-6 py-3">Actions</TableHead>
+            <TableHead >Food Name</TableHead>
+            <TableHead>Protein</TableHead>
+            <TableHead>Carbs</TableHead>
+            <TableHead>Fat</TableHead>
+            <TableHead>Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {data?.map((food) => (
-            <TableRow key={food.id} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-              <TableCell className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{food.name}</TableCell>
-              <TableCell className="px-6 py-4">{food.protein}</TableCell>
-              <TableCell className="px-6 py-4">{food.carbs}</TableCell>
-              <TableCell className="px-6 py-4">{food.fat}</TableCell>
-              <TableCell className="px-6 py-4">
+            <TableRow key={food.id} >
+              <TableCell>{food.name}</TableCell>
+              <TableCell>{food.protein}</TableCell>
+              <TableCell>{food.carbs}</TableCell>
+              <TableCell>{food.fat}</TableCell>
+              <TableCell>
                 {deletingIds.includes(food.id) ? (
                   <LoadingSpinner size={20} />
                 ) : (
