@@ -14,6 +14,14 @@ import React from "react";
 import toast from "react-hot-toast";
 import { useEditModal } from "./util/UseEditModal";
 import { FoodEntry } from "@prisma/client";
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableRow,
+  TableHead,
+  TableCell,
+} from './table';
 
 
 
@@ -144,7 +152,6 @@ export const MealLog = ({ selectedDate }: { selectedDate: Date }) => {
     },
   });
 
-
   if (isLoading) {
     return <LoadingPage />;
   }
@@ -154,45 +161,49 @@ export const MealLog = ({ selectedDate }: { selectedDate: Date }) => {
     deleteMutation.mutate({ id });
   };
 
-  return (    
+  return (
     <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-      <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-        <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-          <tr>
-            <th scope="col" className="px-6 py-3">Food Name</th>
-            <th scope="col" className="px-6 py-3">Protein</th>
-            <th scope="col" className="px-6 py-3">Carbs</th>
-            <th scope="col" className="px-6 py-3">Fat</th>
-            <th scope="col" className="px-6 py-3">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
+      <Table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+        <TableHeader className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+          <TableRow>
+            <TableHead className="px-6 py-3">Food Name</TableHead>
+            <TableHead className="px-6 py-3">Protein</TableHead>
+            <TableHead className="px-6 py-3">Carbs</TableHead>
+            <TableHead className="px-6 py-3">Fat</TableHead>
+            <TableHead className="px-6 py-3">Actions</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
           {data?.map((food) => (
-            <tr key={food.id} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-              <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{food.name}</th>
-              <td className="px-6 py-4">{food.protein}</td>
-              <td className="px-6 py-4">{food.carbs}</td>
-              <td className="px-6 py-4">{food.fat}</td>
-              <td className="px-6 py-4">
+            <TableRow key={food.id} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+              <TableCell className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{food.name}</TableCell>
+              <TableCell className="px-6 py-4">{food.protein}</TableCell>
+              <TableCell className="px-6 py-4">{food.carbs}</TableCell>
+              <TableCell className="px-6 py-4">{food.fat}</TableCell>
+              <TableCell className="px-6 py-4">
                 {deletingIds.includes(food.id) ? (
                   <LoadingSpinner size={20} />
                 ) : (
                   <><DeleteButton onClick={() => handleDelete(food.id)} /><EditButton onClick={() => editModal.openModal(food)} /></>
                 )}
-              </td>
-            </tr>
+              </TableCell>
+            </TableRow>
           ))}
-        </tbody>
-      </table>
+        </TableBody>
+      </Table>
       {editModal.isOpen && (
-      <EditModal 
-        foodEntry={editModal.currentFoodEntry} 
-        handleClose={editModal.closeModal}
-      />
-    )}
+        <EditModal
+          foodEntry={editModal.currentFoodEntry}
+          handleClose={() => {
+            editModal.closeModal();
+            ctx.food.getByDate.invalidate();
+          }}
+        />
+      )}
     </div>
   );
 };
+
 
 
 // Define the type of food data
