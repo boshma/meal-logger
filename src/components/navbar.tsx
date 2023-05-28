@@ -27,7 +27,7 @@ const Navbar = () => {
         <button onClick={handleSignOut}>Sign Out</button>
         </NavigationMenuItem>
         <NavigationMenuItem>
-          <Link href ={`/profile/${user?.fullName}`}>Profile</Link>
+        <Link href ={`/profile/${user?.fullName || 'default'}`}>Profile</Link>
         </NavigationMenuItem>
         <NavigationMenuItem>
           <Link href ={`/`}>Dashboard</Link>

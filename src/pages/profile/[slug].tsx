@@ -29,11 +29,6 @@ const ProfilePage: NextPage = () => {
           </div>
         )}
         
-
-
-
-
-
       </main>
     </>
   );
