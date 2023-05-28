@@ -5,6 +5,7 @@ import {
   NavigationMenuList,
   NavigationMenuItem,
   NavigationMenuTrigger,
+  NavigationMenuLink,
 } from './navigation-menu';
 import { navigationMenuTriggerStyle } from "./navigation-menu"
 import Link from "next/link";
@@ -22,15 +23,15 @@ const Navbar = () => {
 
   return (
     <NavigationMenu>
-      <NavigationMenuList>  
-        <NavigationMenuItem>
-        <button onClick={handleSignOut}>Sign Out</button>
+      <NavigationMenuList>
+        <NavigationMenuItem className={navigationMenuTriggerStyle()}>
+          <button onClick={handleSignOut}>Sign Out</button>
         </NavigationMenuItem>
-        <NavigationMenuItem>
-        <Link href ={`/profile/${user?.fullName || 'default'}`}>Profile</Link>
+        <NavigationMenuItem className={navigationMenuTriggerStyle()} >
+          <Link href={`/profile/${user?.fullName || 'default'}`}>Profile</Link>
         </NavigationMenuItem>
-        <NavigationMenuItem>
-          <Link href ={`/`}>Dashboard</Link>
+        <NavigationMenuItem className={navigationMenuTriggerStyle()}>
+          <Link href={`/`}>Dashboard</Link>
         </NavigationMenuItem>
       </NavigationMenuList>
     </NavigationMenu>
