@@ -1,8 +1,17 @@
 //src/components/navbar.tsx
-import { useClerk } from "@clerk/nextjs";
+import { useClerk, useUser } from "@clerk/nextjs";
+import {
+  NavigationMenu,
+  NavigationMenuList,
+  NavigationMenuItem,
+  NavigationMenuTrigger,
+} from './navigation-menu';
+import { navigationMenuTriggerStyle } from "./navigation-menu"
+import Link from "next/link";
 
 const Navbar = () => {
   const { signOut } = useClerk();
+  const { user } = useUser();
 
   // Define the sign out handler
   const handleSignOut = () => {
@@ -12,18 +21,19 @@ const Navbar = () => {
   };
 
   return (
-    <div className="navbar bg-base-100">
-      <div className="flex-1">
-        <a className="btn btn-ghost normal-case text-xl">Fitache</a>
-      </div>
-      <div className="flex-none">
-        <ul className="menu menu-horizontal px-1">
-          <li>
-            <button onClick={handleSignOut}>Sign Out</button>
-          </li>
-        </ul>
-      </div>
-    </div>
+    <NavigationMenu>
+      <NavigationMenuList>  
+        <NavigationMenuItem>
+        <button onClick={handleSignOut}>Sign Out</button>
+        </NavigationMenuItem>
+        <NavigationMenuItem>
+          <Link href ={`/profile/${user?.fullName}`}>Profile</Link>
+        </NavigationMenuItem>
+        <NavigationMenuItem>
+          <Link href ={`/`}>Dashboard</Link>
+        </NavigationMenuItem>
+      </NavigationMenuList>
+    </NavigationMenu>
   );
 };
 
