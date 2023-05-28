@@ -204,13 +204,6 @@ export const MealLog = ({ selectedDate }: { selectedDate: Date }) => {
 
 
 
-// Define the type of food data
-type FoodData = {
-  protein: number;
-  carbs: number;
-  fat: number;
-};
-
 // Component for displaying a summary of macros
 export const MacroSummary = ({ selectedDate }: { selectedDate: Date }) => {
   // Fetch food data for the selected date
@@ -229,9 +222,9 @@ export const MacroSummary = ({ selectedDate }: { selectedDate: Date }) => {
   }
 
   // Calculate total protein, carbs, fat and calories
-  const totalProtein = data.reduce((total: number, food: FoodData) => total + food.protein, 0);
-  const totalCarbs = data.reduce((total: number, food: FoodData) => total + food.carbs, 0);
-  const totalFat = data.reduce((total: number, food: FoodData) => total + food.fat, 0);
+  const totalProtein = data.reduce((total: number, food: FoodEntry) => total + food.protein, 0);
+  const totalCarbs = data.reduce((total: number, food: FoodEntry) => total + food.carbs, 0);
+  const totalFat = data.reduce((total: number, food: FoodEntry) => total + food.fat, 0);
   const totalCalories = totalProtein * 4 + totalCarbs * 4 + totalFat * 9;
 
   // Return the macro summary
