@@ -5,7 +5,7 @@ import { LoadingPage } from "./loading";
 import { useUser } from "@clerk/nextjs";
 import { useState } from "react";
 import FloatingOutlinedInput, { FloatingOutlinedInputNumber } from "./util/FloatingOutlinedInput";
-import { CalendarButton, AddFoodButton, DeleteButton, EditButton } from "./util/Buttons";
+import { DeleteButton, EditButton } from "./util/Buttons";
 import { LoadingSpinner } from "./loading";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -31,11 +31,9 @@ import { Button, ButtonLoading } from "./button";
 export const MealForm = ({
   selectedDate,
   setSelectedDate,
-  //refetchMealLog
 }: {
   selectedDate: Date,
   setSelectedDate: Dispatch<SetStateAction<Date>>,
-  //</SetStateAction>refetchMealLog: () => void
 }) => {
   // Get the current user
   const user = useUser();
