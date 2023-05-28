@@ -22,6 +22,8 @@ import {
   TableHead,
   TableCell,
 } from './table';
+import { Button, ButtonLoading } from "./button";
+
 
 
 
@@ -42,6 +44,8 @@ export const MealForm = ({
   const [protein, setProtein] = useState<number | null>(null);
   const [carbs, setCarbs] = useState<number | null>(null);
   const [fat, setFat] = useState<number | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+
 
 
   const ctx = api.useContext();
@@ -62,10 +66,12 @@ export const MealForm = ({
       void ctx.food.getByDate.invalidate()
       // Focus the name input field
       nameInputRef.current?.focus();
+      setIsLoading(false);
     },
     onError: (e) => {
       console.error("Failed to create food entry", e);
       toast.error("Failed to create food entry, please try again later!");
+      setIsLoading(false);
     },
   });
 
@@ -86,6 +92,7 @@ export const MealForm = ({
 
     // Attempt to create a food entry with the form values
     if (dateString) {
+      setIsLoading(true);
       mutation.mutate({
         name,
         protein: protein || 0,
@@ -111,7 +118,13 @@ export const MealForm = ({
           <FloatingOutlinedInputNumber id="protein" value={protein} onChange={setProtein} label="Protein" />
           <FloatingOutlinedInputNumber id="carbs" value={carbs} onChange={setCarbs} label="Carbs" />
           <FloatingOutlinedInputNumber id="fat" value={fat} onChange={setFat} label="Fat" />
-          <AddFoodButton type="submit" />
+          {isLoading ? (
+            <ButtonLoading />
+          ) : (
+            <Button variant="default" size="sm" type="submit" className="w-32">Add Food</Button>
+
+          )}
+
 
         </form>
       </div>
@@ -122,7 +135,8 @@ export const MealForm = ({
           onChange={(date: Date | null) => {
             setSelectedDate(date || new Date());
           }}
-          customInput={<CalendarButton />}
+
+          customInput={<Button variant="default" size="sm" type="submit">Change date</Button>}
         /></div>
     </div>
   );
