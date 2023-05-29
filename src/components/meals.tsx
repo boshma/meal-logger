@@ -127,15 +127,15 @@ export const MealForm = ({
         </form>
       </div>
 
-      <div>
+      <div className = "pt-2">
         <DatePicker
           selected={selectedDate}
           onChange={(date: Date | null) => {
             setSelectedDate(date || new Date());
           }}
-
           customInput={<Button variant="default" size="sm" type="submit">Change date</Button>}
-        /></div>
+        />
+        </div>
     </div>
   );
 
@@ -241,7 +241,7 @@ export const MacroSummary = ({ selectedDate }: { selectedDate: Date }) => {
 
   // Return the macro summary
   return (
-    <div className="macro-summary flex justify-between space-x-4">
+    <div className="macro-summary flex justify-between space-x-4 pb-4">
       <div>Total Protein: {totalProtein}</div>
       <div>Total Carbs: {totalCarbs}</div>
       <div>Total Fat: {totalFat}</div>

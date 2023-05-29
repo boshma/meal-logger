@@ -22,6 +22,7 @@ const Navbar = () => {
   };
 
   return (
+    <div className="fixed top-0 w-full z-50">
     <NavigationMenu>
       <NavigationMenuList>
         <NavigationMenuItem className={navigationMenuTriggerStyle()}>
@@ -35,6 +36,7 @@ const Navbar = () => {
         </NavigationMenuItem>
       </NavigationMenuList>
     </NavigationMenu>
+    </div>
   );
 };
 
