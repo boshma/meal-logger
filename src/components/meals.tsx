@@ -23,6 +23,7 @@ import {
   TableCell,
 } from './table';
 import { Button, ButtonLoading } from "./button";
+import { Input } from "./input";
 
 
 
@@ -112,10 +113,42 @@ export const MealForm = ({
 
       <div className="flex justify-between items-center">
         <form onSubmit={handleSubmit} className="space-y-2">
-          <FloatingOutlinedInput id="name" value={name} onChange={setName} label="Name" inputRef={nameInputRef} />
-          <FloatingOutlinedInputNumber id="protein" value={protein} onChange={setProtein} label="Protein" />
-          <FloatingOutlinedInputNumber id="carbs" value={carbs} onChange={setCarbs} label="Carbs" />
-          <FloatingOutlinedInputNumber id="fat" value={fat} onChange={setFat} label="Fat" />
+          <Input
+            id="name"
+            value={name}
+            onChange={e => setName(e.target.value)}
+            label="Name"
+            placeholder="Food name"
+            ref={nameInputRef}
+          />
+
+          <Input
+            id="protein"
+            value={protein === null ? '' : protein}
+            onChange={e => setProtein(e.target.value === '' ? null : parseFloat(e.target.value))}
+            label="Protein"
+            placeholder="Protein"
+            numeric
+          />
+
+          <Input
+            id="carbs"
+            value={carbs === null ? '' : carbs}
+            onChange={e => setCarbs(e.target.value === '' ? null : parseFloat(e.target.value))}
+            label="Carbs"
+            numeric
+            placeholder="Carbs"
+          />
+
+          <Input
+            id="fat"
+            value={fat === null ? '' : fat}
+            onChange={e => setFat(e.target.value === '' ? null : parseFloat(e.target.value))}
+            label="Fat"
+            numeric
+            placeholder="Fat"
+          />
+
           {isLoading ? (
             <ButtonLoading />
           ) : (
@@ -127,7 +160,7 @@ export const MealForm = ({
         </form>
       </div>
 
-      <div className = "pt-2">
+      <div className="pt-2">
         <DatePicker
           selected={selectedDate}
           onChange={(date: Date | null) => {
@@ -135,7 +168,7 @@ export const MealForm = ({
           }}
           customInput={<Button variant="default" size="sm" type="submit">Change date</Button>}
         />
-        </div>
+      </div>
     </div>
   );
 
@@ -297,10 +330,41 @@ export const EditModal = ({ foodEntry, handleClose }: EditModalProps) => {
       <div className="bg-white rounded-lg shadow-lg w-3/4 md:w-1/2">
         <h1 className="p-4 border-b">Edit Food Entry</h1>
         <form onSubmit={handleSubmit} className="p-4 space-y-2">
-          <FloatingOutlinedInput id="name" value={name} onChange={setName} label="Name" />
-          <FloatingOutlinedInputNumber id="protein" value={protein} onChange={setProtein} label="Protein" />
-          <FloatingOutlinedInputNumber id="carbs" value={carbs} onChange={setCarbs} label="Carbs" />
-          <FloatingOutlinedInputNumber id="fat" value={fat} onChange={setFat} label="Fat" />
+        <Input
+            id="name"
+            value={name}
+            onChange={e => setName(e.target.value)}
+            label="Name"
+            placeholder="Food name"
+            //ref={nameInputRef}
+          />
+
+          <Input
+            id="protein"
+            value={protein === null ? '' : protein}
+            onChange={e => setProtein(e.target.value === '' ? null : parseFloat(e.target.value))}
+            label="Protein"
+            placeholder="Protein"
+            numeric
+          />
+
+          <Input
+            id="carbs"
+            value={carbs === null ? '' : carbs}
+            onChange={e => setCarbs(e.target.value === '' ? null : parseFloat(e.target.value))}
+            label="Carbs"
+            numeric
+            placeholder="Carbs"
+          />
+
+          <Input
+            id="fat"
+            value={fat === null ? '' : fat}
+            onChange={e => setFat(e.target.value === '' ? null : parseFloat(e.target.value))}
+            label="Fat"
+            numeric
+            placeholder="Fat"
+          />
 
           <div className="flex justify-end space-x-2">
             <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
