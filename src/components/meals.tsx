@@ -4,7 +4,6 @@ import { api } from "~/utils/api";
 import { LoadingPage } from "./loading";
 import { useUser } from "@clerk/nextjs";
 import { useState } from "react";
-import FloatingOutlinedInput, { FloatingOutlinedInputNumber } from "./util/FloatingOutlinedInput";
 import { DeleteButton, EditButton } from "./util/Buttons";
 import { LoadingSpinner } from "./loading";
 import DatePicker from "react-datepicker";
