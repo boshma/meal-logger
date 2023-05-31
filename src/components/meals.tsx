@@ -277,6 +277,10 @@ export const MealsPage = () => {
 
   return (
     <>
+      <div className="mb-2 text-xl font-bold">
+            Selected Date: {new Date(selectedDate.getTime() - selectedDate.getTimezoneOffset() * 60000).toISOString().slice(0, 10)}
+      </div>
+      <MacroSummary selectedDate={selectedDate} />
       <MealForm
         isLoading={isLoading}
         setIsLoading={setIsLoading}

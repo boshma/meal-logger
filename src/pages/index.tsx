@@ -1,16 +1,14 @@
-//src/pages/index.tsx
+// src/pages/index.tsx
 import { useUser } from "@clerk/nextjs";
 import { type NextPage } from "next";
 import Head from "next/head";
 import { useState } from "react";
 import LoginPage from "~/components/loginpage";
-import { MacroSummary, MealForm, MealLog } from "~/components/meals";
+import { MealsPage } from "~/components/meals";  // Make sure to import MealsPage
 import Navbar from "~/components/navbar";
 
 const Home: NextPage = () => {
   const user = useUser();
-  const [selectedDate, setSelectedDate] = useState(new Date());
-  const [isLoading, setIsLoading] = useState(false);
 
   return (
     <>
@@ -22,37 +20,11 @@ const Home: NextPage = () => {
       <main className="flex flex-col h-screen items-center justify-start pt-14">
         {/* Show Navbar if user is signed in */}
         {!!user.isSignedIn && <Navbar />}
-        {!!user.isSignedIn && (
-          <div className="mb-2 text-xl font-bold">
-            Selected Date: {new Date(selectedDate.getTime() - selectedDate.getTimezoneOffset() * 60000).toISOString().slice(0, 10)}
-          </div>
-        )}
-
         <div className="mb-4 flex flex-col items-center justify-center">
-          {!!user.isSignedIn && (
-            <div className="flex flex-col items-center">
-              {/* Display the MacroSummary component, passing the selected date */}
-              <MacroSummary selectedDate={selectedDate} />
-            </div>
-          )}
           {/* If the user is not signed in, display the LoginPage component */}
           {!user.isSignedIn && <LoginPage />}
-          {!!user.isSignedIn && (
-            <MealForm
-              isLoading={isLoading}
-              setIsLoading={setIsLoading}
-              selectedDate={selectedDate}
-              setSelectedDate={setSelectedDate}
-            />
-          )}
-          {!!user.isSignedIn && (
-            <div className="max-h-[50vh] overflow-auto">
-              <MealLog
-                isLoading={isLoading}
-                selectedDate={selectedDate}
-              />
-            </div>
-          )}
+          {/* Show MealsPage component when user is signed in */}
+          {!!user.isSignedIn && <MealsPage />}
         </div>
       </main>
     </>
