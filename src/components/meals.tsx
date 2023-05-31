@@ -23,15 +23,20 @@ import {
 } from './table';
 import { Button, ButtonLoading } from "./button";
 import { Input } from "./input";
+import { Skeleton } from "./skeleton";
 
 
 
 
 // Component for creating a meal form
 export const MealForm = ({
+  isLoading,
+  setIsLoading,
   selectedDate,
   setSelectedDate,
 }: {
+  isLoading: boolean,
+  setIsLoading: Dispatch<SetStateAction<boolean>>,
   selectedDate: Date,
   setSelectedDate: Dispatch<SetStateAction<Date>>,
 }) => {
@@ -42,7 +47,6 @@ export const MealForm = ({
   const [protein, setProtein] = useState<number | null>(null);
   const [carbs, setCarbs] = useState<number | null>(null);
   const [fat, setFat] = useState<number | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
 
 
 
@@ -173,7 +177,7 @@ export const MealForm = ({
 
 };
 
-export const MealLog = ({ selectedDate }: { selectedDate: Date }) => {
+export const MealLog = ({ isLoading: isLoadingProp, selectedDate }: { isLoading: boolean, selectedDate: Date }) => {
   const { data, isLoading } = api.food.getByDate.useQuery({
     date: `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, '0')}-${String(selectedDate.getDate()).padStart(2, '0')}`,
   });
@@ -204,6 +208,26 @@ export const MealLog = ({ selectedDate }: { selectedDate: Date }) => {
     deleteMutation.mutate({ id });
   };
 
+  const SkeletonRow = () => (
+    <TableRow>
+      <TableCell>
+        <Skeleton className="h-4" />
+      </TableCell>
+      <TableCell>
+        <Skeleton className="h-4" />
+      </TableCell>
+      <TableCell>
+        <Skeleton className="h-4" />
+      </TableCell>
+      <TableCell>
+        <Skeleton className="h-4" />
+      </TableCell>
+      <TableCell>
+        <Skeleton className="h-4" />
+      </TableCell>
+    </TableRow>
+  );
+
   return (
     <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
       <Table >
@@ -232,6 +256,7 @@ export const MealLog = ({ selectedDate }: { selectedDate: Date }) => {
               </TableCell>
             </TableRow>
           ))}
+          {isLoadingProp && <SkeletonRow />}
         </TableBody>
       </Table>
       {editModal.isOpen && (
@@ -245,6 +270,24 @@ export const MealLog = ({ selectedDate }: { selectedDate: Date }) => {
     </div>
   );
 };
+
+export const MealsPage = () => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(new Date());
+
+  return (
+    <>
+      <MealForm
+        isLoading={isLoading}
+        setIsLoading={setIsLoading}
+        selectedDate={selectedDate}
+        setSelectedDate={setSelectedDate}
+      />
+      <MealLog isLoading={isLoading} selectedDate={selectedDate} />
+    </>
+  );
+};
+
 
 
 
@@ -273,12 +316,28 @@ export const MacroSummary = ({ selectedDate }: { selectedDate: Date }) => {
 
   // Return the macro summary
   return (
-    <div className="macro-summary flex justify-between space-x-4 pb-4">
-      <div>Total Protein: {totalProtein}</div>
-      <div>Total Carbs: {totalCarbs}</div>
-      <div>Total Fat: {totalFat}</div>
-      <div>Total Calories: {totalCalories}</div>
+    <div className = "pb-4">
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead >Total Protein</TableHead>
+            <TableHead>Total Carbs</TableHead>
+            <TableHead>Total Fats</TableHead>
+            <TableHead>Total Calories</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          <TableRow>
+            <TableCell>{totalProtein}</TableCell>
+            <TableCell>{totalCarbs}</TableCell>
+            <TableCell>{totalFat}</TableCell>
+            <TableCell>{totalCalories}</TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
+
     </div>
+
   );
 };
 
@@ -329,13 +388,13 @@ export const EditModal = ({ foodEntry, handleClose }: EditModalProps) => {
       <div className="bg-white rounded-lg shadow-lg w-3/4 md:w-1/2">
         <h1 className="p-4 border-b">Edit Food Entry</h1>
         <form onSubmit={handleSubmit} className="p-4 space-y-2">
-        <Input
+          <Input
             id="name"
             value={name}
             onChange={e => setName(e.target.value)}
             label="Name"
             placeholder="Food name"
-            //ref={nameInputRef}
+          //ref={nameInputRef}
           />
 
           <Input
@@ -382,3 +441,4 @@ export const EditModal = ({ foodEntry, handleClose }: EditModalProps) => {
     </div>
   );
 };
+

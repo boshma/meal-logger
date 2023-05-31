@@ -10,6 +10,7 @@ import Navbar from "~/components/navbar";
 const Home: NextPage = () => {
   const user = useUser();
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const [isLoading, setIsLoading] = useState(false);
 
   return (
     <>
@@ -22,11 +23,11 @@ const Home: NextPage = () => {
         {/* Show Navbar if user is signed in */}
         {!!user.isSignedIn && <Navbar />}
         {!!user.isSignedIn && (
-         <div className="mb-2 text-xl font-bold">
-         Selected Date: {new Date(selectedDate.getTime() - selectedDate.getTimezoneOffset() * 60000).toISOString().slice(0,10)}
-       </div>
+          <div className="mb-2 text-xl font-bold">
+            Selected Date: {new Date(selectedDate.getTime() - selectedDate.getTimezoneOffset() * 60000).toISOString().slice(0, 10)}
+          </div>
         )}
-        
+
         <div className="mb-4 flex flex-col items-center justify-center">
           {!!user.isSignedIn && (
             <div className="flex flex-col items-center">
@@ -37,16 +38,17 @@ const Home: NextPage = () => {
           {/* If the user is not signed in, display the LoginPage component */}
           {!user.isSignedIn && <LoginPage />}
           {!!user.isSignedIn && (
-            /* Display the MealForm component, passing the selected date and setSelectedDate function */
             <MealForm
+              isLoading={isLoading}
+              setIsLoading={setIsLoading}
               selectedDate={selectedDate}
               setSelectedDate={setSelectedDate}
             />
           )}
           {!!user.isSignedIn && (
-            /* Display the MealLog component, passing the selected date */
             <div className="max-h-[50vh] overflow-auto">
               <MealLog
+                isLoading={isLoading}
                 selectedDate={selectedDate}
               />
             </div>

@@ -9,7 +9,7 @@ const LoginPage: React.FC = () => (
       <div className="text-center">
         <h1 className="text-5xl font-bold text-primary">Welcome to Fitache </h1>
         <p className="py-6 text-foreground">The most convienent macrotracking app.</p>
-        <div className="animate-accordion-down">
+        <div>
           <SignInButton>
             <GoogleLoginButton />
           </SignInButton>
