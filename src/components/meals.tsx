@@ -24,6 +24,7 @@ import {
 import { Button, ButtonLoading } from "./button";
 import { Input } from "./input";
 import { Skeleton } from "./skeleton";
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "./dialog";
 
 
 
@@ -370,13 +371,12 @@ export const EditModal = ({ foodEntry, handleClose }: EditModalProps) => {
       toast.success("Your meal has been updated.");
       // Refetch the meal log after successful update
       void ctx.food.getByDate.invalidate()
-      handleClose(); // Close modal after successful update
+      handleClose(); // Close dialog after successful update
     },
     onError: (e) => {
       console.error("Failed to update food entry", e);
     },
   });
-
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -394,10 +394,11 @@ export const EditModal = ({ foodEntry, handleClose }: EditModalProps) => {
   };
 
   return (
-    // Add classes to position modal center of screen
-    <div className="fixed top-0 left-0 flex items-center justify-center w-full h-full bg-black bg-opacity-50">
-      <div className="bg-white rounded-lg shadow-lg w-3/4 md:w-1/2">
-        <h1 className="p-4 border-b">Edit Food Entry</h1>
+    <Dialog open={!!foodEntry}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Edit Food Entry</DialogTitle>
+        </DialogHeader>
         <form onSubmit={handleSubmit} className="p-4 space-y-2">
           <Input
             id="name"
@@ -405,7 +406,6 @@ export const EditModal = ({ foodEntry, handleClose }: EditModalProps) => {
             onChange={e => setName(e.target.value)}
             label="Name"
             placeholder="Food name"
-          //ref={nameInputRef}
           />
 
           <Input
@@ -435,21 +435,19 @@ export const EditModal = ({ foodEntry, handleClose }: EditModalProps) => {
             placeholder="Fat"
           />
 
-          <div className="flex justify-end space-x-2">
-            <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+          <DialogFooter>
+            <Button type="submit" >
               Update
-            </button>
-            <button
+            </Button>
+            <Button
               type="button"
-              className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
               onClick={handleClose}
             >
               Cancel
-            </button>
-          </div>
+            </Button>
+          </DialogFooter>
         </form>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 };
-
