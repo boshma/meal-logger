@@ -155,7 +155,7 @@ export const MealForm = ({
           {isLoading ? (
             <ButtonLoading />
           ) : (
-            <Button variant="default" size="sm" type="submit" className="w-32 h-10">Add Food</Button>
+            <Button variant="default" size="sm" type="submit" className="w-full">Add Food</Button>
 
           )}
 
@@ -164,13 +164,7 @@ export const MealForm = ({
       </div>
 
       <div className="pt-2">
-        <DatePicker
-          selected={selectedDate}
-          onChange={(date: Date | null) => {
-            setSelectedDate(date || new Date());
-          }}
-          customInput={<Button variant="default" size="sm" type="submit" className="w-32 h-10">Change date</Button>}
-        />
+
       </div>
     </div>
   );
@@ -277,9 +271,21 @@ export const MealsPage = () => {
 
   return (
     <>
-      <div className="mb-2 text-xl font-bold">
-            Selected Date: {new Date(selectedDate.getTime() - selectedDate.getTimezoneOffset() * 60000).toISOString().slice(0, 10)}
+     <div className="flex flex-col items-center mb-2">
+        <div className="text-xl font-bold mb-2">
+          Selected Date: {new Date(selectedDate.getTime() - selectedDate.getTimezoneOffset() * 60000).toISOString().slice(0, 10)}
+        </div>
+        <div>
+          <DatePicker
+            selected={selectedDate}
+            onChange={(date: Date | null) => {
+              setSelectedDate(date || new Date());
+            }}
+            customInput={<Button variant="outline" size="sm" type="submit">Change date</Button>}
+          />
+        </div>
       </div>
+
       <MacroSummary selectedDate={selectedDate} />
       <MealForm
         isLoading={isLoading}
@@ -288,6 +294,7 @@ export const MealsPage = () => {
         setSelectedDate={setSelectedDate}
       />
       <MealLog isLoading={isLoading} selectedDate={selectedDate} />
+
     </>
   );
 };
@@ -320,7 +327,7 @@ export const MacroSummary = ({ selectedDate }: { selectedDate: Date }) => {
 
   // Return the macro summary
   return (
-    <div className = "pb-4">
+    <div className="pb-4">
       <Table>
         <TableHeader>
           <TableRow>
