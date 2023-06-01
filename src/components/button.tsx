@@ -37,20 +37,28 @@ export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
   asChild?: boolean
+  icon?: React.ReactNode
 }
 
+// use the icon prop in the Button component
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, ...props }, ref) => {
+  ({ className, variant, size, asChild = false, icon, ...props }, ref) => {
     const Comp = asChild ? Slot : "button"
     return (
       <Comp
         className={cn(buttonVariants({ variant, size, className }))}
         ref={ref}
         {...props}
-      />
+      >
+        {icon}
+        {props.children}
+      </Comp>
     )
   }
 )
+
+
+
 Button.displayName = "Button"
 
 export { Button, buttonVariants }
@@ -58,13 +66,14 @@ export { Button, buttonVariants }
 import { Loader2 } from "lucide-react"
  
  
+const BUTTON_WIDTH = 'w-32';  
+
 export function ButtonLoading() {
   return (
-    <Button size="sm" disabled className="w-32 flex justify-center items-center">
+    <Button size="sm" disabled className={`flex justify-center items-center ${BUTTON_WIDTH}`}>
       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-      Please wait
+      Loading
     </Button>
   )
 }
-
 

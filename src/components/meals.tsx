@@ -155,7 +155,7 @@ export const MealForm = ({
           {isLoading ? (
             <ButtonLoading />
           ) : (
-            <Button variant="default" size="sm" type="submit" className="w-32">Add Food</Button>
+            <Button variant="default" size="sm" type="submit" className="w-32 h-10">Add Food</Button>
 
           )}
 
@@ -169,7 +169,7 @@ export const MealForm = ({
           onChange={(date: Date | null) => {
             setSelectedDate(date || new Date());
           }}
-          customInput={<Button variant="default" size="sm" type="submit">Change date</Button>}
+          customInput={<Button variant="default" size="sm" type="submit" className="w-32 h-10">Change date</Button>}
         />
       </div>
     </div>

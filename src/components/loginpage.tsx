@@ -1,7 +1,7 @@
 // src/components/LoginPage.tsx
 import React from 'react';
-import { GoogleLoginButton } from './util/Buttons';
 import { SignInButton } from "@clerk/nextjs";
+import { Button } from './button';
 
 const LoginPage: React.FC = () => (
   <div className="min-h-screen bg-background flex items-center justify-center">
@@ -11,7 +11,9 @@ const LoginPage: React.FC = () => (
         <p className="py-6 text-foreground">The most convienent macrotracking app.</p>
         <div>
           <SignInButton>
-            <GoogleLoginButton />
+            <Button variant={'ghost'}>
+              Sign in
+            </Button>
           </SignInButton>
         </div>
       </div>
