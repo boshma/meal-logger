@@ -65,12 +65,11 @@ export { Button, buttonVariants }
 
 import { Loader2 } from "lucide-react"
  
- 
-const BUTTON_WIDTH = 'w-32';  
+
 
 export function ButtonLoading() {
   return (
-    <Button size="sm" disabled className={`flex justify-center items-center ${BUTTON_WIDTH}`}>
+    <Button size="sm" disabled className={`flex justify-center items-center w-full`}>
       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
       Loading
     </Button>
