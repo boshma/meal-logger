@@ -181,12 +181,9 @@ export const MealLog = ({ isLoading: isLoadingProp, selectedDate }: { isLoading:
   const editModal = useEditModal();
 
   const deleteMutation = api.food.delete.useMutation({
-    onSuccess: () => {
-      toast.success("Your meal has been deleted.");
-      void ctx.food.getByDate.invalidate()
-    },
     onError: (e) => {
       console.error("Failed to delete food entry", e);
+      toast.error("Failed to delete food entry.");
     },
     onSettled: (data, error, variables) => {
       const { id } = variables;
@@ -200,7 +197,17 @@ export const MealLog = ({ isLoading: isLoadingProp, selectedDate }: { isLoading:
 
   const handleDelete = (id: string) => {
     setDeletingIds((currentIds) => [...currentIds, id]);
-    deleteMutation.mutate({ id });
+    deleteMutation.mutate({ id }, {
+      onSuccess: () => {
+        handleClose();
+        toast.success("Your meal has been deleted.");
+        void ctx.food.getByDate.invalidate()
+      },
+    });
+  };
+
+  const handleRowClick = (food: FoodEntry) => {
+    editModal.openModal(food);
   };
 
   const SkeletonRow = () => (
@@ -232,23 +239,15 @@ export const MealLog = ({ isLoading: isLoadingProp, selectedDate }: { isLoading:
             <TableHead>Protein</TableHead>
             <TableHead>Carbs</TableHead>
             <TableHead>Fat</TableHead>
-            <TableHead>Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {data?.map((food) => (
-            <TableRow key={food.id} >
+            <TableRow key={food.id} onClick={() => handleRowClick(food)}>
               <TableCell>{food.name}</TableCell>
               <TableCell>{food.protein}</TableCell>
               <TableCell>{food.carbs}</TableCell>
               <TableCell>{food.fat}</TableCell>
-              <TableCell>
-                {deletingIds.includes(food.id) ? (
-                  <LoadingSpinner size={20} />
-                ) : (
-                  <><DeleteButton onClick={() => handleDelete(food.id)} /><EditButton onClick={() => editModal.openModal(food)} /></>
-                )}
-              </TableCell>
             </TableRow>
           ))}
           {isLoadingProp && <SkeletonRow />}
@@ -262,6 +261,7 @@ export const MealLog = ({ isLoading: isLoadingProp, selectedDate }: { isLoading:
           }}
         />
       )}
+
     </div>
   );
 };
@@ -272,7 +272,7 @@ export const MealsPage = () => {
 
   return (
     <>
-     <div className="flex flex-col items-center mb-2">
+      <div className="flex flex-col items-center mb-2">
         <div className="text-xl font-bold mb-2">
           Selected Date: {new Date(selectedDate.getTime() - selectedDate.getTimezoneOffset() * 60000).toISOString().slice(0, 10)}
         </div>
@@ -354,11 +354,13 @@ export const MacroSummary = ({ selectedDate }: { selectedDate: Date }) => {
 };
 
 interface EditModalProps {
-  foodEntry: FoodEntry | null,
-  handleClose: () => void,
+  foodEntry: FoodEntry | null;
+  handleClose: () => void;
 }
 
+
 export const EditModal = ({ foodEntry, handleClose }: EditModalProps) => {
+  if (!foodEntry) return null;
   const [name, setName] = useState(foodEntry?.name || "");
   const [protein, setProtein] = useState<number | null>(foodEntry?.protein || null);
   const [carbs, setCarbs] = useState<number | null>(foodEntry?.carbs || null);
@@ -378,6 +380,18 @@ export const EditModal = ({ foodEntry, handleClose }: EditModalProps) => {
     },
   });
 
+  const deleteMutation = api.food.delete.useMutation({
+    onSuccess: () => {
+      toast.success("Your meal has been deleted.");
+      void ctx.food.getByDate.invalidate()
+      handleClose(); // Close dialog after successful deletion
+    },
+    onError: (e) => {
+      console.error("Failed to delete food entry", e);
+    },
+  });
+
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Mutate the food entry
@@ -395,7 +409,7 @@ export const EditModal = ({ foodEntry, handleClose }: EditModalProps) => {
 
   return (
     <Dialog open={!!foodEntry}>
-      <DialogContent>
+      <DialogContent handleClose={handleClose}>
         <DialogHeader>
           <DialogTitle>Edit Food Entry</DialogTitle>
         </DialogHeader>
@@ -439,15 +453,21 @@ export const EditModal = ({ foodEntry, handleClose }: EditModalProps) => {
             <Button type="submit" >
               Update
             </Button>
-            <Button
-              type="button"
-              onClick={handleClose}
-            >
-              Cancel
+            <Button onClick={(e) => {
+              e.preventDefault();
+              deleteMutation.mutate({ id: foodEntry.id });
+            }}>
+              Delete
             </Button>
+
+
           </DialogFooter>
         </form>
       </DialogContent>
     </Dialog>
   );
 };
+
+function handleClose() {
+  throw new Error("Function not implemented.");
+}
