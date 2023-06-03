@@ -4,8 +4,6 @@ import { api } from "~/utils/api";
 import { LoadingPage } from "./loading";
 import { useUser } from "@clerk/nextjs";
 import { useState } from "react";
-import { DeleteButton, EditButton } from "./util/Buttons";
-import { LoadingSpinner } from "./loading";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { Dispatch, SetStateAction } from 'react';
@@ -180,31 +178,10 @@ export const MealLog = ({ isLoading: isLoadingProp, selectedDate }: { isLoading:
   const ctx = api.useContext();
   const editModal = useEditModal();
 
-  const deleteMutation = api.food.delete.useMutation({
-    onError: (e) => {
-      console.error("Failed to delete food entry", e);
-      toast.error("Failed to delete food entry.");
-    },
-    onSettled: (data, error, variables) => {
-      const { id } = variables;
-      setDeletingIds((currentIds) => currentIds.filter((i) => i !== id));
-    },
-  });
 
   if (isLoading) {
     return <LoadingPage />;
   }
-
-  const handleDelete = (id: string) => {
-    setDeletingIds((currentIds) => [...currentIds, id]);
-    deleteMutation.mutate({ id }, {
-      onSuccess: () => {
-        handleClose();
-        toast.success("Your meal has been deleted.");
-        void ctx.food.getByDate.invalidate()
-      },
-    });
-  };
 
   const handleRowClick = (food: FoodEntry) => {
     editModal.openModal(food);
@@ -360,13 +337,13 @@ interface EditModalProps {
 
 
 export const EditModal = ({ foodEntry, handleClose }: EditModalProps) => {
-  if (!foodEntry) return null;
   const [name, setName] = useState(foodEntry?.name || "");
   const [protein, setProtein] = useState<number | null>(foodEntry?.protein || null);
   const [carbs, setCarbs] = useState<number | null>(foodEntry?.carbs || null);
   const [fat, setFat] = useState<number | null>(foodEntry?.fat || null);
 
   const ctx = api.useContext();
+  if (!foodEntry) return null;
 
   const updateMutation = api.food.update.useMutation({
     onSuccess: () => {
