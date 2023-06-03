@@ -7,10 +7,10 @@ import { z } from "zod";
 import { createTRPCRouter, publicProcedure, privateProcedure } from "~/server/api/trpc";
 
 
-// Create a new ratelimiter, that allows 1 requests per 1 minute
+// Create a new ratelimiter, that allows 2 requests per 5 seconds
 const ratelimit = new Ratelimit({
   redis: Redis.fromEnv(),
-  limiter: Ratelimit.slidingWindow(5, "30 s"),
+  limiter: Ratelimit.slidingWindow(2, "7 s"),
   analytics: true,
   /**
    * Optional prefix for the keys used in redis. This is useful if you want to share a redis

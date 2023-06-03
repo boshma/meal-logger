@@ -23,6 +23,7 @@ import { Button, ButtonLoading } from "./button";
 import { Input } from "./input";
 import { Skeleton } from "./skeleton";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "./dialog";
+import { ScrollArea } from "./scroll-area";
 
 
 
@@ -154,7 +155,7 @@ export const MealForm = ({
           {isLoading ? (
             <ButtonLoading />
           ) : (
-            <Button variant="default" size="sm" type="submit" className="w-full">Add Food</Button>
+            <Button variant="default" size="sm" type="submit" className="w-full">Quick Add</Button>
 
           )}
 
@@ -174,8 +175,6 @@ export const MealLog = ({ isLoading: isLoadingProp, selectedDate }: { isLoading:
   const { data, isLoading } = api.food.getByDate.useQuery({
     date: `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, '0')}-${String(selectedDate.getDate()).padStart(2, '0')}`,
   });
-  const [deletingIds, setDeletingIds] = useState<string[]>([]);
-  const ctx = api.useContext();
   const editModal = useEditModal();
 
 
@@ -190,7 +189,7 @@ export const MealLog = ({ isLoading: isLoadingProp, selectedDate }: { isLoading:
   const SkeletonRow = () => (
     <TableRow>
       <TableCell>
-        <Skeleton className="h-4" />
+        <Skeleton className="h-4 w-full" />
       </TableCell>
       <TableCell>
         <Skeleton className="h-4" />
@@ -208,9 +207,9 @@ export const MealLog = ({ isLoading: isLoadingProp, selectedDate }: { isLoading:
   );
 
   return (
-    <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+    <ScrollArea className="h-52 w-full rounded-md border">
       <Table >
-        <TableHeader >
+        <TableHeader>
           <TableRow>
             <TableHead >Food Name</TableHead>
             <TableHead>Protein</TableHead>
@@ -239,7 +238,8 @@ export const MealLog = ({ isLoading: isLoadingProp, selectedDate }: { isLoading:
         />
       )}
 
-    </div>
+    
+    </ScrollArea>
   );
 };
 
@@ -265,13 +265,15 @@ export const MealsPage = () => {
       </div>
 
       <MacroSummary selectedDate={selectedDate} />
-      <MealForm
-        isLoading={isLoading}
-        setIsLoading={setIsLoading}
-        selectedDate={selectedDate}
-        setSelectedDate={setSelectedDate}
-      />
-      <MealLog isLoading={isLoading} selectedDate={selectedDate} />
+      <div className="flex justify-center space-x-10">
+        <MealForm
+          isLoading={isLoading}
+          setIsLoading={setIsLoading}
+          selectedDate={selectedDate}
+          setSelectedDate={setSelectedDate}
+        />
+        <MealLog isLoading={isLoading} selectedDate={selectedDate} />
+      </div>
 
     </>
   );
