@@ -238,7 +238,7 @@ export const MealLog = ({ isLoading: isLoadingProp, selectedDate }: { isLoading:
         />
       )}
 
-    
+
     </ScrollArea>
   );
 };
@@ -250,16 +250,18 @@ export const MealsPage = () => {
   return (
     <>
       <div className="flex flex-col items-center mb-2">
-        <div className="text-xl font-bold mb-2">
-          Selected Date: {new Date(selectedDate.getTime() - selectedDate.getTimezoneOffset() * 60000).toISOString().slice(0, 10)}
-        </div>
+
         <div>
           <DatePicker
             selected={selectedDate}
             onChange={(date: Date | null) => {
               setSelectedDate(date || new Date());
             }}
-            customInput={<Button variant="outline" size="sm" type="submit">Change date</Button>}
+            customInput={<Button variant="outline" size="sm" type="submit">
+              <div className="text-xl font-bold">
+                Selected Date: {new Date(selectedDate.getTime() - selectedDate.getTimezoneOffset() * 60000).toISOString().slice(0, 10)}
+              </div>
+            </Button>}
           />
         </div>
       </div>
