@@ -7,10 +7,12 @@ import LoginPage from "~/components/loginpage";
 import { MacroSummary, MealForm, MealLog } from "~/components/meals";
 import Navbar from "~/components/navbar";
 import Image from "next/image";
+import { api } from "~/utils/api";
+import toast from "react-hot-toast";
+import SetTargetMacros from "~/components/macroTargets";
 
 const ProfilePage: NextPage = () => {
   const { user } = useUser();
-  const [selectedDate, setSelectedDate] = useState(new Date());
 
   return (
     <>
@@ -23,11 +25,7 @@ const ProfilePage: NextPage = () => {
       <main className="flex flex-col h-screen items-center justify-start">
         {/* Show Navbar if user is signed in */}
         {!!user && <Navbar />}
-        {!!user && (
-          <div className="mb-2 text-xl font-bold">
-            Selected Date: {new Date(selectedDate.getTime() - selectedDate.getTimezoneOffset() * 60000).toISOString().slice(0, 10)}
-          </div>
-        )}
+        <SetTargetMacros />
         
       </main>
     </>
@@ -35,3 +33,4 @@ const ProfilePage: NextPage = () => {
 };
 
 export default ProfilePage;
+

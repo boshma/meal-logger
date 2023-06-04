@@ -3,8 +3,8 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
   relationMode = "prisma"
 }
 
@@ -12,17 +12,26 @@ generator client {
   provider = "prisma-client-js"
 }
 
-
 model FoodEntry {
-    id        String   @id @default(cuid())
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-    name      String
-    protein   Float    @db.Float 
-    carbs     Float    @db.Float 
-    fat       Float    @db.Float 
-    date      DateTime @db.Date
-    userId    String   
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  name      String
+  protein   Float    @db.Float
+  carbs     Float    @db.Float
+  fat       Float    @db.Float
+  date      DateTime @db.Date
+  userId    String
 
-    @@index([userId, date]) 
+  @@index([userId, date])
+}
+
+model TargetMacros {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  protein   Float    @db.Float
+  carbs     Float    @db.Float
+  fat       Float    @db.Float
+  userId    String
 }

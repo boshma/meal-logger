@@ -148,7 +148,38 @@ export const foodRouter = createTRPCRouter({
 
       return updatedFood;
     }),
-
+  // Define a private route that sets target macros for a user
+  setTargetMacros: privateProcedure
+    .input(
+      z.object({
+        protein: z.number(),
+        carbs: z.number(),
+        fat: z.number(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const userId = ctx.userId;
+      const targetMacros = await ctx.prisma.targetMacros.create({
+        data: {
+          ...input,
+          userId,
+        },
+      });
+      return targetMacros;
+    }),
+  // Define a private route that retrieves the latest target macros for a user
+  getTargetMacros: privateProcedure.query(async ({ ctx }) => {
+    const userId = ctx.userId;
+    const targetMacros = await ctx.prisma.targetMacros.findFirst({
+      where: {
+        userId: userId,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+    return targetMacros;
+  }),
 });
 
 // End of src/server/api/routers/food.ts
