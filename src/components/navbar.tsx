@@ -1,5 +1,5 @@
 //src/components/navbar.tsx
-import { useClerk, useUser } from "@clerk/nextjs";
+import { UserButton, useClerk, useUser } from "@clerk/nextjs";
 import {
   NavigationMenu,
   NavigationMenuList,
@@ -14,28 +14,23 @@ const Navbar = () => {
   const { signOut } = useClerk();
   const { user } = useUser();
 
-  // Define the sign out handler
-  const handleSignOut = () => {
-    signOut().catch((error) => {
-      console.error("Failed to sign out", error);
-    });
-  };
+
 
   return (
-    <div className="fixed top-0 w-full z-50">
-    <NavigationMenu>
-      <NavigationMenuList>
-        <NavigationMenuItem className={navigationMenuTriggerStyle()}>
-          <button onClick={handleSignOut}>Sign Out</button>
-        </NavigationMenuItem>
-        <NavigationMenuItem className={navigationMenuTriggerStyle()} >
-          <Link href={`/profile/${user?.fullName || 'default'}`}>Profile</Link>
-        </NavigationMenuItem>
-        <NavigationMenuItem className={navigationMenuTriggerStyle()}>
-          <Link href={`/`}>Dashboard</Link>
-        </NavigationMenuItem>
-      </NavigationMenuList>
-    </NavigationMenu>
+    <div className="fixed top-0 right-4 z-50">
+      <NavigationMenu>
+        <NavigationMenuList>
+          <NavigationMenuItem className={navigationMenuTriggerStyle()} >
+            <Link href={`/profile/${user?.fullName || 'default'}`}>Profile</Link>
+          </NavigationMenuItem>
+          <NavigationMenuItem className={navigationMenuTriggerStyle()}>
+            <Link href={`/`}>Dashboard</Link>
+          </NavigationMenuItem>
+          <NavigationMenuItem className={navigationMenuTriggerStyle()}>
+            <UserButton afterSignOutUrl="/" />
+          </NavigationMenuItem>
+        </NavigationMenuList>
+      </NavigationMenu>
     </div>
   );
 };
