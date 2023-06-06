@@ -148,7 +148,7 @@ export const foodRouter = createTRPCRouter({
 
       return updatedFood;
     }),
-  // Define a private route that sets target macros for a user
+  // Define a private route that sets or updates target macros for a user
   setTargetMacros: privateProcedure
     .input(
       z.object({
@@ -159,12 +159,18 @@ export const foodRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       const userId = ctx.userId;
-      const targetMacros = await ctx.prisma.targetMacros.create({
-        data: {
+
+      const targetMacros = await ctx.prisma.targetMacros.upsert({
+        where: { userId },
+        create: {
           ...input,
           userId,
         },
+        update: {
+          ...input,
+        },
       });
+
       return targetMacros;
     }),
   // Define a private route that retrieves the latest target macros for a user
@@ -178,6 +184,16 @@ export const foodRouter = createTRPCRouter({
         createdAt: 'desc',
       },
     });
+    return targetMacros;
+  }),
+  // Define a private route that removes target macros for a user
+  removeTargetMacros: privateProcedure.mutation(async ({ ctx }) => {
+    const userId = ctx.userId;
+
+    const targetMacros = await ctx.prisma.targetMacros.deleteMany({
+      where: { userId },
+    });
+
     return targetMacros;
   }),
 });

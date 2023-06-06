@@ -33,5 +33,5 @@ model TargetMacros {
   protein   Float    @db.Float
   carbs     Float    @db.Float
   fat       Float    @db.Float
-  userId    String
+  userId    String   @unique
 }
