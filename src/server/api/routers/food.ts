@@ -165,9 +165,11 @@ export const foodRouter = createTRPCRouter({
         create: {
           ...input,
           userId,
+          isSet: true,
         },
         update: {
           ...input,
+          isSet: true,
         },
       });
 
@@ -190,8 +192,12 @@ export const foodRouter = createTRPCRouter({
   removeTargetMacros: privateProcedure.mutation(async ({ ctx }) => {
     const userId = ctx.userId;
 
-    const targetMacros = await ctx.prisma.targetMacros.deleteMany({
+    // Update the isSet flag to false for all target macros for this user
+    const targetMacros = await ctx.prisma.targetMacros.updateMany({
       where: { userId },
+      data: {
+        isSet: false, // isSet flag is false when user removes macros
+      },
     });
 
     return targetMacros;
