@@ -352,9 +352,11 @@ interface EditModalProps {
 
 export const EditModal = ({ foodEntry, handleClose }: EditModalProps) => {
   const [name, setName] = useState(foodEntry?.name || "");
-  const [protein, setProtein] = useState<number | null>(foodEntry?.protein || null);
-  const [carbs, setCarbs] = useState<number | null>(foodEntry?.carbs || null);
-  const [fat, setFat] = useState<number | null>(foodEntry?.fat || null);
+  const [protein, setProtein] = useState<string>(foodEntry?.protein?.toString() || "");
+  const [carbs, setCarbs] = useState<string>(foodEntry?.carbs?.toString() || "");
+  const [fat, setFat] = useState<string>(foodEntry?.fat?.toString() || "");
+
+
 
   const ctx = api.useContext();
   if (!foodEntry) return null;
@@ -390,9 +392,9 @@ export const EditModal = ({ foodEntry, handleClose }: EditModalProps) => {
       updateMutation.mutate({
         id: foodEntry.id,
         name,
-        protein: protein || 0,
-        carbs: carbs || 0,
-        fat: fat || 0,
+        protein: parseFloat(protein) || 0,
+        carbs: parseFloat(carbs) || 0,
+        fat: parseFloat(fat) || 0,
         date: foodEntry.date.toISOString(),
       });
     }
@@ -415,8 +417,8 @@ export const EditModal = ({ foodEntry, handleClose }: EditModalProps) => {
 
           <Input
             id="protein"
-            value={protein === null ? '' : protein}
-            onChange={e => setProtein(e.target.value === '' ? null : parseFloat(e.target.value))}
+            value={protein}
+            onChange={e => setProtein(e.target.value)}
             label="Protein"
             placeholder="Protein"
             numeric
@@ -424,20 +426,20 @@ export const EditModal = ({ foodEntry, handleClose }: EditModalProps) => {
 
           <Input
             id="carbs"
-            value={carbs === null ? '' : carbs}
-            onChange={e => setCarbs(e.target.value === '' ? null : parseFloat(e.target.value))}
+            value={carbs}
+            onChange={e => setCarbs(e.target.value)}
             label="Carbs"
-            numeric
             placeholder="Carbs"
+            numeric
           />
 
           <Input
             id="fat"
-            value={fat === null ? '' : fat}
-            onChange={e => setFat(e.target.value === '' ? null : parseFloat(e.target.value))}
+            value={fat}
+            onChange={e => setFat(e.target.value)}
             label="Fat"
-            numeric
             placeholder="Fat"
+            numeric
           />
 
           <DialogFooter>
