@@ -44,9 +44,9 @@ export const MealForm = ({
   const user = useUser();
   // Initialize state for form fields 
   const [name, setName] = useState("");
-  const [protein, setProtein] = useState<number | null>(null);
-  const [carbs, setCarbs] = useState<number | null>(null);
-  const [fat, setFat] = useState<number | null>(null);
+  const [protein, setProtein] = useState<string>("");
+  const [carbs, setCarbs] = useState<string>("");
+  const [fat, setFat] = useState<string>("");
 
 
 
@@ -61,9 +61,9 @@ export const MealForm = ({
     onSuccess: () => {
       // Clear form fields and set success state to true on successful mutation
       setName("");
-      setProtein(null);
-      setCarbs(null);
-      setFat(null);
+      setProtein("");
+      setCarbs("");
+      setFat("");
       toast.success("Your meal has been saved.");
       void ctx.food.getByDate.invalidate()
       // Focus the name input field
@@ -97,9 +97,9 @@ export const MealForm = ({
       setIsLoading(true);
       mutation.mutate({
         name,
-        protein: protein || 0,
-        carbs: carbs || 0,
-        fat: fat || 0,
+        protein: parseFloat(protein) || 0,
+        carbs: parseFloat(carbs) || 0,
+        fat: parseFloat(fat) || 0,
         date: dateString,
       });
 
@@ -107,6 +107,7 @@ export const MealForm = ({
       console.error("Failed to create food entry: Date is undefined");
     }
   };
+
 
   // Return the form
 
@@ -127,8 +128,11 @@ export const MealForm = ({
 
           <Input
             id="protein"
-            value={protein === null ? '' : protein}
-            onChange={e => setProtein(e.target.value === '' ? null : parseFloat(e.target.value))}
+            value={protein}
+            onChange={e => {
+              const val = e.target.value;
+              setProtein(val)
+            }}
             label="Protein"
             placeholder="Protein"
             numeric
@@ -136,20 +140,26 @@ export const MealForm = ({
 
           <Input
             id="carbs"
-            value={carbs === null ? '' : carbs}
-            onChange={e => setCarbs(e.target.value === '' ? null : parseFloat(e.target.value))}
+            value={carbs}
+            onChange={e => {
+              const val = e.target.value;
+              setCarbs(val)
+            }}
             label="Carbs"
-            numeric
             placeholder="Carbs"
+            numeric
           />
 
           <Input
             id="fat"
-            value={fat === null ? '' : fat}
-            onChange={e => setFat(e.target.value === '' ? null : parseFloat(e.target.value))}
+            value={fat}
+            onChange={e => {
+              const val = e.target.value;
+              setFat(val)
+            }}
             label="Fat"
-            numeric
             placeholder="Fat"
+            numeric
           />
 
           {isLoading ? (
