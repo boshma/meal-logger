@@ -2,12 +2,9 @@ import { useUser } from "@clerk/nextjs";
 import { type NextPage } from "next";
 import Head from "next/head";
 import { useState } from "react";
-import LoginPage from "~/components/loginpage";
-import SetTargetMacros, { TargetMacrosDialog, MacroSummary, MealForm, MealLog } from "~/components/meals";
 import Navbar from "~/components/navbar";
 import Image from "next/image";
-import { api } from "~/utils/api";
-import toast from "react-hot-toast";
+import SetTargetMacros, { TargetMacrosDialog } from "~/components/targets";
 
 const ProfilePage: NextPage = () => {
   const { user } = useUser();

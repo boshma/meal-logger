@@ -26,6 +26,20 @@ model FoodEntry {
   @@index([userId, date])
 }
 
+model SavedMeal {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  name      String
+  protein   Float    @db.Float
+  carbs     Float    @db.Float
+  fat       Float    @db.Float
+  userId    String
+
+  @@index([userId])
+}
+
+
 model TargetMacros {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now())
