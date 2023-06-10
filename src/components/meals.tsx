@@ -9,7 +9,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { Dispatch, SetStateAction } from 'react';
 import React from "react";
 import toast from "react-hot-toast";
-import { EditModal, useEditModal } from "./util/UseEditModal";
+import { EditModal, EditSavedMealModal, useEditModal, useEditSavedMealModal } from "./util/UseEditModal";
 import { FoodEntry, SavedMeal } from "@prisma/client";
 import {
   Table,
@@ -339,11 +339,18 @@ export const FoodCollection = () => {
     userId: user.user?.id || "",
   });
 
+  const editModal = useEditSavedMealModal();
+
+  const handleRowClick = (meal: SavedMeal) => {
+    editModal.openModal(meal);
+  };
+
   if (isLoading) {
     return <div>Loading...</div>;
   }
 
   return (
+    <>
     <Table>
       <TableHeader>
         <TableRow>
@@ -354,7 +361,7 @@ export const FoodCollection = () => {
         </TableRow>
       </TableHeader>
       {data?.map((meal) => (
-        <TableRow key={meal.id}>
+        <TableRow key={meal.id} onClick={() => handleRowClick(meal)}>
           <TableCell>{meal.name}</TableCell>
           <TableCell>{meal.protein}</TableCell>
           <TableCell>{meal.carbs}</TableCell>
@@ -362,10 +369,21 @@ export const FoodCollection = () => {
         </TableRow>
       ))}
     </Table>
-  );
+    {editModal.isOpen && (
+      <EditSavedMealModal
+        savedMeal={editModal.currentSavedMeal}
+        handleClose={() => {
+          editModal.closeModal();
+        }}
+      />
+    )}
+    </>
+  ); 
 };
 
+
 export const SavedMealForm = () => {
+  
   const user = useUser();
 
   const [name, setName] = useState("");
@@ -373,7 +391,7 @@ export const SavedMealForm = () => {
   const [carbs, setCarbs] = useState<string>("");
   const [fat, setFat] = useState<string>("");
   const ctx = api.useContext();
-  
+
   const mutation = api.food.createSavedMeal.useMutation({
     onSuccess: () => {
       toast.success("Saved meal created");
@@ -419,27 +437,26 @@ export const SavedMealForm = () => {
         label="Protein"
         placeholder="Protein"
         numeric
-        />
-        <Input
-          id="carbs"
-          value={carbs}
-          onChange={e => setCarbs(e.target.value)}
-          label="Carbs"
-          placeholder="Carbs"
-          numeric
-        />
-        <Input
-          id="fat"
-          value={fat}
-          onChange={e => setFat(e.target.value)}
-          label="Fat"
-          placeholder="Fat"
-          numeric
-        />
-        <Button type="submit" disabled={mutation.isLoading}>
-          {mutation.isLoading ? <ButtonLoading /> : "Save Food"}
-        </Button>
-      </form>
-    );
-  };
-  
+      />
+      <Input
+        id="carbs"
+        value={carbs}
+        onChange={e => setCarbs(e.target.value)}
+        label="Carbs"
+        placeholder="Carbs"
+        numeric
+      />
+      <Input
+        id="fat"
+        value={fat}
+        onChange={e => setFat(e.target.value)}
+        label="Fat"
+        placeholder="Fat"
+        numeric
+      />
+      <Button type="submit" disabled={mutation.isLoading}>
+        {mutation.isLoading ? <ButtonLoading /> : "Save Food"}
+      </Button>
+    </form>
+  );
+};

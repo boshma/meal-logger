@@ -1,7 +1,7 @@
 //src/components/util/UseEditModal.tsx
-//This is a custom hook that is used to edit the modal
+// Custom hooks for modals
 import { useState } from 'react';
-import { FoodEntry } from 'prisma/prisma-client';
+import { FoodEntry, SavedMeal } from 'prisma/prisma-client';
 import toast from 'react-hot-toast';
 import { api } from '~/utils/api';
 import { Button } from '../button';
@@ -143,6 +143,156 @@ export const EditModal = ({ foodEntry, handleClose }: EditModalProps) => {
             </Button>
 
 
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
+export const useEditSavedMealModal = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [currentSavedMeal, setCurrentSavedMeal] = useState<SavedMeal | null>(null);
+
+  function openModal(savedMeal : SavedMeal) {
+    setIsOpen(true);
+    setCurrentSavedMeal(savedMeal);
+  }
+
+  function closeModal() {
+    setIsOpen(false);
+    setCurrentSavedMeal(null);
+  }
+
+  return {
+    isOpen,
+    currentSavedMeal,
+    openModal,
+    closeModal
+  };
+};
+
+
+
+interface EditSavedMealModalProps {
+  savedMeal: SavedMeal | null;
+  handleClose: () => void;
+}
+
+export const EditSavedMealModal = ({ savedMeal, handleClose }: EditSavedMealModalProps) => {
+  const [name, setName] = useState(savedMeal?.name || '');
+  const [protein, setProtein] = useState(savedMeal?.protein.toString() || '');
+  const [carbs, setCarbs] = useState(savedMeal?.carbs.toString() || '');
+  const [fat, setFat] = useState(savedMeal?.fat.toString() || '');
+
+  const ctx = api.useContext();
+  if (!savedMeal) {
+    return null;
+  }
+
+  const updateMutation = api.food.updateSavedMeal.useMutation({
+    onSuccess: () => {
+      toast.success("Your meal has been updated.");
+      void ctx.food.getSavedMeals.invalidate();
+      handleClose();
+    },
+    onError: (e) => {
+      console.error("Failed to update meal", e);
+      toast.error("Failed to update meal, please try again later!");
+    },
+  });
+
+  const deleteMutation = api.food.deleteSavedMeal.useMutation({
+    onSuccess: () => {
+      toast.success("Your meal has been deleted.");
+      void ctx.food.getSavedMeals.invalidate();
+      handleClose();
+    },
+    onError: (e) => {
+      console.error("Failed to delete meal", e);
+      toast.error("Failed to delete meal, please try again later!");
+    },
+  });
+
+  const handleSubmit = (e: React.FormEvent) => {
+    if (!savedMeal) {
+      return null;
+    }
+    e.preventDefault();
+    if (savedMeal) {
+      updateMutation.mutate({
+        userId: savedMeal.userId,
+        mealId: savedMeal.id,
+        data: {
+          name,
+          protein: parseFloat(protein) || 0,
+          carbs: parseFloat(carbs) || 0,
+          fat: parseFloat(fat) || 0,
+        },
+      });
+    }
+  };
+
+  const handleDelete = () => {
+    if (!savedMeal) {
+      return null;
+    }
+    if (savedMeal) {
+      deleteMutation.mutate({
+        userId: savedMeal.userId,
+        mealId: savedMeal.id
+      });
+    }
+  };
+
+  return (
+    <Dialog open={!!savedMeal}>
+      <DialogContent handleClose={handleClose}>
+        <DialogHeader>
+          <DialogTitle>Edit Saved Meal</DialogTitle>
+        </DialogHeader>
+        <form onSubmit={handleSubmit} className="p-4 space-y-2">
+          <Input
+            id="name"
+            value={name}
+            onChange={e => setName(e.target.value)}
+            label="Name"
+            placeholder="Meal name"
+          />
+          <Input
+            id="protein"
+            value={protein}
+            onChange={e => setProtein(e.target.value)}
+            label="Protein"
+            placeholder="Protein"
+            numeric
+          />
+          <Input
+            id="carbs"
+            value={carbs}
+            onChange={e => setCarbs(e.target.value)}
+            label="Carbs"
+            placeholder="Carbs"
+            numeric
+          />
+          <Input
+            id="fat"
+            value={fat}
+            onChange={e => setFat(e.target.value)}
+            label="Fat"
+            placeholder="Fat"
+            numeric
+          />
+          <DialogFooter>
+            <Button type="submit" >
+              Update
+            </Button>
+            <Button onClick={(e) => {
+              e.preventDefault();
+              deleteMutation.mutate({ mealId: savedMeal.id, userId: savedMeal.userId });
+            }}>
+              Delete
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>
