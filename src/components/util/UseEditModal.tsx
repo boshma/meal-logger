@@ -14,7 +14,7 @@ export const useEditModal = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [currentFoodEntry, setCurrentFoodEntry] = useState<FoodEntry | null>(null);
 
-  function openModal(foodEntry : FoodEntry) {
+  function openModal(foodEntry: FoodEntry) {
     setIsOpen(true);
     setCurrentFoodEntry(foodEntry);
   }
@@ -154,7 +154,7 @@ export const useEditSavedMealModal = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [currentSavedMeal, setCurrentSavedMeal] = useState<SavedMeal | null>(null);
 
-  function openModal(savedMeal : SavedMeal) {
+  function openModal(savedMeal: SavedMeal) {
     setIsOpen(true);
     setCurrentSavedMeal(savedMeal);
   }
@@ -189,6 +189,19 @@ export const EditSavedMealModal = ({ savedMeal, handleClose }: EditSavedMealModa
   if (!savedMeal) {
     return null;
   }
+
+  const addMealToLogMutation = api.food.addMealToLog.useMutation({
+    onSuccess: () => {
+      toast.success("Your meal has been added to the log.");
+      void ctx.food.getSavedMeals.invalidate();
+      void ctx.food.getByDate.invalidate();
+      handleClose();
+    },
+    onError: (e) => {
+      console.error("Failed to add meal to log", e);
+      toast.error("Failed to add meal to log, please try again later!");
+    },
+  });
 
   const updateMutation = api.food.updateSavedMeal.useMutation({
     onSuccess: () => {
@@ -245,6 +258,19 @@ export const EditSavedMealModal = ({ savedMeal, handleClose }: EditSavedMealModa
     }
   };
 
+  const handleAddMealToLog = () => {
+    if (!savedMeal) {
+      return null;
+    }
+    if (savedMeal) {
+      addMealToLogMutation.mutate({
+        userId: savedMeal.userId,
+        mealId: savedMeal.id,
+        date: new Date().toISOString(),
+      });
+    }
+  };
+
   return (
     <Dialog open={!!savedMeal}>
       <DialogContent handleClose={handleClose}>
@@ -289,10 +315,17 @@ export const EditSavedMealModal = ({ savedMeal, handleClose }: EditSavedMealModa
             </Button>
             <Button onClick={(e) => {
               e.preventDefault();
+              handleAddMealToLog();
+            }}>
+              Add to Meal Log
+            </Button>
+            <Button onClick={(e) => {
+              e.preventDefault();
               deleteMutation.mutate({ mealId: savedMeal.id, userId: savedMeal.userId });
             }}>
               Delete
             </Button>
+
           </DialogFooter>
         </form>
       </DialogContent>
