@@ -274,7 +274,7 @@ export const MealsPage = () => {
 
       <div className="flex justify-center space-x-10 mt-10">
         <SavedMealForm />
-        <FoodCollection />
+        <FoodCollection selectedDate={selectedDate} />
       </div>
 
     </>
@@ -332,7 +332,7 @@ export const MacroSummary = ({ selectedDate }: { selectedDate: Date }) => {
   );
 };
 
-export const FoodCollection = () => {
+export const FoodCollection = ({ selectedDate }: { selectedDate: Date }) => {
   const user = useUser();
 
   const { data, isLoading } = api.food.getSavedMeals.useQuery({
@@ -370,13 +370,15 @@ export const FoodCollection = () => {
       ))}
     </Table>
     {editModal.isOpen && (
-      <EditSavedMealModal
-        savedMeal={editModal.currentSavedMeal}
-        handleClose={() => {
-          editModal.closeModal();
-        }}
-      />
-    )}
+  <EditSavedMealModal
+    savedMeal={editModal.currentSavedMeal}
+    handleClose={() => {
+      editModal.closeModal();
+    }}
+    selectedDate={selectedDate} // Pass selectedDate
+  />
+)}
+
     </>
   ); 
 };
