@@ -190,6 +190,8 @@ export const EditSavedMealModal = ({ savedMeal, handleClose }: EditSavedMealModa
     return null;
   }
 
+  
+
   const addMealToLogMutation = api.food.addMealToLog.useMutation({
     onSuccess: () => {
       toast.success("Your meal has been added to the log.");
@@ -263,13 +265,31 @@ export const EditSavedMealModal = ({ savedMeal, handleClose }: EditSavedMealModa
       return null;
     }
     if (savedMeal) {
-      addMealToLogMutation.mutate({
-        userId: savedMeal.userId,
-        mealId: savedMeal.id,
-        date: new Date().toISOString(),
-      });
+      // Get the current date
+      const currentDate = new Date();
+
+      // Get the timezone offset in minutes
+      const timezoneOffset = currentDate.getTimezoneOffset() * 60000;
+
+      // Create a new date object that includes the timezone offset
+      const localISOTime = new Date(currentDate.getTime() - timezoneOffset);
+
+      // Generate dateString using localISOTime
+      const dateString = `${localISOTime.getUTCFullYear()}-${String(localISOTime.getUTCMonth() + 1).padStart(2, '0')}-${String(localISOTime.getUTCDate()).padStart(2, '0')}T00:00:00Z`;
+
+      // Attempt to add a meal to log with the generated dateString
+      if (dateString) {
+        addMealToLogMutation.mutate({
+          userId: savedMeal.userId,
+          mealId: savedMeal.id,
+          date: dateString,
+        });
+      } else {
+        console.error("Failed to add meal to log: Date is undefined");
+      }
     }
   };
+
 
   return (
     <Dialog open={!!savedMeal}>
