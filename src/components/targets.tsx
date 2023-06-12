@@ -11,6 +11,36 @@ import { Input } from "./input";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "./dialog";
 
 
+export const MacroTargetBanner = () => {
+  const targetMacrosQuery = api.food.getTargetMacros.useQuery();
+
+
+  return (
+    <div className="flex justify-between items-center">
+      <div>
+        {targetMacrosQuery.data?.isSet === false ? (
+          <p>No target macros set</p>
+        ) : (
+          <>
+            <h2 className="text-2xl font-bold">Current Target Macros</h2>
+            <div className="flex flex-col space-y-2">
+              <div className="flex justify-between">
+                <span>Protein</span>
+                <span>{targetMacrosQuery.data?.protein || 0}g</span>
+                <span>Carbs</span>
+                <span>{targetMacrosQuery.data?.carbs || 0}g</span>
+                <span>Fat</span>
+                <span>{targetMacrosQuery.data?.fat || 0}g</span>
+              </div>
+
+            </div>
+          </>
+        )}
+      </div>
+    </div>
+  );
+};
+
 
 const SetTargetMacros = ({ onOpen }: { onOpen: () => void }) => {
   const [open, setOpen] = useState(false);

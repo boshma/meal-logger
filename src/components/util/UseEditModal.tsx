@@ -180,7 +180,7 @@ interface EditSavedMealModalProps {
   selectedDate: Date;
 }
 
-export const EditSavedMealModal = ({ savedMeal, handleClose,  selectedDate }: EditSavedMealModalProps) => {
+export const EditSavedMealModal = ({ savedMeal, handleClose, selectedDate }: EditSavedMealModalProps) => {
   const [name, setName] = useState(savedMeal?.name || '');
   const [protein, setProtein] = useState(savedMeal?.protein.toString() || '');
   const [carbs, setCarbs] = useState(savedMeal?.carbs.toString() || '');
@@ -190,8 +190,6 @@ export const EditSavedMealModal = ({ savedMeal, handleClose,  selectedDate }: Ed
   if (!savedMeal) {
     return null;
   }
-
-  
 
   const addMealToLogMutation = api.food.addMealToLog.useMutation({
     onSuccess: () => {
@@ -268,13 +266,13 @@ export const EditSavedMealModal = ({ savedMeal, handleClose,  selectedDate }: Ed
     if (savedMeal) {
       // Get the timezone offset in minutes
       const timezoneOffset = selectedDate.getTimezoneOffset() * 60000;
-  
+
       // Create a new date object that includes the timezone offset
       const localISOTime = new Date(selectedDate.getTime() - timezoneOffset);
-  
+
       // Generate dateString using localISOTime
       const dateString = `${localISOTime.getUTCFullYear()}-${String(localISOTime.getUTCMonth() + 1).padStart(2, '0')}-${String(localISOTime.getUTCDate()).padStart(2, '0')}T00:00:00Z`;
-  
+
       // Attempt to add a meal to log with the generated dateString
       if (dateString) {
         addMealToLogMutation.mutate({

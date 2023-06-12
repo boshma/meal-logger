@@ -23,6 +23,7 @@ import { Button, ButtonLoading } from "./button";
 import { Input } from "./input";
 import { Skeleton } from "./skeleton";
 import { ScrollArea } from "./scroll-area";
+import { MacroTargetBanner } from "./targets";
 
 
 
@@ -259,6 +260,7 @@ export const MealsPage = () => {
             </Button>}
           />
         </div>
+        <MacroTargetBanner />
       </div>
 
       <MacroSummary selectedDate={selectedDate} />
@@ -375,7 +377,7 @@ export const FoodCollection = ({ selectedDate }: { selectedDate: Date }) => {
     handleClose={() => {
       editModal.closeModal();
     }}
-    selectedDate={selectedDate} // Pass selectedDate
+    selectedDate={selectedDate}
   />
 )}
 
