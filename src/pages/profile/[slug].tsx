@@ -25,9 +25,7 @@ const ProfilePage: NextPage = () => {
         <meta name="description" content="Profile Page" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Image src = {user?.profileImageUrl || '/favicon.ico' } width={56} height={56} alt = "profile image" className = "rounded-full h-20 w-20"/>
       <main className="flex flex-col h-screen items-center justify-start">
-        {/* Show Navbar if user is signed in */}
         {!!user && <Navbar />}
         <SetTargetMacros onOpen={handleOpen} />
         <TargetMacrosDialog open={open} handleClose={handleClose} />

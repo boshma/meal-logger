@@ -24,6 +24,7 @@ import { Input } from "./input";
 import { Skeleton } from "./skeleton";
 import { ScrollArea } from "./scroll-area";
 import { MacroTargetBanner } from "./targets";
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "./dialog";
 
 
 
@@ -239,51 +240,6 @@ export const MealLog = ({ isLoading: isLoadingProp, selectedDate }: { isLoading:
   );
 };
 
-export const MealsPage = () => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [selectedDate, setSelectedDate] = useState(new Date());
-
-  return (
-    <>
-      <div className="flex flex-col items-center mb-2">
-
-        <div>
-          <DatePicker
-            selected={selectedDate}
-            onChange={(date: Date | null) => {
-              setSelectedDate(date || new Date());
-            }}
-            customInput={<Button variant="outline" size="sm" type="submit">
-              <div className="text-xl font-bold">
-                Selected Date: {new Date(selectedDate.getTime() - selectedDate.getTimezoneOffset() * 60000).toISOString().slice(0, 10)}
-              </div>
-            </Button>}
-          />
-        </div>
-        <MacroTargetBanner />
-      </div>
-
-      <MacroSummary selectedDate={selectedDate} />
-      <div className="flex justify-center space-x-10">
-        <MealForm
-          isLoading={isLoading}
-          setIsLoading={setIsLoading}
-          selectedDate={selectedDate}
-          setSelectedDate={setSelectedDate}
-        />
-        <MealLog isLoading={isLoading} selectedDate={selectedDate} />
-      </div>
-
-      <div className="flex justify-center space-x-10 mt-10">
-        <SavedMealForm />
-        <FoodCollection selectedDate={selectedDate} />
-      </div>
-
-    </>
-  );
-};
-
-
 // Component for displaying a summary of macros
 export const MacroSummary = ({ selectedDate }: { selectedDate: Date }) => {
   // Fetch food data for the selected date
@@ -334,7 +290,54 @@ export const MacroSummary = ({ selectedDate }: { selectedDate: Date }) => {
   );
 };
 
-export const FoodCollection = ({ selectedDate }: { selectedDate: Date }) => {
+export const MealsPage = () => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  return (
+    <>
+      <div className="flex flex-col items-center mb-2">
+
+        <div>
+          <DatePicker
+            selected={selectedDate}
+            onChange={(date: Date | null) => {
+              setSelectedDate(date || new Date());
+            }}
+            customInput={<Button variant="outline" size="sm" type="submit">
+              <div className="text-xl font-bold">
+                Selected Date: {new Date(selectedDate.getTime() - selectedDate.getTimezoneOffset() * 60000).toISOString().slice(0, 10)}
+              </div>
+            </Button>}
+          />
+        </div>
+        <MacroTargetBanner />
+      </div>
+
+      <MacroSummary selectedDate={selectedDate} />
+      <div className="flex justify-center space-x-10">
+        <MealForm
+          isLoading={isLoading}
+          setIsLoading={setIsLoading}
+          selectedDate={selectedDate}
+          setSelectedDate={setSelectedDate}
+        />
+        <MealLog isLoading={isLoading} selectedDate={selectedDate} />
+      </div>
+      <SavedMealFormDialog open={isModalOpen} handleClose={() => setIsModalOpen(false)} />
+      <div className="flex justify-center space-x-10 mt-10">
+      <FoodCollection isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} selectedDate={selectedDate} />
+      </div>
+
+    </>
+  );
+};
+
+
+
+
+export const FoodCollection = ({ isModalOpen, setIsModalOpen, selectedDate }: { isModalOpen: boolean, setIsModalOpen: Dispatch<SetStateAction<boolean>>, selectedDate: Date }) => {
   const user = useUser();
 
   const { data, isLoading } = api.food.getSavedMeals.useQuery({
@@ -352,44 +355,44 @@ export const FoodCollection = ({ selectedDate }: { selectedDate: Date }) => {
   }
 
   return (
-    <>
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead>Food Name</TableHead>
-          <TableHead>Protein</TableHead>
-          <TableHead>Carbs</TableHead>
-          <TableHead>Fat</TableHead>
-        </TableRow>
-      </TableHeader>
-      {data?.map((meal) => (
-        <TableRow key={meal.id} onClick={() => handleRowClick(meal)}>
-          <TableCell>{meal.name}</TableCell>
-          <TableCell>{meal.protein}</TableCell>
-          <TableCell>{meal.carbs}</TableCell>
-          <TableCell>{meal.fat}</TableCell>
-        </TableRow>
-      ))}
-    </Table>
-    {editModal.isOpen && (
-  <EditSavedMealModal
-    savedMeal={editModal.currentSavedMeal}
-    handleClose={() => {
-      editModal.closeModal();
-    }}
-    selectedDate={selectedDate}
-  />
-)}
-
-    </>
-  ); 
+    <div>
+      <ScrollArea className="h-52 w-full rounded-md border">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Food Name</TableHead>
+              <TableHead>Protein</TableHead>
+              <TableHead>Carbs</TableHead>
+              <TableHead>Fat</TableHead>
+            </TableRow>
+          </TableHeader>
+          {data?.map((meal) => (
+            <TableRow key={meal.id} onClick={() => handleRowClick(meal)}>
+              <TableCell>{meal.name}</TableCell>
+              <TableCell>{meal.protein}</TableCell>
+              <TableCell>{meal.carbs}</TableCell>
+              <TableCell>{meal.fat}</TableCell>
+            </TableRow>
+          ))}
+        </Table>
+        {editModal.isOpen && (
+          <EditSavedMealModal
+            savedMeal={editModal.currentSavedMeal}
+            handleClose={() => {
+              editModal.closeModal();
+            }}
+            selectedDate={selectedDate}
+          />
+        )}
+      </ScrollArea>
+      <Button className="w-full" onClick={() => setIsModalOpen(true)}>Add food to Collection</Button>
+      </div>
+  );
 };
 
 
-export const SavedMealForm = () => {
-  
+export const SavedMealFormDialog = ({ open, handleClose }: { open: boolean, handleClose: () => void }) => {
   const user = useUser();
-
   const [name, setName] = useState("");
   const [protein, setProtein] = useState<string>("");
   const [carbs, setCarbs] = useState<string>("");
@@ -399,11 +402,12 @@ export const SavedMealForm = () => {
   const mutation = api.food.createSavedMeal.useMutation({
     onSuccess: () => {
       toast.success("Saved meal created");
-      void ctx.food.getSavedMeals.invalidate()
+      void ctx.food.getSavedMeals.invalidate();
       setName("");
       setProtein("");
       setCarbs("");
       setFat("");
+      handleClose();
     },
     onError: (e) => {
       toast.error("Failed to create saved meal");
@@ -413,7 +417,6 @@ export const SavedMealForm = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
     mutation.mutate({
       userId: user.user?.id || "",
       data: {
@@ -426,41 +429,51 @@ export const SavedMealForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-2">
-      <Input
-        id="name"
-        value={name}
-        onChange={e => setName(e.target.value)}
-        label="Name"
-        placeholder="Food name"
-      />
-      <Input
-        id="protein"
-        value={protein}
-        onChange={e => setProtein(e.target.value)}
-        label="Protein"
-        placeholder="Protein"
-        numeric
-      />
-      <Input
-        id="carbs"
-        value={carbs}
-        onChange={e => setCarbs(e.target.value)}
-        label="Carbs"
-        placeholder="Carbs"
-        numeric
-      />
-      <Input
-        id="fat"
-        value={fat}
-        onChange={e => setFat(e.target.value)}
-        label="Fat"
-        placeholder="Fat"
-        numeric
-      />
-      <Button type="submit" disabled={mutation.isLoading}>
-        {mutation.isLoading ? <ButtonLoading /> : "Save Food"}
-      </Button>
-    </form>
+    <Dialog open={open}>
+      <DialogContent handleClose={handleClose}>
+        <DialogHeader>
+          <DialogTitle>Add Saved Meal</DialogTitle>
+        </DialogHeader>
+        <form onSubmit={handleSubmit} className="p-4 space-y-2">
+          <Input
+            id="name"
+            value={name}
+            onChange={e => setName(e.target.value)}
+            label="Name"
+            placeholder="Food name"
+          />
+          <Input
+            id="protein"
+            value={protein}
+            onChange={e => setProtein(e.target.value)}
+            label="Protein"
+            placeholder="Protein"
+            numeric
+          />
+          <Input
+            id="carbs"
+            value={carbs}
+            onChange={e => setCarbs(e.target.value)}
+            label="Carbs"
+            placeholder="Carbs"
+            numeric
+          />
+          <Input
+            id="fat"
+            value={fat}
+            onChange={e => setFat(e.target.value)}
+            label="Fat"
+            placeholder="Fat"
+            numeric
+          />
+          <DialogFooter>
+            <Button type="submit" disabled={mutation.isLoading}>
+              {mutation.isLoading ? <ButtonLoading /> : "Save Food"}
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
   );
 };
+
