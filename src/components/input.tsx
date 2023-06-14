@@ -25,11 +25,6 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
       }
     }
     
-    
-    
-    
-
-
     return (
       <div className="relative">
         <input

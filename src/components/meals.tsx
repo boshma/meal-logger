@@ -25,150 +25,13 @@ import { Skeleton } from "./skeleton";
 import { ScrollArea } from "./scroll-area";
 import { MacroTargetBanner } from "./targets";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "./dialog";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "./tabs";
 
 
 
 
-// Component for creating a meal form
-export const MealForm = ({
-  isLoading,
-  setIsLoading,
-  selectedDate,
-  setSelectedDate,
-}: {
-  isLoading: boolean,
-  setIsLoading: Dispatch<SetStateAction<boolean>>,
-  selectedDate: Date,
-  setSelectedDate: Dispatch<SetStateAction<Date>>,
-}) => {
-  // Get the current user
-  const user = useUser();
-  // Initialize state for form fields 
-  const [name, setName] = useState("");
-  const [protein, setProtein] = useState<string>("");
-  const [carbs, setCarbs] = useState<string>("");
-  const [fat, setFat] = useState<string>("");
 
 
-
-  const ctx = api.useContext();
-
-  const nameInputRef = React.useRef<HTMLInputElement>(null);
-
-
-
-  // Define mutation for creating a food entry
-  const mutation = api.food.create.useMutation({
-    onSuccess: () => {
-      // Clear form fields and set success state to true on successful mutation
-      setName("");
-      setProtein("");
-      setCarbs("");
-      setFat("");
-      toast.success("Your meal has been saved.");
-      void ctx.food.getByDate.invalidate()
-      // Focus the name input field
-      nameInputRef.current?.focus();
-      setIsLoading(false);
-    },
-    onError: (e) => {
-      console.error("Failed to create food entry", e);
-      toast.error("Failed to create food entry, please try again later!");
-      setIsLoading(false);
-    },
-  });
-
-  if (!user) return null;
-
-  // Define the form submit handler
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    // Get the timezone offset in minutes
-    const timezoneOffset = selectedDate.getTimezoneOffset() * 60000;
-
-    // Create a new date object that includes the timezone offset
-    const localISOTime = new Date(selectedDate.getTime() - timezoneOffset);
-
-    // Generate dateString using localISOTime
-    const dateString = `${localISOTime.getUTCFullYear()}-${String(localISOTime.getUTCMonth() + 1).padStart(2, '0')}-${String(localISOTime.getUTCDate()).padStart(2, '0')}T00:00:00Z`;
-
-    // Attempt to create a food entry with the form values
-    if (dateString) {
-      setIsLoading(true);
-      mutation.mutate({
-        name,
-        protein: parseFloat(protein) || 0,
-        carbs: parseFloat(carbs) || 0,
-        fat: parseFloat(fat) || 0,
-        date: dateString,
-      });
-
-    } else {
-      console.error("Failed to create food entry: Date is undefined");
-    }
-  };
-
-  // Return the form
-  return (
-    <div>
-      <div className="flex justify-between items-center">
-        <form onSubmit={handleSubmit} className="space-y-2">
-          <Input
-            id="name"
-            value={name}
-            onChange={e => setName(e.target.value)}
-            label="Name"
-            placeholder="Food name"
-            ref={nameInputRef}
-          />
-          <Input
-            id="protein"
-            value={protein}
-            onChange={e => {
-              const val = e.target.value;
-              setProtein(val)
-            }}
-            label="Protein"
-            placeholder="Protein"
-            numeric
-          />
-          <Input
-            id="carbs"
-            value={carbs}
-            onChange={e => {
-              const val = e.target.value;
-              setCarbs(val)
-            }}
-            label="Carbs"
-            placeholder="Carbs"
-            numeric
-          />
-          <Input
-            id="fat"
-            value={fat}
-            onChange={e => {
-              const val = e.target.value;
-              setFat(val)
-            }}
-            label="Fat"
-            placeholder="Fat"
-            numeric
-          />
-          {isLoading ? (
-            <ButtonLoading />
-          ) : (
-            <Button variant="default" size="sm" type="submit" className="w-full">Quick Add</Button>
-
-          )}
-        </form>
-      </div>
-      <div className="pt-2">
-      </div>
-    </div>
-  );
-
-};
 
 export const MealLog = ({ isLoading: isLoadingProp, selectedDate }: { isLoading: boolean, selectedDate: Date }) => {
   const { data, isLoading } = api.food.getByDate.useQuery({
@@ -290,6 +153,147 @@ export const MacroSummary = ({ selectedDate }: { selectedDate: Date }) => {
   );
 };
 
+// Component for creating a meal form
+export const MealForm = ({
+  isLoading,
+  setIsLoading,
+  selectedDate,
+  setSelectedDate,
+}: {
+  isLoading: boolean,
+  setIsLoading: Dispatch<SetStateAction<boolean>>,
+  selectedDate: Date,
+  setSelectedDate: Dispatch<SetStateAction<Date>>,
+}) => {
+  // Get the current user
+  const user = useUser();
+  // Initialize state for form fields 
+  const [name, setName] = useState("");
+  const [protein, setProtein] = useState<string>("");
+  const [carbs, setCarbs] = useState<string>("");
+  const [fat, setFat] = useState<string>("");
+
+
+
+  const ctx = api.useContext();
+
+  const nameInputRef = React.useRef<HTMLInputElement>(null);
+
+
+
+  // Define mutation for creating a food entry
+  const mutation = api.food.create.useMutation({
+    onSuccess: () => {
+      // Clear form fields and set success state to true on successful mutation
+      setName("");
+      setProtein("");
+      setCarbs("");
+      setFat("");
+      toast.success("Your meal has been saved.");
+      void ctx.food.getByDate.invalidate()
+      // Focus the name input field
+      nameInputRef.current?.focus();
+      setIsLoading(false);
+    },
+    onError: (e) => {
+      console.error("Failed to create food entry", e);
+      toast.error("Failed to create food entry, please try again later!");
+      setIsLoading(false);
+    },
+  });
+
+  if (!user) return null;
+
+  // Define the form submit handler
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    // Get the timezone offset in minutes
+    const timezoneOffset = selectedDate.getTimezoneOffset() * 60000;
+
+    // Create a new date object that includes the timezone offset
+    const localISOTime = new Date(selectedDate.getTime() - timezoneOffset);
+
+    // Generate dateString using localISOTime
+    const dateString = `${localISOTime.getUTCFullYear()}-${String(localISOTime.getUTCMonth() + 1).padStart(2, '0')}-${String(localISOTime.getUTCDate()).padStart(2, '0')}T00:00:00Z`;
+
+    // Attempt to create a food entry with the form values
+    if (dateString) {
+      setIsLoading(true);
+      mutation.mutate({
+        name,
+        protein: parseFloat(protein) || 0,
+        carbs: parseFloat(carbs) || 0,
+        fat: parseFloat(fat) || 0,
+        date: dateString,
+      });
+
+    } else {
+      console.error("Failed to create food entry: Date is undefined");
+    }
+  };
+
+  // Return the form
+  return (
+    <div className="w-full flex flex-col items-center">
+      <div className="flex justify-between items-center w-full">
+        <form onSubmit={handleSubmit} className="w-full space-y-2">
+          <Input
+            id="name"
+            value={name}
+            onChange={e => setName(e.target.value)}
+            label="Name"
+            placeholder="Food name"
+            ref={nameInputRef}
+          />
+          <Input
+            id="protein"
+            value={protein}
+            onChange={e => {
+              const val = e.target.value;
+              setProtein(val)
+            }}
+            label="Protein"
+            placeholder="Protein"
+            numeric
+          />
+          <Input
+            id="carbs"
+            value={carbs}
+            onChange={e => {
+              const val = e.target.value;
+              setCarbs(val)
+            }}
+            label="Carbs"
+            placeholder="Carbs"
+            numeric
+          />
+          <Input
+            id="fat"
+            value={fat}
+            onChange={e => {
+              const val = e.target.value;
+              setFat(val)
+            }}
+            label="Fat"
+            placeholder="Fat"
+            numeric
+          />
+          {isLoading ? (
+            <ButtonLoading />
+          ) : (
+            <Button variant="default" size="sm" type="submit" className="w-full">Quick Add</Button>
+
+          )}
+        </form>
+      </div>
+      <div className="pt-2">
+      </div>
+    </div>
+  );
+
+};
+
 export const MealsPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -316,23 +320,33 @@ export const MealsPage = () => {
       </div>
 
       <MacroSummary selectedDate={selectedDate} />
-      <div className="flex justify-center space-x-10">
-        <MealForm
-          isLoading={isLoading}
-          setIsLoading={setIsLoading}
-          selectedDate={selectedDate}
-          setSelectedDate={setSelectedDate}
-        />
+      <div className="flex justify-center space-x-10 w-full max-w-screen-lg mx-auto">
+        <Tabs defaultValue="mealform" className="w-full">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="mealform">Quick add</TabsTrigger>
+            <TabsTrigger value="foodcollection">Add from collection</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="mealform">
+            <MealForm
+              isLoading={isLoading}
+              setIsLoading={setIsLoading}
+              selectedDate={selectedDate}
+              setSelectedDate={setSelectedDate}
+            />
+          </TabsContent>
+          
+          <TabsContent value="foodcollection">
+            <FoodCollection isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} selectedDate={selectedDate} />
+          </TabsContent>
+        </Tabs>
         <MealLog isLoading={isLoading} selectedDate={selectedDate} />
       </div>
       <SavedMealFormDialog open={isModalOpen} handleClose={() => setIsModalOpen(false)} />
-      <div className="flex justify-center space-x-10 mt-10">
-      <FoodCollection isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} selectedDate={selectedDate} />
-      </div>
-
     </>
   );
 };
+
 
 
 
@@ -385,7 +399,7 @@ export const FoodCollection = ({ isModalOpen, setIsModalOpen, selectedDate }: { 
           />
         )}
       </ScrollArea>
-      <Button className="w-full" onClick={() => setIsModalOpen(true)}>Add food to Collection</Button>
+      <Button className="w-full" onClick={() => setIsModalOpen(true)}>Add new food to my Collection</Button>
       </div>
   );
 };
