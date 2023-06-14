@@ -26,6 +26,14 @@ import { ScrollArea } from "./scroll-area";
 import { MacroTargetBanner } from "./targets";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "./dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./tabs";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+  CardFooter,
+} from "./card";
 
 
 
@@ -69,28 +77,37 @@ export const MealLog = ({ isLoading: isLoadingProp, selectedDate }: { isLoading:
   );
 
   return (
-    <ScrollArea className="h-52 w-full rounded-md border">
-      <Table >
-        <TableHeader>
-          <TableRow>
-            <TableHead >Food Name</TableHead>
-            <TableHead>Protein</TableHead>
-            <TableHead>Carbs</TableHead>
-            <TableHead>Fat</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {data?.map((food) => (
-            <TableRow key={food.id} onClick={() => handleRowClick(food)}>
-              <TableCell>{food.name}</TableCell>
-              <TableCell>{food.protein}</TableCell>
-              <TableCell>{food.carbs}</TableCell>
-              <TableCell>{food.fat}</TableCell>
-            </TableRow>
-          ))}
-          {isLoadingProp && <SkeletonRow />}
-        </TableBody>
-      </Table>
+    <Card>
+      <CardHeader>
+        <CardTitle>Meal Log for {selectedDate.toDateString()}</CardTitle>
+        <CardDescription></CardDescription>
+      </CardHeader>
+      <CardContent>
+        <ScrollArea className="w-full h-80">
+          <Table >
+            <TableHeader>
+              <TableRow>
+                <TableHead>Food Name</TableHead>
+                <TableHead>Protein</TableHead>
+                <TableHead>Carbs</TableHead>
+                <TableHead>Fat</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {data?.map((food) => (
+                <TableRow key={food.id} onClick={() => handleRowClick(food)}>
+                  <TableCell>{food.name}</TableCell>
+                  <TableCell>{food.protein}</TableCell>
+                  <TableCell>{food.carbs}</TableCell>
+                  <TableCell>{food.fat}</TableCell>
+                </TableRow>
+              ))}
+              {isLoadingProp && <SkeletonRow />}
+            </TableBody>
+          </Table>
+        </ScrollArea>
+      </CardContent>
+      {/* <CardFooter></CardFooter> */}
       {editModal.isOpen && (
         <EditModal
           foodEntry={editModal.currentFoodEntry}
@@ -99,7 +116,7 @@ export const MealLog = ({ isLoading: isLoadingProp, selectedDate }: { isLoading:
           }}
         />
       )}
-    </ScrollArea>
+    </Card>
   );
 };
 
@@ -235,9 +252,16 @@ export const MealForm = ({
 
   // Return the form
   return (
-    <div className="w-full flex flex-col items-center">
-      <div className="flex justify-between items-center w-full">
-        <form onSubmit={handleSubmit} className="w-full space-y-2">
+    <Card className="w-full flex flex-col items-center space-y-4">
+    <CardHeader>
+      <CardTitle className="text-center">Add New Meal</CardTitle>
+      <CardDescription>
+        Provide the food name and its macro nutrient details.
+      </CardDescription>
+    </CardHeader>
+
+    <CardContent>
+        <form onSubmit={handleSubmit} className="space-y-2">
           <Input
             id="name"
             value={name}
@@ -286,12 +310,12 @@ export const MealForm = ({
 
           )}
         </form>
-      </div>
-      <div className="pt-2">
-      </div>
-    </div>
+        </CardContent>
+        <CardFooter>
+        quick add meal to daily total
+      </CardFooter>
+    </Card>
   );
-
 };
 
 export const MealsPage = () => {
@@ -320,7 +344,7 @@ export const MealsPage = () => {
       </div>
 
       <MacroSummary selectedDate={selectedDate} />
-      <div className="flex justify-center space-x-10 w-full max-w-screen-lg mx-auto">
+      <div className="flex justify-center space-x-10 w-full max-w-screen-lg mx-auto pb-4">
         <Tabs defaultValue="mealform" className="w-full">
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="mealform">Quick add</TabsTrigger>
@@ -335,7 +359,7 @@ export const MealsPage = () => {
               setSelectedDate={setSelectedDate}
             />
           </TabsContent>
-          
+
           <TabsContent value="foodcollection">
             <FoodCollection isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} selectedDate={selectedDate} />
           </TabsContent>
@@ -365,44 +389,52 @@ export const FoodCollection = ({ isModalOpen, setIsModalOpen, selectedDate }: { 
   };
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <LoadingPage />;
   }
 
   return (
-    <div>
-      <ScrollArea className="h-52 w-full rounded-md border">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Food Name</TableHead>
-              <TableHead>Protein</TableHead>
-              <TableHead>Carbs</TableHead>
-              <TableHead>Fat</TableHead>
-            </TableRow>
-          </TableHeader>
-          {data?.map((meal) => (
-            <TableRow key={meal.id} onClick={() => handleRowClick(meal)}>
-              <TableCell>{meal.name}</TableCell>
-              <TableCell>{meal.protein}</TableCell>
-              <TableCell>{meal.carbs}</TableCell>
-              <TableCell>{meal.fat}</TableCell>
-            </TableRow>
-          ))}
-        </Table>
-        {editModal.isOpen && (
-          <EditSavedMealModal
-            savedMeal={editModal.currentSavedMeal}
-            handleClose={() => {
-              editModal.closeModal();
-            }}
-            selectedDate={selectedDate}
-          />
-        )}
-      </ScrollArea>
-      <Button className="w-full" onClick={() => setIsModalOpen(true)}>Add new food to my Collection</Button>
-      </div>
+    <Card className="max-w-xl mx-auto overflow-hidden">
+      <CardHeader>
+        <CardTitle className="text-center">My Food Collection</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <ScrollArea className="h-52 w-full rounded-md border">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Food Name</TableHead>
+                <TableHead>Protein</TableHead>
+                <TableHead>Carbs</TableHead>
+                <TableHead>Fat</TableHead>
+              </TableRow>
+            </TableHeader>
+            {data?.map((meal) => (
+              <TableRow key={meal.id} onClick={() => handleRowClick(meal)}>
+                <TableCell>{meal.name}</TableCell>
+                <TableCell>{meal.protein}</TableCell>
+                <TableCell>{meal.carbs}</TableCell>
+                <TableCell>{meal.fat}</TableCell>
+              </TableRow>
+            ))}
+          </Table>
+          {editModal.isOpen && (
+            <EditSavedMealModal
+              savedMeal={editModal.currentSavedMeal}
+              handleClose={() => {
+                editModal.closeModal();
+              }}
+              selectedDate={selectedDate}
+            />
+          )}
+        </ScrollArea>
+      </CardContent>
+      <CardFooter>
+        <Button className="w-full" onClick={() => setIsModalOpen(true)}>Add new food to my Collection</Button>
+      </CardFooter>
+    </Card>
   );
 };
+
 
 
 export const SavedMealFormDialog = ({ open, handleClose }: { open: boolean, handleClose: () => void }) => {
