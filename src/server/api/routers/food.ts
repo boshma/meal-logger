@@ -6,12 +6,30 @@ import { z } from "zod";
 import { createTRPCRouter, publicProcedure, privateProcedure } from "~/server/api/trpc";
 import axios from 'axios';
 
+interface FoodData {
+  foods: {
+    food_name: string;
+    nf_protein: number;
+    nf_total_carbohydrate: number;
+    nf_total_fat: number;
+  }[];
+}
+
+interface ApiResponse {
+  foods: {
+    food_name: string;
+    nf_protein: number;
+    nf_total_carbohydrate: number;
+    nf_total_fat: number;
+  }[];
+}
+
 async function searchFoodInDatabase(query: string) {
   const NUTRIONIX_APP_ID = process.env.NUTRIONIX_APP_ID;
   const NUTRIONIX_APP_KEY = process.env.NUTRIONIX_APP_KEY;
 
   try {
-    const response = await axios.post(
+    const response = await axios.post<ApiResponse>(
       `https://trackapi.nutritionix.com/v2/natural/nutrients`,
       { query, timezone: "US/Western" }, // optional timezone
       {
@@ -22,7 +40,7 @@ async function searchFoodInDatabase(query: string) {
         },
       }
     );
-
+    
     if (!response.data || !response.data.foods || response.data.foods.length === 0) {
       throw new Error("No search results found");
     }
@@ -31,6 +49,10 @@ async function searchFoodInDatabase(query: string) {
     // You might want to adapt this depending on your requirements
     const foodData = response.data.foods[0];
 
+    if (!foodData) {
+      throw new Error("No food data found");
+    }
+
     return {
       name: foodData.food_name,
       protein: foodData.nf_protein,
@@ -38,11 +60,10 @@ async function searchFoodInDatabase(query: string) {
       fat: foodData.nf_total_fat,
     };
   } catch (error) {
-    console.error(`Error occurred while searching food in the database: ${error}`);
+    console.error(`Error occurred while searching food in the database: ${String(error)}`);
     throw error;
   }
 }
-
 
 
 // Create a new ratelimiter, that allows 2 requests per 5 seconds

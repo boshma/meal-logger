@@ -544,6 +544,7 @@ export const MealSearchBar = ({ selectedDate }: { selectedDate: Date }) => {
   const [search, setSearch] = useState("");
   const [searchInitiated, setSearchInitiated] = useState(false);
   const [selectedFood, setSelectedFood] = useState<SearchedFoodEntry | null>(null);
+  const ctx = api.useContext();
 
   const { data, isLoading, error, refetch } = api.food.search.useQuery(
     { query: search },
@@ -564,10 +565,10 @@ export const MealSearchBar = ({ selectedDate }: { selectedDate: Date }) => {
     },
   });
 
-  const handleSearch = () => {
+  const  handleSearch = () => {
     if (search) {
       setSearchInitiated(true);
-      refetch();
+      void ctx.food.search.invalidate()
     } else {
       console.error('No search input');
     }
