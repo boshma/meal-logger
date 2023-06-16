@@ -27,6 +27,7 @@
     "@trpc/server": "^10.18.0",
     "@upstash/ratelimit": "^0.4.3",
     "@upstash/redis": "^1.20.6",
+    "axios": "^1.4.0",
     "class-variance-authority": "^0.6.0",
     "clsx": "^1.2.1",
     "lucide-react": "^0.221.0",

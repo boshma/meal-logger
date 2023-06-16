@@ -1,10 +1,48 @@
 //src/server/api/routers/food.ts
-// Import necessary dependencies
 import { TRPCError } from "@trpc/server";
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure, privateProcedure } from "~/server/api/trpc";
+import axios from 'axios';
+
+async function searchFoodInDatabase(query: string) {
+  const NUTRIONIX_APP_ID = process.env.NUTRIONIX_APP_ID;
+  const NUTRIONIX_APP_KEY = process.env.NUTRIONIX_APP_KEY;
+
+  try {
+    const response = await axios.post(
+      `https://trackapi.nutritionix.com/v2/natural/nutrients`,
+      { query, timezone: "US/Western" }, // optional timezone
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'x-app-id': NUTRIONIX_APP_ID,
+          'x-app-key': NUTRIONIX_APP_KEY,
+        },
+      }
+    );
+
+    if (!response.data || !response.data.foods || response.data.foods.length === 0) {
+      throw new Error("No search results found");
+    }
+
+    // Here I'm taking the first food in the list.
+    // You might want to adapt this depending on your requirements
+    const foodData = response.data.foods[0];
+
+    return {
+      name: foodData.food_name,
+      protein: foodData.nf_protein,
+      carbs: foodData.nf_total_carbohydrate,
+      fat: foodData.nf_total_fat,
+    };
+  } catch (error) {
+    console.error(`Error occurred while searching food in the database: ${error}`);
+    throw error;
+  }
+}
+
 
 
 // Create a new ratelimiter, that allows 2 requests per 5 seconds
@@ -12,12 +50,6 @@ const ratelimit = new Ratelimit({
   redis: Redis.fromEnv(),
   limiter: Ratelimit.slidingWindow(2, "7 s"),
   analytics: true,
-  /**
-   * Optional prefix for the keys used in redis. This is useful if you want to share a redis
-   * instance with other applications and want to avoid key collisions. The default prefix is
-   * "@upstash/ratelimit"
-   */
-  //prefix: "@upstash/ratelimit",
 });
 
 // Create and export a router for food-related routes
@@ -316,10 +348,16 @@ export const foodRouter = createTRPCRouter({
 
       return savedMeal;
     }),
+    search: privateProcedure
+    .input(z.object({ query: z.string() }))
+    .query(async ({ ctx, input }) => {
+      // Use a food database API to search for the food
+      const food = await searchFoodInDatabase(input.query); // Implement this function
 
-
-
+      return food;
+    }),
 });
+
 
 // End of src/server/api/routers/food.ts
 

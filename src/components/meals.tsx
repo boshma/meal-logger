@@ -376,6 +376,7 @@ export const MealsPage = () => {
         <MealLog isLoading={isLoading} selectedDate={selectedDate} />
       </div>
       <SavedMealFormDialog open={isModalOpen} handleClose={() => setIsModalOpen(false)} />
+      <MealSearchBar selectedDate={selectedDate} />
     </>
   );
 };
@@ -532,3 +533,79 @@ export const SavedMealFormDialog = ({ open, handleClose }: { open: boolean, hand
   );
 };
 
+interface SearchedFoodEntry {
+  name: string;
+  protein: number;
+  carbs: number;
+  fat: number;
+}
+
+export const MealSearchBar = ({ selectedDate }: { selectedDate: Date }) => {
+  const [search, setSearch] = useState("");
+  const [searchInitiated, setSearchInitiated] = useState(false);
+  const [selectedFood, setSelectedFood] = useState<SearchedFoodEntry | null>(null);
+
+  const { data, isLoading, error, refetch } = api.food.search.useQuery(
+    { query: search },
+    {
+      enabled: false, // disable automatic refetch
+    }
+  );
+
+  const mutation = api.food.create.useMutation({
+    onSuccess: () => {
+      console.log("Food successfully added to meal log.");
+      setSelectedFood(null);
+      setSearchInitiated(false); // Reset search initiation state
+    },
+    onError: (e) => {
+      console.error("Failed to add food to meal log", e);
+      setSearchInitiated(false); // Reset search initiation state
+    },
+  });
+
+  const handleSearch = () => {
+    if (search) {
+      setSearchInitiated(true);
+      refetch();
+    } else {
+      console.error('No search input');
+    }
+  };
+  
+  const addFoodToLog = () => {
+    if (selectedFood) {
+      const { name, protein, carbs, fat } = selectedFood;
+      mutation.mutate({
+        name,
+        protein,
+        carbs,
+        fat,
+        date: selectedDate.toISOString(),
+      });
+    } else {
+      console.error('No food selected');
+    }
+  };
+
+  if (isLoading && searchInitiated) {
+    return <p>Loading...</p>;
+  }
+
+  if (error) {
+    return <p>Error: {error.message}</p>;
+  }
+
+  return (
+    <div>
+      <Input
+        type="text"
+        placeholder="Search for a meal"
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+      />
+      <Button onClick={handleSearch}>Search</Button>
+      <Button onClick={addFoodToLog} disabled={mutation.isLoading}>Add to Meal Log</Button>
+    </div>
+  );
+};
