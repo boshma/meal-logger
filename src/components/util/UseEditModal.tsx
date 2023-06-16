@@ -1,6 +1,6 @@
 //src/components/util/UseEditModal.tsx
 // Custom hooks for modals
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FoodEntry, SavedMeal } from 'prisma/prisma-client';
 import toast from 'react-hot-toast';
 import { api } from '~/utils/api';
@@ -41,11 +41,23 @@ interface EditModalProps {
 
 export const EditModal = ({ foodEntry, handleClose }: EditModalProps) => {
   const [name, setName] = useState(foodEntry?.name || "");
-  const [protein, setProtein] = useState<string>(foodEntry?.protein?.toString() || "");
-  const [carbs, setCarbs] = useState<string>(foodEntry?.carbs?.toString() || "");
-  const [fat, setFat] = useState<string>(foodEntry?.fat?.toString() || "");
+  const [protein, setProtein] = useState<string>(foodEntry?.protein?.toString() || "0");
+  const [carbs, setCarbs] = useState<string>(foodEntry?.carbs?.toString() || "0");
+  const [fat, setFat] = useState<string>(foodEntry?.fat?.toString() || "0");
+  const [servingSize, setServingSize] = useState<string>(foodEntry?.servingSize?.toString() || "1");
 
+  const [originalProtein, setOriginalProtein] = useState(foodEntry?.protein || 0);
+  const [originalCarbs, setOriginalCarbs] = useState(foodEntry?.carbs || 0);
+  const [originalFat, setOriginalFat] = useState(foodEntry?.fat || 0);
 
+  useEffect(() => {
+    if (foodEntry) {
+      setOriginalProtein(foodEntry.protein);
+      setOriginalCarbs(foodEntry.carbs);
+      setOriginalFat(foodEntry.fat);
+      setServingSize(foodEntry.servingSize.toString());
+    }
+  }, [foodEntry]);
 
   const ctx = api.useContext();
   if (!foodEntry) return null;
@@ -53,9 +65,8 @@ export const EditModal = ({ foodEntry, handleClose }: EditModalProps) => {
   const updateMutation = api.food.update.useMutation({
     onSuccess: () => {
       toast.success("Your meal has been updated.");
-      // Refetch the meal log after successful update
       void ctx.food.getByDate.invalidate()
-      handleClose(); // Close dialog after successful update
+      handleClose();
     },
     onError: (e) => {
       console.error("Failed to update food entry", e);
@@ -66,17 +77,28 @@ export const EditModal = ({ foodEntry, handleClose }: EditModalProps) => {
     onSuccess: () => {
       toast.success("Your meal has been deleted.");
       void ctx.food.getByDate.invalidate()
-      handleClose(); // Close dialog after successful deletion
+      handleClose();
     },
     onError: (e) => {
       console.error("Failed to delete food entry", e);
     },
   });
 
+  const handleServingSizeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newServingSize = parseFloat(e.target.value);
+    if (isNaN(newServingSize) || newServingSize === 0) {
+      setServingSize("");
+      return;
+    }
+
+    setServingSize(newServingSize.toString());
+    setProtein((originalProtein * newServingSize).toString());
+    setCarbs((originalCarbs * newServingSize).toString());
+    setFat((originalFat * newServingSize).toString());
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Mutate the food entry
     if (foodEntry) {
       updateMutation.mutate({
         id: foodEntry.id,
@@ -84,11 +106,11 @@ export const EditModal = ({ foodEntry, handleClose }: EditModalProps) => {
         protein: parseFloat(protein) || 0,
         carbs: parseFloat(carbs) || 0,
         fat: parseFloat(fat) || 0,
+        servingSize: parseFloat(servingSize) || 1,
         date: foodEntry.date.toISOString(),
       });
     }
   };
-
   return (
     <Dialog open={!!foodEntry}>
       <DialogContent handleClose={handleClose}>
@@ -129,6 +151,17 @@ export const EditModal = ({ foodEntry, handleClose }: EditModalProps) => {
             label="Fat"
             placeholder="Fat"
             numeric
+          />
+          <Input
+            type="number"
+            id="servingSize"
+            value={servingSize}
+            onChange={handleServingSizeChange}
+            label="Serving Size"
+            placeholder="Serving Size"
+            numeric
+            min="0"
+            max="100"
           />
 
           <DialogFooter>
@@ -242,6 +275,7 @@ export const EditSavedMealModal = ({ savedMeal, handleClose, selectedDate }: Edi
           protein: parseFloat(protein) || 0,
           carbs: parseFloat(carbs) || 0,
           fat: parseFloat(fat) || 0,
+
         },
       });
     }

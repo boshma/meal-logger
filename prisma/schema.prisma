@@ -1,6 +1,4 @@
 //prisma/schema.prisma
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 datasource db {
   provider     = "mysql"
@@ -21,6 +19,7 @@ model FoodEntry {
   carbs     Float    @db.Float
   fat       Float    @db.Float
   date      DateTime @db.Date
+  servingSize Float    @default(1)
   userId    String
 
   @@index([userId, date])

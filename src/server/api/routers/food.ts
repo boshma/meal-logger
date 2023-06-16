@@ -55,6 +55,7 @@ export const foodRouter = createTRPCRouter({
         protein: z.number(),
         carbs: z.number(),
         fat: z.number(),
+        servingSize: z.number().default(1),
         date: z.string(),
       })
     )
@@ -116,6 +117,7 @@ export const foodRouter = createTRPCRouter({
         protein: z.number(),
         carbs: z.number(),
         fat: z.number(),
+        servingSize: z.number().optional(),
         date: z.string(),
       })
     )

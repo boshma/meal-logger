@@ -15,15 +15,20 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
       if (numeric) {
+        // Check if the input is empty, valid number or a decimal number
+        const isEmptyInput = e.target.value === "";
         const isValidInput = /^$|^[0-9]*\.?[0-9]*$/.test(e.target.value);
         const isValidDecimal = /^\.\d+/.test(e.target.value);
-        if (isValidInput || isValidDecimal) {
+        
+        // If the input is valid or empty, trigger the onChange event
+        if (isEmptyInput || isValidInput || isValidDecimal) {
           onChange?.(e);
         }
       } else {
         onChange?.(e);
       }
     }
+    
     
     return (
       <div className="relative">
