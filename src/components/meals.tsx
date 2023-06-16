@@ -568,7 +568,7 @@ export const MealSearchBar = ({ selectedDate }: { selectedDate: Date }) => {
   const  handleSearch = () => {
     if (search) {
       setSearchInitiated(true);
-      void ctx.food.search.invalidate()
+      void refetch()
     } else {
       console.error('No search input');
     }
