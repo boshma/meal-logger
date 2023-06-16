@@ -3,7 +3,7 @@
 import { api } from "~/utils/api";
 import { LoadingPage } from "./loading";
 import { useUser } from "@clerk/nextjs";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { Dispatch, SetStateAction } from 'react';
@@ -190,16 +190,24 @@ export const MealLog = ({ isLoading: isLoadingProp, selectedDate }: { isLoading:
   const { data, isLoading } = api.food.getByDate.useQuery({
     date: `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, '0')}-${String(selectedDate.getDate()).padStart(2, '0')}`,
   });
+
+  const originalProtein = useRef<number>(0);
+  const originalCarbs = useRef<number>(0);
+  const originalFat = useRef<number>(0);
+
   const editModal = useEditModal();
 
+  const handleRowClick = (food: FoodEntry) => {
+    originalProtein.current = food.protein / food.servingSize;
+    originalCarbs.current = food.carbs / food.servingSize;
+    originalFat.current = food.fat / food.servingSize;
+    editModal.openModal(food);
+  };
+  
 
   if (isLoading) {
     return <LoadingPage />;
   }
-
-  const handleRowClick = (food: FoodEntry) => {
-    editModal.openModal(food);
-  };
 
   const SkeletonRow = () => (
     <TableRow>
@@ -252,13 +260,15 @@ export const MealLog = ({ isLoading: isLoadingProp, selectedDate }: { isLoading:
           </Table>
         </ScrollArea>
       </CardContent>
-      {/* <CardFooter></CardFooter> */}
       {editModal.isOpen && (
         <EditModal
           foodEntry={editModal.currentFoodEntry}
           handleClose={() => {
             editModal.closeModal();
           }}
+          originalProtein={originalProtein}
+          originalCarbs={originalCarbs}
+          originalFat={originalFat}
         />
       )}
     </Card>

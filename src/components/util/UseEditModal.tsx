@@ -1,6 +1,6 @@
 //src/components/util/UseEditModal.tsx
 // Custom hooks for modals
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { FoodEntry, SavedMeal } from 'prisma/prisma-client';
 import toast from 'react-hot-toast';
 import { api } from '~/utils/api';
@@ -35,29 +35,45 @@ export const useEditModal = () => {
 interface EditModalProps {
   foodEntry: FoodEntry | null;
   handleClose: () => void;
+  originalProtein: React.RefObject<number>;
+  originalCarbs: React.RefObject<number>;
+  originalFat: React.RefObject<number>;
 }
 
-
-
-export const EditModal = ({ foodEntry, handleClose }: EditModalProps) => {
+export const EditModal = ({
+  foodEntry,
+  handleClose,
+  originalProtein,
+  originalCarbs,
+  originalFat,
+}: EditModalProps) => {
   const [name, setName] = useState(foodEntry?.name || "");
   const [protein, setProtein] = useState<string>(foodEntry?.protein?.toString() || "0");
   const [carbs, setCarbs] = useState<string>(foodEntry?.carbs?.toString() || "0");
   const [fat, setFat] = useState<string>(foodEntry?.fat?.toString() || "0");
   const [servingSize, setServingSize] = useState<string>(foodEntry?.servingSize?.toString() || "1");
 
-  const [originalProtein, setOriginalProtein] = useState(foodEntry?.protein || 0);
-  const [originalCarbs, setOriginalCarbs] = useState(foodEntry?.carbs || 0);
-  const [originalFat, setOriginalFat] = useState(foodEntry?.fat || 0);
+  // Local state for original values
+  const [origProtein, setOrigProtein] = useState(originalProtein.current);
+  const [origCarbs, setOrigCarbs] = useState(originalCarbs.current);
+  const [origFat, setOrigFat] = useState(originalFat.current);
 
   useEffect(() => {
     if (foodEntry) {
-      setOriginalProtein(foodEntry.protein);
-      setOriginalCarbs(foodEntry.carbs);
-      setOriginalFat(foodEntry.fat);
+      // Update local state
+      setOrigProtein(originalProtein.current);
+      setOrigCarbs(originalCarbs.current);
+      setOrigFat(originalFat.current);
+
       setServingSize(foodEntry.servingSize.toString());
+      // set the state for protein, carbs, and fat too
+      setProtein(foodEntry.protein.toString());
+      setCarbs(foodEntry.carbs.toString());
+      setFat(foodEntry.fat.toString());
     }
-  }, [foodEntry]);
+  }, [foodEntry, originalProtein.current, originalCarbs.current, originalFat.current]);
+
+
 
   const ctx = api.useContext();
   if (!foodEntry) return null;
@@ -91,11 +107,15 @@ export const EditModal = ({ foodEntry, handleClose }: EditModalProps) => {
       return;
     }
 
+    // Calculate new values based on original values and new serving size
+    setProtein(((origProtein ?? 0) * newServingSize).toString());
+    setCarbs(((origCarbs ?? 0) * newServingSize).toString());
+    setFat(((origFat ?? 0) * newServingSize).toString());
+
+    // Update serving size after new values are set
     setServingSize(newServingSize.toString());
-    setProtein((originalProtein * newServingSize).toString());
-    setCarbs((originalCarbs * newServingSize).toString());
-    setFat((originalFat * newServingSize).toString());
   };
+
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
