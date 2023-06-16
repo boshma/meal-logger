@@ -597,7 +597,7 @@ export const MealSearchBar = ({ selectedDate }: { selectedDate: Date }) => {
     return <p>Error: {error.message}</p>;
   }
 
-  return (
+   return (
     <div>
       <Input
         type="text"
@@ -607,6 +607,37 @@ export const MealSearchBar = ({ selectedDate }: { selectedDate: Date }) => {
       />
       <Button onClick={handleSearch}>Search</Button>
       <Button onClick={addFoodToLog} disabled={mutation.isLoading}>Add to Meal Log</Button>
+
+      {/* Search Results Table */}
+      {data && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Search Results</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ScrollArea className="w-full h-80">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Food Name</TableHead>
+                    <TableHead>Protein</TableHead>
+                    <TableHead>Carbs</TableHead>
+                    <TableHead>Fat</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  <TableRow>
+                    <TableCell>{data.name}</TableCell>
+                    <TableCell>{data.protein}</TableCell>
+                    <TableCell>{data.carbs}</TableCell>
+                    <TableCell>{data.fat}</TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </ScrollArea>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 };
