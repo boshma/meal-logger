@@ -6,14 +6,6 @@ import { z } from "zod";
 import { createTRPCRouter, publicProcedure, privateProcedure } from "~/server/api/trpc";
 import axios from 'axios';
 
-interface FoodData {
-  foods: {
-    food_name: string;
-    nf_protein: number;
-    nf_total_carbohydrate: number;
-    nf_total_fat: number;
-  }[];
-}
 
 interface ApiResponse {
   foods: {
@@ -23,6 +15,7 @@ interface ApiResponse {
     nf_total_fat: number;
   }[];
 }
+
 
 async function searchFoodInDatabase(query: string) {
   const NUTRIONIX_APP_ID = process.env.NUTRIONIX_APP_ID;
@@ -40,13 +33,11 @@ async function searchFoodInDatabase(query: string) {
         },
       }
     );
-    
+
     if (!response.data || !response.data.foods || response.data.foods.length === 0) {
       throw new Error("No search results found");
     }
 
-    // Here I'm taking the first food in the list.
-    // You might want to adapt this depending on your requirements
     const foodData = response.data.foods[0];
 
     if (!foodData) {
@@ -59,6 +50,7 @@ async function searchFoodInDatabase(query: string) {
       carbs: foodData.nf_total_carbohydrate,
       fat: foodData.nf_total_fat,
     };
+
   } catch (error) {
     console.error(`Error occurred while searching food in the database: ${String(error)}`);
     throw error;
@@ -369,14 +361,44 @@ export const foodRouter = createTRPCRouter({
 
       return savedMeal;
     }),
-    search: privateProcedure
+  search: privateProcedure
     .input(z.object({ query: z.string() }))
     .query(async ({ ctx, input }) => {
       // Use a food database API to search for the food
-      const food = await searchFoodInDatabase(input.query); // Implement this function
+      const food = await searchFoodInDatabase(input.query);
 
       return food;
     }),
+  // Add a searched meal to the meal log
+  addSearchedMealToLog: privateProcedure
+    .input(
+      z.object({
+        userId: z.string(),
+        meal: z.object({
+          name: z.string(),
+          protein: z.number(),
+          carbs: z.number(),
+          fat: z.number(),
+        }),
+        date: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const food = await ctx.prisma.foodEntry.create({
+        data: {
+          name: input.meal.name,
+          protein: input.meal.protein,
+          carbs: input.meal.carbs,
+          fat: input.meal.fat,
+          date: new Date(input.date),
+          userId: input.userId,
+        },
+      });
+
+      return food;
+    }),
+
+
 });
 
 

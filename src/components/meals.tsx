@@ -9,7 +9,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { Dispatch, SetStateAction } from 'react';
 import React from "react";
 import toast from "react-hot-toast";
-import { EditModal, EditSavedMealModal, useEditModal, useEditSavedMealModal } from "./util/UseEditModal";
+import { EditModal, EditSavedMealModal, EditSearchedMealModal, useEditModal, useEditSavedMealModal, useEditSearchedMealModal } from "./util/UseEditModal";
 import { FoodEntry, SavedMeal } from "@prisma/client";
 import {
   Table,
@@ -203,7 +203,7 @@ export const MealLog = ({ isLoading: isLoadingProp, selectedDate }: { isLoading:
     originalFat.current = food.fat / food.servingSize;
     editModal.openModal(food);
   };
-  
+
 
   if (isLoading) {
     return <LoadingPage />;
@@ -335,7 +335,6 @@ export const MealsPage = () => {
   return (
     <>
       <div className="flex flex-col items-center mb-2">
-
         <div>
           <DatePicker
             selected={selectedDate}
@@ -355,9 +354,10 @@ export const MealsPage = () => {
       <MacroSummary selectedDate={selectedDate} />
       <div className="flex justify-center space-x-10 w-full max-w-screen-lg mx-auto pb-4">
         <Tabs defaultValue="mealform" className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
+          <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="mealform">Quick add</TabsTrigger>
             <TabsTrigger value="foodcollection">Add from collection</TabsTrigger>
+            <TabsTrigger value="search">Search</TabsTrigger>
           </TabsList>
 
           <TabsContent value="mealform">
@@ -372,14 +372,20 @@ export const MealsPage = () => {
           <TabsContent value="foodcollection">
             <FoodCollection isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} selectedDate={selectedDate} />
           </TabsContent>
+
+          <TabsContent value="search">
+            <MealSearchBar selectedDate={selectedDate} />
+          </TabsContent>
         </Tabs>
-        <MealLog isLoading={isLoading} selectedDate={selectedDate} />
+        <div className="w-full">
+          <MealLog isLoading={isLoading} selectedDate={selectedDate} />
+        </div>
       </div>
       <SavedMealFormDialog open={isModalOpen} handleClose={() => setIsModalOpen(false)} />
-      <MealSearchBar selectedDate={selectedDate} />
     </>
   );
 };
+
 
 
 
@@ -534,6 +540,15 @@ export const SavedMealFormDialog = ({ open, handleClose }: { open: boolean, hand
 };
 
 interface SearchedFoodEntry {
+  id: string;
+  name: string;
+  protein: number;
+  carbs: number;
+  fat: number;
+  servingSize: number;
+}
+
+interface FoodResponse {
   name: string;
   protein: number;
   carbs: number;
@@ -541,103 +556,101 @@ interface SearchedFoodEntry {
 }
 
 export const MealSearchBar = ({ selectedDate }: { selectedDate: Date }) => {
-  const [search, setSearch] = useState("");
-  const [searchInitiated, setSearchInitiated] = useState(false);
+  const [search, setSearch] = useState<string>("");
+  const [searchInitiated, setSearchInitiated] = useState<boolean>(false);
   const [selectedFood, setSelectedFood] = useState<SearchedFoodEntry | null>(null);
-  const ctx = api.useContext();
+  const editModal = useEditSearchedMealModal();
 
-  const { data, isLoading, error, refetch } = api.food.search.useQuery(
+  const {
+    data: foodData,
+    isLoading,
+    error,
+    refetch,
+  } = api.food.search.useQuery(
     { query: search },
     {
-      enabled: false, // disable automatic refetch
+      enabled: false,
+      onSuccess: () => {
+        setSearchInitiated(false);
+      },
     }
   );
 
-  const mutation = api.food.create.useMutation({
-    onSuccess: () => {
-      console.log("Food successfully added to meal log.");
-      setSelectedFood(null);
-      setSearchInitiated(false); // Reset search initiation state
-    },
-    onError: (e) => {
-      console.error("Failed to add food to meal log", e);
-      setSearchInitiated(false); // Reset search initiation state
-    },
-  });
-
-  const  handleSearch = () => {
-    if (search) {
-      setSearchInitiated(true);
-      void refetch()
-    } else {
-      console.error('No search input');
+  const food: SearchedFoodEntry | null = foodData
+    ? {
+      id: '',
+      name: foodData.name,
+      protein: foodData.protein,
+      carbs: foodData.carbs,
+      fat: foodData.fat,
+      servingSize: 1,
     }
+    : null;
+
+  const handleRowClick = (meal: SearchedFoodEntry) => {
+    setSelectedFood(meal);
+    editModal.openModal(meal);
   };
-  
-  const addFoodToLog = () => {
-    if (selectedFood) {
-      const { name, protein, carbs, fat } = selectedFood;
-      mutation.mutate({
-        name,
-        protein,
-        carbs,
-        fat,
-        date: selectedDate.toISOString(),
-      });
-    } else {
-      console.error('No food selected');
+
+  const handleSearch = (e?: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e?.key === 'Enter' || !e) {
+      if (search) {
+        setSearchInitiated(true);
+        refetch().catch((error) => {
+          console.error('Error refetching:', error);
+        });
+      } else {
+        console.error('No search input');
+      }
     }
   };
 
-  if (isLoading && searchInitiated) {
-    return <p>Loading...</p>;
-  }
 
-  if (error) {
-    return <p>Error: {error.message}</p>;
-  }
+  if (isLoading && searchInitiated) return <p>Loading...</p>;
+  if (error) return <p>Error: {error.message}</p>;
 
-   return (
+  return (
     <div>
       <Input
         type="text"
         placeholder="Search for a meal"
         value={search}
         onChange={(e) => setSearch(e.target.value)}
+        onKeyDown={handleSearch}
       />
-      <Button onClick={handleSearch}>Search</Button>
-      <Button onClick={addFoodToLog} disabled={mutation.isLoading}>Add to Meal Log</Button>
-
-      {/* Search Results Table */}
-      {data && (
+      {food && (
         <Card>
           <CardHeader>
-            <CardTitle>Search Results</CardTitle>
+            <CardTitle>Search Result</CardTitle>
           </CardHeader>
           <CardContent>
-            <ScrollArea className="w-full h-80">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Food Name</TableHead>
-                    <TableHead>Protein</TableHead>
-                    <TableHead>Carbs</TableHead>
-                    <TableHead>Fat</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  <TableRow>
-                    <TableCell>{data.name}</TableCell>
-                    <TableCell>{data.protein}</TableCell>
-                    <TableCell>{data.carbs}</TableCell>
-                    <TableCell>{data.fat}</TableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
-            </ScrollArea>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Food Name</TableHead>
+                  <TableHead>Protein</TableHead>
+                  <TableHead>Carbs</TableHead>
+                  <TableHead>Fat</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableRow onClick={() => handleRowClick(food)}>
+                <TableCell>{food.name}</TableCell>
+                <TableCell>{food.protein}</TableCell>
+                <TableCell>{food.carbs}</TableCell>
+                <TableCell>{food.fat}</TableCell>
+              </TableRow>
+            </Table>
           </CardContent>
         </Card>
+      )}
+      {editModal.isOpen && (
+        <EditSearchedMealModal
+          searchedMeal={editModal.currentSearchedMeal}
+          handleClose={editModal.closeModal}
+          selectedDate={selectedDate}
+        />
       )}
     </div>
   );
 };
+
