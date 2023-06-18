@@ -613,7 +613,7 @@ export const MealSearchBar = ({ selectedDate }: { selectedDate: Date }) => {
     <div>
       <Input
         type="text"
-        placeholder="Search for a meal"
+        placeholder="Search for a meal **Powered By Nutritionix**"
         value={search}
         onChange={(e) => setSearch(e.target.value)}
         onKeyDown={handleSearch}
@@ -641,6 +641,9 @@ export const MealSearchBar = ({ selectedDate }: { selectedDate: Date }) => {
               </TableRow>
             </Table>
           </CardContent>
+          <CardFooter>
+            Powered by Nutritionix
+          </CardFooter>
         </Card>
       )}
       {editModal.isOpen && (
