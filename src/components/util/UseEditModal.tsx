@@ -496,7 +496,7 @@ export const EditSearchedMealModal = ({ searchedMeal, handleClose, selectedDate 
   }
   return (
     <Dialog open={!!searchedMeal}>
-      <DialogContent>
+      <DialogContent  handleClose={handleClose}>
         <DialogHeader>
           <DialogTitle>Add Searched Meal to Log</DialogTitle>
         </DialogHeader>
