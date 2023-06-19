@@ -70,6 +70,18 @@ export default {
         "accordion-up": "accordion-up 0.2s ease-out",
         pulse: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
       },
+      spacing: {
+        'extra-loose': '2.5em',
+        'extra-tight': '0.7em',
+      },
+      lineHeight: {
+        'extra-loose': '2.2',
+        'extra-tight': '1.2',
+      },
+      fontWeight: {
+        'extra-bold': 800,
+        'extra-light': 200,
+      },
     },
   },
   plugins: [require("tailwindcss-animate"),  

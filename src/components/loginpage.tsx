@@ -12,14 +12,14 @@ import {
 import Link from 'next/link';
 
 const LoginPage: React.FC = () => (
-  <div className="min-h-screen bg-background flex items-center justify-center">
-    <Card className="container max-w-md transform transition-transform duration-500 ease-in-out hover:scale-105 hover:shadow-lg">
+  <div className="min-h-screen bg-background flex items-center justify-center px-4 sm:px-6">
+    <Card className="container max-w-md py-8 px-6 transform transition-transform duration-500 ease-in-out hover:scale-105 hover:shadow-lg">
       <CardHeader>
-        <CardTitle className="text-center text-5xl font-bold text-primary">
+        <CardTitle className="text-center text-4xl sm:text-5xl font-extrabold text-primary">
           Welcome to Fitache
         </CardTitle>
-        <CardDescription className="text-center py-6 text-foreground">
-          The most convienent macrotracking app.
+        <CardDescription className="text-center py-6 text-lg font-light text-foreground leading-extra-loose">
+          The most convenient macro-tracking app.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -43,10 +43,10 @@ const LoginPage: React.FC = () => (
             </AccordionContent>
           </AccordionItem>
         </Accordion>
-      </CardContent>
-      <CardFooter className="justify-center">
+        </CardContent>
+      <CardFooter className="justify-center pt-8">
         <SignInButton>
-          <Button variant={'ghost'} className="animate-pulse">
+          <Button variant={'ghost'} className="w-full text-lg py-3 font-bold animate-pulse">
             Sign in
           </Button>
         </SignInButton>
