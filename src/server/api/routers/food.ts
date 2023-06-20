@@ -13,6 +13,7 @@ interface ApiResponse {
     nf_protein: number;
     nf_total_carbohydrate: number;
     nf_total_fat: number;
+    serving_weight_grams: number;
   }[];
 }
 
@@ -24,7 +25,7 @@ async function searchFoodInDatabase(query: string) {
   try {
     const response = await axios.post<ApiResponse>(
       `https://trackapi.nutritionix.com/v2/natural/nutrients`,
-      { query, timezone: "US/Western" }, // optional timezone
+      { query, timezone: "US/Western" },
       {
         headers: {
           'Content-Type': 'application/json',
@@ -45,10 +46,11 @@ async function searchFoodInDatabase(query: string) {
     }
 
     return {
-      name: foodData.food_name,
+      name: `${foodData.food_name} (${foodData.serving_weight_grams}g)`,
       protein: foodData.nf_protein,
       carbs: foodData.nf_total_carbohydrate,
       fat: foodData.nf_total_fat,
+      servingSize: foodData.serving_weight_grams,
     };
 
   } catch (error) {
@@ -56,6 +58,7 @@ async function searchFoodInDatabase(query: string) {
     throw error;
   }
 }
+
 
 
 // Create a new ratelimiter, that allows 2 requests per 5 seconds

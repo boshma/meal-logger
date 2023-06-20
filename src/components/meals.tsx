@@ -548,13 +548,6 @@ interface SearchedFoodEntry {
   servingSize: number;
 }
 
-interface FoodResponse {
-  name: string;
-  protein: number;
-  carbs: number;
-  fat: number;
-}
-
 export const MealSearchBar = ({ selectedDate }: { selectedDate: Date }) => {
   const [search, setSearch] = useState<string>("");
   const [searchInitiated, setSearchInitiated] = useState<boolean>(false);
