@@ -52,6 +52,22 @@ export default {
         sm: "calc(var(--radius) - 4px)",
       },
       keyframes: {
+        slideInFromTop: {
+          '0%': { transform: 'translateY(-100%)', opacity: 0 },
+          '100%': { transform: 'translateY(0)', opacity: 1 },
+        },
+        slideInFromBottom: {
+          '0%': { transform: 'translateY(100%)', opacity: 0 },
+          '100%': { transform: 'translateY(0)', opacity: 1 },
+        },
+        slideInFromRight: {
+          '0%': { transform: 'translateX(100%)', opacity: 0 },
+          '100%': { transform: 'translateX(0)', opacity: 1 },
+        },
+        fadeIn: {
+          '0%': { opacity: 0 },
+          '100%': { opacity: 1 },
+        },
         "accordion-down": {
           from: { height: 0 },
           to: { height: "var(--radix-accordion-content-height)" },
@@ -66,6 +82,10 @@ export default {
         },
       },
       animation: {
+        slideInFromTop: 'slideInFromTop 1s ease-out',
+        slideInFromBottom: 'slideInFromBottom 1s ease-out',
+        slideInFromRight: 'slideInFromRight 1s ease-out',
+        fadeIn: 'fadeIn 1s ease-out',
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         pulse: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
@@ -82,9 +102,16 @@ export default {
         'extra-bold': 800,
         'extra-light': 200,
       },
+      fontFamily: {
+        'body': ['Open Sans', 'sans-serif'],
+        'heading': ['Poppins', 'sans-serif']
+      },
+      letterSpacing: {
+        'tightest': '-.075em',
+      },
     },
   },
-  plugins: [require("tailwindcss-animate"),  
+  plugins: [require("tailwindcss-animate"),
   require('@tailwindcss/forms'),
   ]
 
