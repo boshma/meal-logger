@@ -21,7 +21,7 @@ const Navbar = () => {
       <NavigationMenu>
         <NavigationMenuList>
           <NavigationMenuItem className={navigationMenuTriggerStyle()} >
-            <Link href={`/profile/${user?.fullName || 'default'}`}>Profile</Link>
+            <Link href={`/profile/${user?.username || 'default'}`}>Profile</Link>
           </NavigationMenuItem>
           <NavigationMenuItem className={navigationMenuTriggerStyle()}>
             <Link href={`/`}>Dashboard</Link>

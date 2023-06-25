@@ -377,11 +377,11 @@ export const MealsPage = () => {
             <MealSearchBar selectedDate={selectedDate} />
           </TabsContent>
         </Tabs>
-       
+
       </div>
       <div className="w-full">
-          <MealLog isLoading={isLoading} selectedDate={selectedDate} />
-        </div>
+        <MealLog isLoading={isLoading} selectedDate={selectedDate} />
+      </div>
       <SavedMealFormDialog open={isModalOpen} handleClose={() => setIsModalOpen(false)} />
     </>
   );

@@ -5,6 +5,9 @@ import { Redis } from "@upstash/redis";
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure, privateProcedure } from "~/server/api/trpc";
 import axios from 'axios';
+import { clerkClient } from "@clerk/nextjs/server";
+import { filterUserForClient } from "../../helpers/filterUserForClient";
+
 
 
 interface ApiResponse {
@@ -73,6 +76,33 @@ export const foodRouter = createTRPCRouter({
   // Define a private route that retrieves all food entries for a user
   getAll: privateProcedure.query(({ ctx }) => {
     return ctx.prisma.foodEntry.findMany({ where: { userId: ctx.userId } });
+  }),
+  getUserByUsername: publicProcedure
+  .input(z.object({ username: z.string() }))
+  .query(async ({ input }) => {
+    const [user] = await clerkClient.users.getUserList({
+      username: [input.username],
+    });
+
+    if (!user) {
+      // if we hit here we need a unsantized username so hit api once more and find the user.
+      const users = (
+        await clerkClient.users.getUserList({
+          limit: 200,
+        })
+      )
+      const user = users.find((user) => user.externalAccounts.find((account) => account.username === input.username));
+      if (!user) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "User not found",
+        });
+      }
+      return filterUserForClient(user)
+    }
+
+    return filterUserForClient(user);
+
   }),
 
   // Define a private route that retrieves all food entries for a user on a given date
@@ -400,6 +430,7 @@ export const foodRouter = createTRPCRouter({
 
       return food;
     }),
+    
 
 
 });
