@@ -39,13 +39,13 @@ async function searchFoodInDatabase(query: string) {
     );
 
     if (!response.data || !response.data.foods || response.data.foods.length === 0) {
-      throw new Error("No search results found");
+      throw new TRPCError({ code: 'NOT_FOUND', message: 'No search results found' });
     }
 
     const foodData = response.data.foods[0];
 
     if (!foodData) {
-      throw new Error("No food data found");
+      throw new TRPCError({ code: 'NOT_FOUND', message: 'No food data found' });
     }
 
     return {
@@ -57,10 +57,15 @@ async function searchFoodInDatabase(query: string) {
     };
 
   } catch (error) {
-    console.error(`Error occurred while searching food in the database: ${String(error)}`);
-    throw error;
+    if (axios.isAxiosError(error) && error.response?.status === 404) {
+      throw new TRPCError({ code: 'NOT_FOUND', message: 'Food not found' });
+    } else {
+      console.error(`Error occurred while searching food in the database: ${String(error)}`);
+      throw error;
+    }
   }
 }
+
 
 
 

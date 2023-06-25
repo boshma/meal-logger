@@ -78,12 +78,12 @@ export const MealForm = ({
       // Focus the name input field
       nameInputRef.current?.focus();
       setIsLoading(false);
-    },
-    onError: (e) => {
+    }, onError: (e) => {
       console.error("Failed to create food entry", e);
       toast.error("Failed to create food entry, please try again later!");
       setIsLoading(false);
     },
+
   });
 
   if (!user) return null;
@@ -567,8 +567,17 @@ export const MealSearchBar = ({ selectedDate }: { selectedDate: Date }) => {
       onSuccess: () => {
         setSearchInitiated(false);
       },
+      onError: (e) => {
+        console.error("Failed to find food in Nutrit. db.", e);
+        toast.error(e.message || "Failed to find food in Nutritionix database");
+        if (e.message === "No search results found" || e.message === "Food not found") {
+          setSearch('');
+          setSearchInitiated(false);
+        }
+      },
     }
   );
+
 
   const food: SearchedFoodEntry | null = foodData
     ? {
@@ -600,7 +609,8 @@ export const MealSearchBar = ({ selectedDate }: { selectedDate: Date }) => {
   };
 
 
-  if (isLoading && searchInitiated) return <p>Loading...</p>;
+
+  if (isLoading && searchInitiated) return <LoadingPage />;
   if (error) return <p>Error: {error.message}</p>;
 
   return (
