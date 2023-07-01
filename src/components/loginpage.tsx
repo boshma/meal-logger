@@ -1,14 +1,14 @@
 // src/components/LoginPage.tsx
 import React from 'react';
 import { SignInButton } from "@clerk/nextjs";
-import { Button } from './button';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from './card';
+import { Button } from './ui/button';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from './ui/card';
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "~/components/accordion"
+} from "~/components/ui/accordion"
 import Link from 'next/link';
 
 const LoginPage: React.FC = () => (

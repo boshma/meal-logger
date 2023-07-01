@@ -4,11 +4,11 @@ import { useEffect, useRef, useState } from 'react';
 import { FoodEntry, SavedMeal } from 'prisma/prisma-client';
 import toast from 'react-hot-toast';
 import { api } from '~/utils/api';
-import { Button } from '../button';
-import { Input } from '../input';
+import { Button } from '../ui/button';
+import { Input } from '../ui/input';
 import "react-datepicker/dist/react-datepicker.css";
 import React from "react";
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '../dialog';
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '../ui/dialog';
 import { useUser } from '@clerk/nextjs';
 
 export const useEditModal = () => {

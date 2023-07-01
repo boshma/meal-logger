@@ -4,9 +4,9 @@ import Head from "next/head";
 import { useState } from "react";
 import Navbar from "~/components/navbar";
 import Image from "next/image";
-import SetTargetMacros, { TargetMacrosDialog } from "~/components/targets";
+import SetTargetMacros, { TargetMacrosDialog } from "~/components/meal-dashboard/targets";
 import { generateSSGHelper } from "~/server/helpers/ssgHelper";
-import { MealLog } from "~/components/meals";
+import { MealLog } from "~/components/meal-dashboard/meals";
 
 const ProfilePage: NextPage = () => {
   const { user } = useUser();

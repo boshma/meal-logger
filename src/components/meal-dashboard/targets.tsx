@@ -6,9 +6,9 @@ import { useEffect, useState } from "react";
 import "react-datepicker/dist/react-datepicker.css";
 import React from "react";
 import toast from "react-hot-toast";
-import { Button } from "./button";
-import { Input } from "./input";
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "./dialog";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "../ui/dialog";
 
 
 export const MacroTargetBanner = () => {

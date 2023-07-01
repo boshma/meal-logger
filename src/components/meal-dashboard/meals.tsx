@@ -1,7 +1,7 @@
 //src/components/meals.tsx
 // Import necessary dependencies
 import { api } from "~/utils/api";
-import { LoadingPage } from "./loading";
+import { LoadingPage } from "../ui/loading";
 import { useUser } from "@clerk/nextjs";
 import { useEffect, useRef, useState } from "react";
 import DatePicker from "react-datepicker";
@@ -9,7 +9,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { Dispatch, SetStateAction } from 'react';
 import React from "react";
 import toast from "react-hot-toast";
-import { EditModal, EditSavedMealModal, EditSearchedMealModal, useEditModal, useEditSavedMealModal, useEditSearchedMealModal } from "./util/UseEditModal";
+import { EditModal, EditSavedMealModal, EditSearchedMealModal, useEditModal, useEditSavedMealModal, useEditSearchedMealModal } from "../hooks/UseEditModal";
 import { FoodEntry, SavedMeal } from "@prisma/client";
 import {
   Table,
@@ -18,14 +18,14 @@ import {
   TableRow,
   TableHead,
   TableCell,
-} from './table';
-import { Button, ButtonLoading } from "./button";
-import { Input } from "./input";
-import { Skeleton } from "./skeleton";
-import { ScrollArea } from "./scroll-area";
+} from '../ui/table';
+import { Button, ButtonLoading } from "../ui/button";
+import { Input } from "../ui/input";
+import { Skeleton } from "../ui/skeleton";
+import { ScrollArea } from "../ui/scroll-area";
 import { MacroTargetBanner } from "./targets";
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "./dialog";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "./tabs";
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "../ui/dialog";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import {
   Card,
   CardHeader,
@@ -33,7 +33,7 @@ import {
   CardDescription,
   CardContent,
   CardFooter,
-} from "./card";
+} from "../ui/card";
 
 
 

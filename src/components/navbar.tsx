@@ -6,8 +6,8 @@ import {
   NavigationMenuItem,
   NavigationMenuTrigger,
   NavigationMenuLink,
-} from './navigation-menu';
-import { navigationMenuTriggerStyle } from "./navigation-menu"
+} from './ui/navigation-menu';
+import { navigationMenuTriggerStyle } from "./ui/navigation-menu"
 import Link from "next/link";
 
 const Navbar = () => {

@@ -4,7 +4,7 @@ import { GetStaticProps, NextPage } from "next";
 import Head from "next/head";
 import { useState } from "react";
 import LoginPage from "~/components/loginpage";
-import { MealsPage } from "~/components/meals";
+import { MealsPage } from "~/components/meal-dashboard/meals";
 import Navbar from "~/components/navbar";
 import { generateSSGHelper } from "~/server/helpers/ssgHelper";
 
