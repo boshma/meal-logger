@@ -28,7 +28,7 @@ const LoginPage: React.FC = () => (
             <AccordionItem value="item-1">
               <AccordionTrigger>About Fitache</AccordionTrigger>
               <AccordionContent>
-                Fitache is an application designed to help you track your macronutrients intake and meals with ease. Users can "quick add", add meals to their meal log from their collection, or add meals to the meal log via Nutritionix api. You can find the opensource code <a target="_blank" href="https://github.com/boshma/meal-logger">here (click)</a>
+              Fitache is an application designed to help you track your macronutrients intake and meals with ease. Users can &apos;quick add&apos;, add meals to their meal log from their collection, or add meals to the meal log via Nutritionix api. You can find the opensource code <a target="_blank" href="https://github.com/boshma/meal-logger">here (click)</a>
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="item-2">
