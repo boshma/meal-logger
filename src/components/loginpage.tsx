@@ -28,13 +28,13 @@ const LoginPage: React.FC = () => (
             <AccordionItem value="item-1">
               <AccordionTrigger>About Fitache</AccordionTrigger>
               <AccordionContent>
-                Fitache is an application designed to help you track your macronutrients intake and meals with ease. It uses the nutritionix API to fetch data about various food items. You can find the opensource code <a target="_blank" href="https://github.com/boshma/meal-logger">here (click)</a>
+                Fitache is an application designed to help you track your macronutrients intake and meals with ease. Users can "quick add", add meals to their meal log from their collection, or add meals to the meal log via Nutritionix api. You can find the opensource code <a target="_blank" href="https://github.com/boshma/meal-logger">here (click)</a>
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="item-2">
               <AccordionTrigger>Technologies Used</AccordionTrigger>
               <AccordionContent>
-                This application is built using a mix of technologies including Next.js, Tailwind, TRPC, and Typescript.(Apart of the T3 stack). The application is hosted on Vercel and uses Clerk for authentication. Data is stored via PlanetScale.
+                This application is built using a mix of technologies including Next.js, Tailwind, TRPC, and Typescript (apart of the T3 stack). The application is hosted on Vercel and uses Clerk for authentication. Data is stored via PlanetScale.
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="item-3">
