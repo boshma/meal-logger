@@ -34,7 +34,7 @@ const LoginPage: React.FC = () => (
             <AccordionItem value="item-2">
               <AccordionTrigger>Technologies Used</AccordionTrigger>
               <AccordionContent>
-                This application is built using a mix of powerful technologies including Next.js for frontend, PlanetScale for database, TRPC for remote procedure calls, Vercel for deployment, Prisma as an ORM, Clerk.dev for authentication, and the Nutritionix API for nutrition data.
+                This application is built using a mix of technologies including Next.js, Tailwind, TRPC, and Typescript.(Apart of the T3 stack). The application is hosted on Vercel and uses Clerk for authentication. Data is stored via PlanetScale.
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="item-3">
