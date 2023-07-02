@@ -1,12 +1,10 @@
 import { useUser } from "@clerk/nextjs";
-import { GetStaticProps, type NextPage } from "next";
+import { type NextPage } from "next";
 import Head from "next/head";
 import { useState } from "react";
+import { TargetMacrosDialog } from "~/components/meal-dashboard/target-macros/set-target-dialog";
+import { SetTargetMacros } from "~/components/meal-dashboard/target-macros/set-target-handler";
 import Navbar from "~/components/navbar";
-import Image from "next/image";
-import SetTargetMacros, { TargetMacrosDialog } from "~/components/meal-dashboard/targets";
-import { generateSSGHelper } from "~/server/helpers/ssgHelper";
-import { MealLog } from "~/components/meal-dashboard/meals";
 
 const ProfilePage: NextPage = () => {
   const { user } = useUser();

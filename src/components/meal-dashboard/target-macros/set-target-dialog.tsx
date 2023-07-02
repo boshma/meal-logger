@@ -1,99 +1,15 @@
-//src/components/meals.tsx
-// Import necessary dependencies
-import { api } from "~/utils/api";
+//src/components/meal-dashboard/target-macros/set-target-dialog.tsx
 import { useUser } from "@clerk/nextjs";
 import { useEffect, useState } from "react";
-import "react-datepicker/dist/react-datepicker.css";
-import React from "react";
 import toast from "react-hot-toast";
-import { Button } from "../ui/button";
-import { Input } from "../ui/input";
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "../ui/dialog";
+import { Button } from "~/components/ui/button";
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "~/components/ui/dialog";
+import { Input } from "~/components/ui/input";
+import { api } from "~/utils/api";
 
 
-export const MacroTargetBanner = () => {
-  const targetMacrosQuery = api.food.getTargetMacros.useQuery();
 
 
-  return (
-    <div className="flex justify-between items-center">
-      <div>
-        {targetMacrosQuery.data?.isSet === false ? (
-          <p>No target macros set</p>
-        ) : (
-          <>
-            <h2 className="text-2xl font-bold">Current Target Macros</h2>
-            <div className="flex flex-col space-y-2">
-              <div className="flex justify-between">
-                <span>Protein</span>
-                <span>{targetMacrosQuery.data?.protein || 0}g</span>
-                <span>Carbs</span>
-                <span>{targetMacrosQuery.data?.carbs || 0}g</span>
-                <span>Fat</span>
-                <span>{targetMacrosQuery.data?.fat || 0}g</span>
-              </div>
-
-            </div>
-          </>
-        )}
-      </div>
-    </div>
-  );
-};
-
-
-const SetTargetMacros = ({ onOpen }: { onOpen: () => void }) => {
-  const [open, setOpen] = useState(false);
-  const ctx = api.useContext();
-  const targetMacrosQuery = api.food.getTargetMacros.useQuery();
-
-
-  const handleOpen = () => {
-    setOpen(true);
-    onOpen();
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-
-  useEffect(() => {
-    if (targetMacrosQuery.isError || targetMacrosQuery.isSuccess) {
-      handleClose();
-    }
-  }, [targetMacrosQuery.status]);
-
-  return (
-    <div className="flex justify-between items-center">
-      <div>
-        {targetMacrosQuery.data?.isSet === false ? (
-          <p>No target macros set</p>
-        ) : (
-          <>
-            <h2 className="text-2xl font-bold">Current Target Macros</h2>
-            <div className="flex flex-col space-y-2">
-              <div className="flex justify-between">
-                <span>Protein</span>
-                <span>{targetMacrosQuery.data?.protein || 0}g</span>
-                <span>Carbs</span>
-                <span>{targetMacrosQuery.data?.carbs || 0}g</span>
-                <span>Fat</span>
-                <span>{targetMacrosQuery.data?.fat || 0}g</span>
-              </div>
-
-            </div>
-          </>
-        )}
-        <Button className="w-full" onClick={handleOpen}>Edit Target Macros</Button>
-      </div>
-    </div>
-  );
-};
-
-export default SetTargetMacros;
-
-
-// Target Macros Dialog
 export const TargetMacrosDialog = ({ open, handleClose }: { open: boolean, handleClose: () => void }) => {
   const user = useUser();
   const [protein, setProtein] = useState<number | null>(null);
