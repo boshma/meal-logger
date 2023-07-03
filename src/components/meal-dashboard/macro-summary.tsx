@@ -3,11 +3,14 @@ import { api } from "~/utils/api";
 import { LoadingPage } from "../ui/loading";
 import { FoodEntry } from "@prisma/client";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
+import { useUser } from "@clerk/nextjs";
 
 export const MacroSummary = ({ selectedDate }: { selectedDate: Date }) => {
+  const user = useUser();
   // Fetch food data for the selected date
   const { data, isLoading, isError } = api.food.getByDate.useQuery({
     date: `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, '0')}-${String(selectedDate.getDate()).padStart(2, '0')}`,
+    userId: user.user?.id || "",
   });
 
   // Show loading state while data is fetching

@@ -83,45 +83,46 @@ export const foodRouter = createTRPCRouter({
     return ctx.prisma.foodEntry.findMany({ where: { userId: ctx.userId } });
   }),
   getUserByUsername: publicProcedure
-  .input(z.object({ username: z.string() }))
-  .query(async ({ input }) => {
-    const [user] = await clerkClient.users.getUserList({
-      username: [input.username],
-    });
+    .input(z.object({ username: z.string() }))
+    .query(async ({ input }) => {
+      const [user] = await clerkClient.users.getUserList({
+        username: [input.username],
+      });
 
-    if (!user) {
-      // if we hit here we need a unsantized username so hit api once more and find the user.
-      const users = (
-        await clerkClient.users.getUserList({
-          limit: 200,
-        })
-      )
-      const user = users.find((user) => user.externalAccounts.find((account) => account.username === input.username));
       if (!user) {
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "User not found",
-        });
+        // if we hit here we need a unsantized username so hit api once more and find the user.
+        const users = (
+          await clerkClient.users.getUserList({
+            limit: 200,
+          })
+        )
+        const user = users.find((user) => user.externalAccounts.find((account) => account.username === input.username));
+        if (!user) {
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "User not found",
+          });
+        }
+        return filterUserForClient(user)
       }
-      return filterUserForClient(user)
-    }
 
-    return filterUserForClient(user);
+      return filterUserForClient(user);
 
-  }),
+    }),
 
-  // Define a private route that retrieves all food entries for a user on a given date
+  // Update the getByDate method to take userId in its input
   getByDate: privateProcedure
-    .input(z.object({ date: z.string() }))
+    .input(z.object({ date: z.string(), userId: z.string() }))
     .query(async ({ ctx, input }) => {
       const date = new Date(input.date);
       const nextDate = new Date(date);
       nextDate.setDate(nextDate.getDate() + 1);
       nextDate.setHours(0, 0, 0, 0);  // Set the time to the start of the day
 
+      // Use input.userId instead of ctx.userId
       return ctx.prisma.foodEntry.findMany({
         where: {
-          userId: ctx.userId,
+          userId: input.userId,
           date: {
             gte: date,
             lt: nextDate,
@@ -129,6 +130,7 @@ export const foodRouter = createTRPCRouter({
         },
       });
     }),
+
 
   // Define a private route that creates a new food entry for a user
   create: privateProcedure
@@ -435,7 +437,7 @@ export const foodRouter = createTRPCRouter({
 
       return food;
     }),
-    
+
 
 
 });

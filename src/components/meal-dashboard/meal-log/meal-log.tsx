@@ -19,12 +19,15 @@ import { TableRow, TableCell, TableHeader, TableHead, TableBody, Table } from "~
 import { ScrollArea } from "~/components/ui/scroll-area";
 import { EditModal } from "./edit-meal-in-log";
 import { useEditModal } from "~/components/hooks/use-edit-modal";
+import { useUser } from "@clerk/nextjs";
 
 
 
 export const MealLog = ({ isLoading: isLoadingProp, selectedDate }: { isLoading: boolean, selectedDate: Date }) => {
+  const user = useUser();
   const { data, isLoading } = api.food.getByDate.useQuery({
     date: `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, '0')}-${String(selectedDate.getDate()).padStart(2, '0')}`,
+    userId: user.user?.id || "",
   });
 
   const originalProtein = useRef<number>(0);
