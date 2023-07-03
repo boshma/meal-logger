@@ -14,6 +14,8 @@ const Navbar = () => {
   const { signOut } = useClerk();
   const { user } = useUser();
 
+  
+
 
 
   return (
@@ -21,7 +23,7 @@ const Navbar = () => {
       <NavigationMenu>
         <NavigationMenuList>
           <NavigationMenuItem className={navigationMenuTriggerStyle()} >
-            <Link href={`/profile/${user?.username || 'default'}`}>Profile</Link>
+            <Link href={`/profile/${user?.id || 'default'}`}>Profile</Link>
           </NavigationMenuItem>
           <NavigationMenuItem className={navigationMenuTriggerStyle()}>
             <Link href={`/`}>Dashboard</Link>

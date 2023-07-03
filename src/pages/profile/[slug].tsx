@@ -1,3 +1,4 @@
+//src/pages/profile/[slug].tsx
 import { useUser } from "@clerk/nextjs";
 import { type NextPage } from "next";
 import Head from "next/head";

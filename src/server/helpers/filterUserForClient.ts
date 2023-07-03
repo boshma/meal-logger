@@ -1,5 +1,5 @@
+//src/server/helpers/filterUserForClient.ts
 import type { User } from "@clerk/nextjs/dist/api";
-import { use } from "react";
 export const filterUserForClient = (user: User) => {
   return {
     id: user.id,

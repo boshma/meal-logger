@@ -82,33 +82,22 @@ export const foodRouter = createTRPCRouter({
   getAll: privateProcedure.query(({ ctx }) => {
     return ctx.prisma.foodEntry.findMany({ where: { userId: ctx.userId } });
   }),
-  getUserByUsername: publicProcedure
-    .input(z.object({ username: z.string() }))
+  getUserByUserId: publicProcedure
+    .input(z.object({ userId: z.string() }))
     .query(async ({ input }) => {
-      const [user] = await clerkClient.users.getUserList({
-        username: [input.username],
-      });
+      const user = await clerkClient.users.getUser(input.userId);
 
       if (!user) {
-        // if we hit here we need a unsantized username so hit api once more and find the user.
-        const users = (
-          await clerkClient.users.getUserList({
-            limit: 200,
-          })
-        )
-        const user = users.find((user) => user.externalAccounts.find((account) => account.username === input.username));
-        if (!user) {
-          throw new TRPCError({
-            code: "INTERNAL_SERVER_ERROR",
-            message: "User not found",
-          });
-        }
-        return filterUserForClient(user)
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "User not found",
+        });
       }
 
       return filterUserForClient(user);
-
     }),
+
+    
 
   // Update the getByDate method to take userId in its input
   getByDate: privateProcedure
