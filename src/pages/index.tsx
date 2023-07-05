@@ -17,11 +17,6 @@ const Home: NextPage = () => {
         <title>Fitache</title>
         <meta name="description" content="Dashboard" />
         <link rel="icon" href="/favicon.ico" />
-        <meta property="og:title" content="Fitache" key="title" />
-        <meta property="og:description" content="Dashboard" />
-        <meta property="og:image" content="/favicon.ico" />
-        <meta property="og:url" content="https://fitache.vercel.app/" />
-        <meta name="twitter:card" content="summary_large_image" />
       </Head>
       <main className="flex flex-col h-screen items-center justify-start pt-14">
         {!!user.isSignedIn && <Navbar />}
