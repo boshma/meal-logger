@@ -11,8 +11,12 @@ import {
 } from "~/components/ui/accordion"
 import { AnimatePresence, motion } from "framer-motion";
 
-const backgroundColors = ['radial-gradient(circle at center, violet, indigo, blue)', 'radial-gradient(circle at center, blue, green, yellow)', 'radial-gradient(circle at center, yellow, orange, red)', 'radial-gradient(circle at center, red, magenta, violet)'];
-
+const backgroundColors = [
+  'radial-gradient(circle at center, #050A30, #1F3467, #3D609B)',
+  'radial-gradient(circle at center, #050A30, #2A165E, #763D8C)', 
+  'radial-gradient(circle at center, #050A30, #3D609B, #C1D6F2)', 
+  'radial-gradient(circle at center, #1F3467, #763D8C, #C1D6F2)', 
+];
 let colorIndex = 0;
 
 function getCurrentBackground() {
@@ -29,7 +33,7 @@ const LoginPage: React.FC = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       setBackground(getCurrentBackground());
-    }, 5000); 
+    }, 5000);
 
     return () => clearInterval(interval);
   }, []);
@@ -44,13 +48,13 @@ const LoginPage: React.FC = () => {
           exit={{ opacity: 0 }}
           transition={{ duration: 0.5 }}
           style={{
-            position: 'fixed', 
+            position: 'fixed',
             top: 0,
             left: 0,
             right: 0,
             bottom: 0,
             background,
-            zIndex: -1 
+            zIndex: -1
           }}
         />
 
