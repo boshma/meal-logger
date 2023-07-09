@@ -1,14 +1,8 @@
 // src/components/LoginPage.tsx
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { SignInButton } from "@clerk/nextjs";
 import { Button } from './ui/button';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from './ui/card';
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "~/components/ui/accordion"
 import { AnimatePresence, motion } from "framer-motion";
 
 const backgroundColors = [
@@ -30,13 +24,9 @@ function getCurrentBackground() {
 const LoginPage: React.FC = () => {
   const [background, setBackground] = useState(getCurrentBackground());
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setBackground(getCurrentBackground());
-    }, 5000);
-
-    return () => clearInterval(interval);
-  }, []);
+  const handleMouseEnter = () => {
+    setBackground(getCurrentBackground());
+  }
 
   return (
     <div className="relative min-h-screen flex items-center justify-center px-4 sm:px-6">
@@ -69,7 +59,7 @@ const LoginPage: React.FC = () => {
           </CardDescription>
         </CardHeader>
         <SignInButton>
-            <Button variant={'ghost'} className="w-full text-lg py-3 font-bold animate-pulse font-body">
+            <Button onMouseEnter={handleMouseEnter} variant={'ghost'} className="w-full text-lg py-3 font-bold animate-pulse font-body">
               Sign in with Github or Google
             </Button>
           </SignInButton>
