@@ -65,40 +65,14 @@ const LoginPage: React.FC = () => {
             Welcome to Fitache
           </CardTitle>
           <CardDescription className="text-center py-6 text-lg font-light text-foreground leading-extra-loose font-body max-w-prose mx-auto animate-slideInFromBottom">
-            The most convenient macro-tracking app.
+            The most convenient meal-logger app
           </CardDescription>
         </CardHeader>
-        <CardContent>
-          <div className="animate-slideInFromRight">
-            <Accordion type="single" collapsible className="w-full">
-              <AccordionItem value="item-1">
-                <AccordionTrigger>About Fitache</AccordionTrigger>
-                <AccordionContent>
-                  Fitache is an application designed to help you track your macronutrients intake and meals with ease. Users can &apos;quick add&apos;, add meals to their meal log from their collection, or add meals to the meal log via Nutritionix api. You can find the opensource code <a target="_blank" href="https://github.com/boshma/meal-logger">here (click)</a>
-                </AccordionContent>
-              </AccordionItem>
-              <AccordionItem value="item-2">
-                <AccordionTrigger>Technologies Used</AccordionTrigger>
-                <AccordionContent>
-                  This application is built using a mix of technologies including Next.js, Tailwind, TRPC, and Typescript (apart of the T3 stack). The application is hosted on Vercel and uses Clerk for authentication. Data is stored via PlanetScale.
-                </AccordionContent>
-              </AccordionItem>
-              <AccordionItem value="item-3">
-                <AccordionTrigger>How to get started?</AccordionTrigger>
-                <AccordionContent>
-                  To start using Fitache, you simply need to sign in using the button below. The process is passwordless. After signing in, you can begin logging your meals and tracking your macros.
-                </AccordionContent>
-              </AccordionItem>
-            </Accordion>
-          </div>
-        </CardContent>
-        <CardFooter className="justify-center pt-8">
-          <SignInButton>
+        <SignInButton>
             <Button variant={'ghost'} className="w-full text-lg py-3 font-bold animate-pulse font-body">
-              Sign in
+              Sign in with Github or Google
             </Button>
           </SignInButton>
-        </CardFooter>
       </Card>
     </div>
   );
