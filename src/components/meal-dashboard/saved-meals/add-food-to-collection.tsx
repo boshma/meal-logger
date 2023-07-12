@@ -15,10 +15,10 @@ export const SavedMealFormDialog = ({ open, handleClose }: { open: boolean, hand
   const [fat, setFat] = useState<string>("");
   const ctx = api.useContext();
 
-  const mutation = api.food.createSavedMeal.useMutation({
+  const mutation = api.foodCollection.createSavedMeal.useMutation({
     onSuccess: () => {
       toast.success("Saved meal created");
-      void ctx.food.getSavedMeals.invalidate();
+      void ctx.foodCollection.getSavedMeals.invalidate();
       setName("");
       setProtein("");
       setCarbs("");

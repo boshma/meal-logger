@@ -23,7 +23,7 @@ import { useEditSavedMealModal } from "~/components/hooks/use-edit-saved-modal";
 export const FoodCollection = ({ isModalOpen, setIsModalOpen, selectedDate }: { isModalOpen: boolean, setIsModalOpen: Dispatch<SetStateAction<boolean>>, selectedDate: Date }) => {
   const user = useUser();
 
-  const { data, isLoading } = api.food.getSavedMeals.useQuery({
+  const { data, isLoading } = api.foodCollection.getSavedMeals.useQuery({
     userId: user.user?.id || "",
   });
 

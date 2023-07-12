@@ -25,7 +25,7 @@ import { useUser } from "@clerk/nextjs";
 
 export const MealLog = ({ isLoading: isLoadingProp, selectedDate }: { isLoading: boolean, selectedDate: Date }) => {
   const user = useUser();
-  const { data, isLoading } = api.food.getByDate.useQuery({
+  const { data, isLoading } = api.mealLog.getByDate.useQuery({
     date: `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, '0')}-${String(selectedDate.getDate()).padStart(2, '0')}`,
     userId: user.user?.id || "",
   });

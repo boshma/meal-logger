@@ -25,11 +25,11 @@ export const EditSavedMealModal = ({ savedMeal, handleClose, selectedDate }: Edi
     return null;
   }
 
-  const addMealToLogMutation = api.food.addMealToLog.useMutation({
+  const addMealToLogMutation = api.foodCollection.addMealToLog.useMutation({
     onSuccess: () => {
       toast.success("Your meal has been added to the log.");
-      void ctx.food.getSavedMeals.invalidate();
-      void ctx.food.getByDate.invalidate();
+      void ctx.foodCollection.getSavedMeals.invalidate();
+      void ctx.mealLog.getByDate.invalidate();
       handleClose();
     },
     onError: (e) => {
@@ -38,10 +38,10 @@ export const EditSavedMealModal = ({ savedMeal, handleClose, selectedDate }: Edi
     },
   });
 
-  const updateMutation = api.food.updateSavedMeal.useMutation({
+  const updateMutation = api.foodCollection.updateSavedMeal.useMutation({
     onSuccess: () => {
       toast.success("Your meal has been updated.");
-      void ctx.food.getSavedMeals.invalidate();
+      void ctx.foodCollection.getSavedMeals.invalidate();
       handleClose();
     },
     onError: (e) => {
@@ -50,10 +50,10 @@ export const EditSavedMealModal = ({ savedMeal, handleClose, selectedDate }: Edi
     },
   });
 
-  const deleteMutation = api.food.deleteSavedMeal.useMutation({
+  const deleteMutation = api.foodCollection.deleteSavedMeal.useMutation({
     onSuccess: () => {
       toast.success("Your meal has been deleted.");
-      void ctx.food.getSavedMeals.invalidate();
+      void ctx.foodCollection.getSavedMeals.invalidate();
       handleClose();
     },
     onError: (e) => {

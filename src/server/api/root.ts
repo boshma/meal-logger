@@ -1,6 +1,10 @@
 // src/server/api/root.ts
 import { createTRPCRouter } from "~/server/api/trpc";
-import { foodRouter } from "./routers/food";
+import { foodCollectionRouter } from "./routers/food/foodCollection";
+import { mealLogRouter } from "./routers/food/mealLog";
+import { nutrititionixRouter } from "./routers/food/nutritionix";
+import { quickAddRouter } from "./routers/food/quickAdd";
+import { targetMacrosRouter } from "./routers/food/targetMacros";
 
 /**
  * This is the primary router for your server.
@@ -8,7 +12,11 @@ import { foodRouter } from "./routers/food";
  * All routers added in /api/routers should be manually added here.
  */
 export const appRouter = createTRPCRouter({
-  food: foodRouter,
+  foodCollection: foodCollectionRouter,
+  mealLog: mealLogRouter,
+  nutritionix: nutrititionixRouter,
+  quickAdd: quickAddRouter,
+  targetMacros: targetMacrosRouter,
 });
 
 // export type definition of API

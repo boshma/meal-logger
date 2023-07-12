@@ -17,7 +17,7 @@ export const TargetMacrosDialog = ({ open, handleClose }: { open: boolean, handl
   const [fat, setFat] = useState<number | null>(null);
   const ctx = api.useContext();
 
-  const targetMacrosQuery = api.food.getTargetMacros.useQuery();
+  const targetMacrosQuery = api.targetMacros.getTargetMacros.useQuery();
 
   useEffect(() => {
     if (targetMacrosQuery.data) {
@@ -28,10 +28,10 @@ export const TargetMacrosDialog = ({ open, handleClose }: { open: boolean, handl
   }, [targetMacrosQuery.data]);
 
   // Define mutation for setting target macros
-  const mutation = api.food.setTargetMacros.useMutation({
+  const mutation = api.targetMacros.setTargetMacros.useMutation({
     onSuccess: () => {
       toast.success("Your target macros have been set.");
-      void ctx.food.getTargetMacros.invalidate();
+      void ctx.targetMacros.getTargetMacros.invalidate();
       handleClose();
     },
     onError: (e) => {
@@ -41,10 +41,10 @@ export const TargetMacrosDialog = ({ open, handleClose }: { open: boolean, handl
   });
 
   // Define mutation for removing target macros
-  const removeMutation = api.food.removeTargetMacros.useMutation({
+  const removeMutation = api.targetMacros.removeTargetMacros.useMutation({
     onSuccess: () => {
       toast.success("Your target macros have been removed.");
-      void ctx.food.getTargetMacros.invalidate();
+      void ctx.targetMacros.getTargetMacros.invalidate();
       handleClose();
     },
     onError: (e) => {

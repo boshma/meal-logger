@@ -9,7 +9,7 @@ import { api } from "~/utils/api";
 export const SetTargetMacros = ({ onOpen }: { onOpen: () => void }) => {
   const [open, setOpen] = useState(false);
   const ctx = api.useContext();
-  const targetMacrosQuery = api.food.getTargetMacros.useQuery();
+  const targetMacrosQuery = api.targetMacros.getTargetMacros.useQuery();
 
 
   const handleOpen = () => {

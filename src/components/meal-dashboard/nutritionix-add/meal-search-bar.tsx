@@ -37,7 +37,7 @@ export const MealSearchBar = ({ selectedDate }: { selectedDate: Date }) => {
     isLoading,
     error,
     refetch,
-  } = api.food.search.useQuery(
+  } = api.nutritionix.search.useQuery(
     { query: search },
     {
       enabled: false,
@@ -76,7 +76,7 @@ export const MealSearchBar = ({ selectedDate }: { selectedDate: Date }) => {
     if (e?.key === 'Enter' || !e) {
       if (search) {
         setSearchInitiated(true);
-        refetch().catch((error) => {
+        refetch().catch((error: any) => {
           console.error('Error refetching:', error);
         });
       } else {

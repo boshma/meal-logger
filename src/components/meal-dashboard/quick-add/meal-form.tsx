@@ -48,7 +48,7 @@ export const MealForm = ({
 
 
   // Define mutation for creating a food entry
-  const mutation = api.food.create.useMutation({
+  const mutation = api.quickAdd.create.useMutation({
     onSuccess: () => {
       // Clear form fields and set success state to true on successful mutation
       setName("");
@@ -56,7 +56,7 @@ export const MealForm = ({
       setCarbs("");
       setFat("");
       toast.success("Your meal has been saved.");
-      void ctx.food.getByDate.invalidate()
+      void ctx.mealLog.getByDate.invalidate()
       // Focus the name input field
       nameInputRef.current?.focus();
       setIsLoading(false);

@@ -52,10 +52,10 @@ export const EditModal = ({
   const ctx = api.useContext();
   if (!foodEntry) return null;
 
-  const updateMutation = api.food.update.useMutation({
+  const updateMutation = api.mealLog.update.useMutation({
     onSuccess: () => {
       toast.success("Your meal has been updated.");
-      void ctx.food.getByDate.invalidate()
+      void ctx.mealLog.getByDate.invalidate()
       handleClose();
     },
     onError: (e) => {
@@ -63,10 +63,10 @@ export const EditModal = ({
     },
   });
 
-  const deleteMutation = api.food.delete.useMutation({
+  const deleteMutation = api.mealLog.delete.useMutation({
     onSuccess: () => {
       toast.success("Your meal has been deleted.");
-      void ctx.food.getByDate.invalidate()
+      void ctx.mealLog.getByDate.invalidate()
       handleClose();
     },
     onError: (e) => {

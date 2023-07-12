@@ -8,7 +8,7 @@ import { useUser } from "@clerk/nextjs";
 export const MacroSummary = ({ selectedDate }: { selectedDate: Date }) => {
   const user = useUser();
   // Fetch food data for the selected date
-  const { data, isLoading, isError } = api.food.getByDate.useQuery({
+  const { data, isLoading, isError } = api.mealLog.getByDate.useQuery({
     date: `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, '0')}-${String(selectedDate.getDate()).padStart(2, '0')}`,
     userId: user.user?.id || "",
   });

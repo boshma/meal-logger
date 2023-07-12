@@ -6,7 +6,7 @@ import React from "react";
 
 
 export const MacroTargetBanner = () => {
-  const targetMacrosQuery = api.food.getTargetMacros.useQuery();
+  const targetMacrosQuery = api.targetMacros.getTargetMacros.useQuery();
 
 
   return (

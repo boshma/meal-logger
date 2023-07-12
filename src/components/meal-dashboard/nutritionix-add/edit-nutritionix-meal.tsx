@@ -32,10 +32,10 @@ export const EditSearchedMealModal = ({ searchedMeal, handleClose, selectedDate 
 
 
 
-  const addSearchedMealToLogMutation = api.food.addSearchedMealToLog.useMutation({
+  const addSearchedMealToLogMutation = api.nutritionix.addSearchedMealToLog.useMutation({
     onSuccess: () => {
       toast.success("Your meal has been added to the log.");
-      void ctx.food.getByDate.invalidate()
+      void ctx.mealLog.getByDate.invalidate()
       handleClose();
     },
     onError: (e) => {
