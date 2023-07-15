@@ -1,16 +1,15 @@
 //srs/pages/index.tsx
 import { useUser } from "@clerk/nextjs";
-import { GetStaticProps, NextPage } from "next";
+import { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
-import { useState } from "react";
 import LoginPage from "~/components/loginpage";
 import { MealsPage } from "~/components/meal-dashboard/meal-page-layout";
 import Navbar from "~/components/navbar";
-import { generateSSGHelper } from "~/server/helpers/ssgHelper";
+import { withServerSideAuth } from "@clerk/nextjs/ssr";
 
 const Home: NextPage = () => {
   const user = useUser();
-  
+
   return (
     <>
       <Head>
@@ -28,5 +27,9 @@ const Home: NextPage = () => {
     </>
   );
 };
+
+export const getServerSideProps: GetServerSideProps = withServerSideAuth( () => {
+  return { props: {} };
+});
 
 export default Home;

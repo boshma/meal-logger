@@ -48,7 +48,7 @@ export const MealForm = ({
 
 
   // Define mutation for creating a food entry
-  const mutation = api.quickAdd.create.useMutation({
+  const mutation = api.mealLog.create.useMutation({
     onSuccess: () => {
       // Clear form fields and set success state to true on successful mutation
       setName("");

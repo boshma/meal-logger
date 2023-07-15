@@ -3,7 +3,6 @@ import { createTRPCRouter } from "~/server/api/trpc";
 import { foodCollectionRouter } from "./routers/food/foodCollection";
 import { mealLogRouter } from "./routers/food/mealLog";
 import { nutrititionixRouter } from "./routers/food/nutritionix";
-import { quickAddRouter } from "./routers/food/quickAdd";
 import { targetMacrosRouter } from "./routers/food/targetMacros";
 
 /**
@@ -15,7 +14,6 @@ export const appRouter = createTRPCRouter({
   foodCollection: foodCollectionRouter,
   mealLog: mealLogRouter,
   nutritionix: nutrititionixRouter,
-  quickAdd: quickAddRouter,
   targetMacros: targetMacrosRouter,
 });
 

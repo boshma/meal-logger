@@ -1,15 +1,9 @@
-//src/server/api/routers/targetmacros.ts
+//src/server/api/routers/food/targetmacros.ts
 import { TRPCError } from "@trpc/server";
-import { Ratelimit } from "@upstash/ratelimit";
-import { Redis } from "@upstash/redis";
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure, privateProcedure } from "~/server/api/trpc";
-import axios from 'axios';
 import { clerkClient } from "@clerk/nextjs/server";
 import { filterUserForClient } from "../../../helpers/filterUserForClient";
-import { searchFoodInDatabase } from "~/server/helpers/searchFoodInDatabase";
-
-
 
 export const targetMacrosRouter = createTRPCRouter({
    // Define a private route that sets or updates target macros for a user
