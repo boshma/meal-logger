@@ -1,5 +1,4 @@
-//src/components/meals.tsx
-// Import necessary dependencies
+//src/components/meal-dashboard/meal-log/meal-log.tsx
 import { api } from "~/utils/api";
 import { useRef } from "react";
 import "react-datepicker/dist/react-datepicker.css";
@@ -14,7 +13,6 @@ import {
 import { FoodEntry } from "@prisma/client";
 import { LoadingPage } from "~/components/ui/loading";
 
-import { Skeleton } from "~/components/ui/skeleton";
 import { TableRow, TableCell, TableHeader, TableHead, TableBody, Table } from "~/components/ui/table";
 import { ScrollArea } from "~/components/ui/scroll-area";
 import { EditModal } from "./edit-meal-in-log";
@@ -48,25 +46,6 @@ export const MealLog = ({ isLoading: isLoadingProp, selectedDate }: { isLoading:
     return <LoadingPage />;
   }
 
-  const SkeletonRow = () => (
-    <TableRow>
-      <TableCell>
-        <Skeleton className="h-4 w-full" />
-      </TableCell>
-      <TableCell>
-        <Skeleton className="h-4" />
-      </TableCell>
-      <TableCell>
-        <Skeleton className="h-4" />
-      </TableCell>
-      <TableCell>
-        <Skeleton className="h-4" />
-      </TableCell>
-      <TableCell>
-        <Skeleton className="h-4" />
-      </TableCell>
-    </TableRow>
-  );
 
   return (
     <Card>
@@ -94,7 +73,6 @@ export const MealLog = ({ isLoading: isLoadingProp, selectedDate }: { isLoading:
                   <TableCell>{food.fat}</TableCell>
                 </TableRow>
               ))}
-              {isLoadingProp && <SkeletonRow />}
             </TableBody>
           </Table>
         </ScrollArea>

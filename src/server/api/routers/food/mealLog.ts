@@ -3,8 +3,7 @@ import { TRPCError } from "@trpc/server";
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
 import { z } from "zod";
-import { createTRPCRouter, privateProcedure } from "~/server/api/trpc";
-
+import { createTRPCRouter, privateProcedure, publicProcedure } from "~/server/api/trpc";
 
 // Create a new ratelimiter, that allows 2 requests per 5 seconds
 const ratelimit = new Ratelimit({

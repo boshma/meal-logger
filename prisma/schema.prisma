@@ -25,6 +25,20 @@ model FoodEntry {
   @@index([userId, date])
 }
 
+model ExerciseEntry {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  reps      Int
+  name      String
+  weight    Float
+  date      DateTime @db.Date
+  userId    String
+
+  @@index([userId, date])
+}
+
+
 model SavedMeal {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now())

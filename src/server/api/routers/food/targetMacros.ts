@@ -60,18 +60,4 @@ export const targetMacrosRouter = createTRPCRouter({
 
    return targetMacros;
  }),
- getUserByUserId: publicProcedure
- .input(z.object({ userId: z.string() }))
- .query(async ({ input }) => {
-   const user = await clerkClient.users.getUser(input.userId);
-
-   if (!user) {
-     throw new TRPCError({
-       code: "INTERNAL_SERVER_ERROR",
-       message: "User not found",
-     });
-   }
-
-   return filterUserForClient(user);
- }),
 });
