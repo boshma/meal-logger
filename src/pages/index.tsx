@@ -19,7 +19,7 @@ const Home: NextPage = () => {
         <meta name="description" content="Dashboard" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className={`flex flex-col h-screen items-center justify-start pt-14 ${background || ''} bg-transition`}>
+      <main className={`flex flex-col min-h-screen items-center justify-start pt-14 ${background || ''} bg-transition`}>
         {!!user.isSignedIn && <Navbar />}
         <div className="mb-4 flex flex-col items-center justify-center">
           {!user.isSignedIn && <LoginPage setBackground={setBackground} />}
