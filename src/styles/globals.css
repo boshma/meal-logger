@@ -59,19 +59,3 @@
     font-feature-settings: "rlig" 1, "calt" 1;
   }
 }
-
-.bg-gradient-1 {
-  background: radial-gradient(circle at center, #050A30, #1F3467, #3D609B);
-}
-
-.bg-gradient-2 {
-  background: radial-gradient(circle at center, #050A30, #2A165E, #763D8C);
-}
-
-.bg-gradient-3 {
-  background: radial-gradient(circle at center, #050A30, #3D609B, #C1D6F2);
-}
-
-.bg-gradient-4 {
-  background: radial-gradient(circle at center, #1F3467, #763D8C, #C1D6F2);
-}
