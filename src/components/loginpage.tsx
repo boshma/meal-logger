@@ -1,32 +1,10 @@
 // src/components/LoginPage.tsx
-import React, { useState } from 'react';
+import React from 'react';
 import { SignInButton } from "@clerk/nextjs";
 import { Button } from './ui/button';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from './ui/card';
 
-const backgroundColors = [
-  'bg-gradient-1',
-  'bg-gradient-2',
-  'bg-gradient-3',
-  'bg-gradient-4',
-];
-let colorIndex = 0;
-
-function getCurrentBackground() {
-  const color = backgroundColors[colorIndex % backgroundColors.length];
-  colorIndex = (colorIndex + 1) % backgroundColors.length;
-  return color || 'bg-gradient-1';  
-}
-
-type LoginPageProps = {
-  setBackground: React.Dispatch<React.SetStateAction<string>>;
-}
-
-const LoginPage: React.FC<LoginPageProps> = ({ setBackground }) => {
-  const handleMouseEnter = () => {
-    setBackground(getCurrentBackground());
-  }
-
+const LoginPage: React.FC = () => {
   return (
     <div className="relative min-h-screen flex items-center justify-center px-4 sm:px-6 bg-transition">
       <Card className="container max-w-md py-8 px-6 transform transition-transform duration-500 ease-in-out hover:scale-105 hover:shadow-lg">
@@ -38,17 +16,15 @@ const LoginPage: React.FC<LoginPageProps> = ({ setBackground }) => {
             The most convenient meal-logger app
           </CardDescription>
         </CardHeader>
-        <div onMouseEnter={handleMouseEnter}>
-          <SignInButton>
-            <Button variant={'ghost'} className="w-full text-lg py-3 font-bold animate-pulse font-body">
-              Sign in with Github or Google
-            </Button>
-          </SignInButton>
-        </div>
+        <SignInButton>
+          <Button variant={'ghost'} className="w-full text-lg py-3 font-bold animate-pulse font-body">
+            Sign in with Github or Google
+          </Button>
+        </SignInButton>
       </Card>
     </div>
   );
 }
 
-
 export default LoginPage;
+
