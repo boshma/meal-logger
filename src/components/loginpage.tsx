@@ -2,11 +2,11 @@
 import React from 'react';
 import { SignInButton } from "@clerk/nextjs";
 import { Button } from './ui/button';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from './ui/card';
+import { Card, CardHeader, CardTitle, CardDescription } from './ui/card';
 
 const LoginPage: React.FC = () => {
   return (
-    <div className="relative min-h-screen flex items-center justify-center px-4 sm:px-6 bg-transition">
+    <div className="relative min-h-screen flex items-center justify-center px-4 sm:px-6">
       <Card className="container max-w-md py-8 px-6 transform transition-transform duration-500 ease-in-out hover:scale-105 hover:shadow-lg">
         <CardHeader>
           <CardTitle className="text-center text-4xl sm:text-5xl font-extrabold text-primary tracking-tighter font-heading animate-slideInFromTop">
