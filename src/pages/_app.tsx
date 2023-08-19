@@ -7,7 +7,6 @@ import "~/styles/globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Toaster } from "react-hot-toast";
 
-// Wraps our entire app with clerk!
 const MyApp: AppType = ({ Component, pageProps }) => {
   return <ClerkProvider {...pageProps}>
     <Toaster />
@@ -16,3 +15,5 @@ const MyApp: AppType = ({ Component, pageProps }) => {
 };
 
 export default api.withTRPC(MyApp);
+
+

@@ -1,1 +1,9 @@
-You can checkout this t3 project on Fitache.vercel.app
+Nutrifit.com
+
+
+
+TODO:
+Transition to server components
+Web Socket live chat
+Personal trainer/Client Roles
+1RM information for Exercises
