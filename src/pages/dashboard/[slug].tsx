@@ -34,24 +34,28 @@ const ExercisePage: NextPage = () => {
       </Head>
       <main className="flex flex-col h-screen items-center justify-start">
         {!!user && <Navbar />}
-        <DatePicker
-          selected={selectedDate}
-          onChange={(date: Date | null) => {
-            setSelectedDate(date || new Date());
-          }}
-          customInput={<Button variant="outline" size="sm" type="submit">
-            <div className="text-xl font-bold">
-              Selected Date: {new Date(selectedDate.getTime() - selectedDate.getTimezoneOffset() * 60000).toISOString().slice(0, 10)}
-            </div>
-          </Button>}
-        />
-        <ExerciseForm
-          isLoading={isLoading}
-          setIsLoading={setIsLoading}
-          selectedDate={selectedDate}
-          setSelectedDate={setSelectedDate}
-        />
-        <ExerciseLog isLoading={isLoading} selectedDate={selectedDate} />
+        <div className="w-full max-w-3xl mx-auto mt-4 p-4"> 
+          <div className="text-center mb-4">
+            <DatePicker
+              selected={selectedDate}
+              onChange={(date: Date | null) => {
+                setSelectedDate(date || new Date());
+              }}
+              customInput={<Button variant="outline" size="sm" type="submit">
+                <div className="text-xl font-bold">
+                  Selected Date: {new Date(selectedDate.getTime() - selectedDate.getTimezoneOffset() * 60000).toISOString().slice(0, 10)}
+                </div>
+              </Button>}
+            />
+          </div>
+          <ExerciseForm
+            isLoading={isLoading}
+            setIsLoading={setIsLoading}
+            selectedDate={selectedDate}
+            setSelectedDate={setSelectedDate}
+          />
+          <ExerciseLog isLoading={isLoading} selectedDate={selectedDate} />
+        </div> {/* Close wrapper div */}
       </main>
     </>
   );
