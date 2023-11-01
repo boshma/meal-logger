@@ -10,7 +10,7 @@ const LoginPage: React.FC = () => {
       <Card className="container max-w-md py-8 px-6 transform transition-transform duration-500 ease-in-out hover:scale-105 hover:shadow-lg">
         <CardHeader>
           <CardTitle className="text-center text-4xl sm:text-5xl font-extrabold text-primary tracking-tighter font-heading animate-slideInFromTop">
-            Welcome to Nutrifit
+            Welcome to TrackFit
           </CardTitle>
           <CardDescription className="text-center py-6 text-lg font-light text-foreground leading-extra-loose font-body max-w-prose mx-auto animate-slideInFromBottom">
             The All in One Fitness App
