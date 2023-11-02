@@ -13,7 +13,7 @@ const Home: NextPage = () => {
   return (
     <>
       <Head>
-        <title>TrackFit</title>
+        <title>FitTrack</title>
         <meta name="description" content="Dashboard" />
         <link rel="icon" href="/favicon.ico" />
       </Head>

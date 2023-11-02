@@ -28,7 +28,7 @@ const ExercisePage: NextPage = () => {
   return (
     <>
       <Head>
-        <title>TrackFit</title>
+        <title>FitTrack</title>
         <meta name="description" content="Profile Page" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
