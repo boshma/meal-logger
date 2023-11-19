@@ -1,0 +1,4 @@
+{
+  "appService.defaultWebAppToDeploy": "/subscriptions/17c994b2-7fb0-473e-a326-94b4251d5fed/resourceGroups/appsvc_linux_centralus_basic/providers/Microsoft.Web/sites/fittrack",
+  "appService.deploySubpath": "."
+}
